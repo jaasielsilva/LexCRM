@@ -12,6 +12,8 @@ public interface ProcessoRepository extends JpaRepository<Processo, Long> {
     
     long countByStatus(String status);
 
+    boolean existsByNumeroProcessoAndTenantId(String numeroProcesso, String tenantId);
+
     @EntityGraph(attributePaths = {"cliente", "advogadoResponsavel", "etapas"})
     @Query("SELECT p FROM Processo p")
     List<Processo> findAllWithDetails();

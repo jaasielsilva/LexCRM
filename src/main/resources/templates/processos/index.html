@@ -1,34 +1,39 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Processos - JurisCRM</title>
-    
+
     <!-- CSRF Token -->
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/processos.css}">
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
-    
+
     <script src="https://unpkg.com/htmx.org@1.9.6"></script>
 </head>
+
 <body>
 
     <div th:replace="~{fragments/sidebar :: sidebar(activePage='processos')}"></div>
 
     <main class="main-content" id="processos-modulo">
-        
+
         <div class="page-header">
             <div>
                 <h1 class="page-title">Processos</h1>
@@ -43,24 +48,17 @@
         <!-- Search Bar -->
         <div class="search-container">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" 
-                   name="query" 
-                   class="search-input" 
-                   placeholder="Buscar por cliente, número ou tipo..."
-                   hx-get="/processos/search" 
-                   hx-trigger="keyup changed delay:500ms" 
-                   hx-target="#process-list">
+            <input type="text" name="query" class="search-input" placeholder="Buscar por cliente, número ou tipo..."
+                hx-get="/processos/search" hx-trigger="keyup changed delay:500ms" hx-target="#process-list">
         </div>
 
         <!-- Process List -->
         <div id="process-list" th:fragment="list">
-            <div th:each="processo : ${processos}" 
-                 class="process-card" 
-                 th:id="'card-' + ${processo.id}">
-                
+            <div th:each="processo : ${processos}" class="process-card" th:id="'card-' + ${processo.id}">
+
                 <!-- Card Content (Clickable) -->
                 <div class="card-content" th:attr="onclick=|toggleTimeline('${processo.id}')|">
-                    
+
                     <!-- Icon -->
                     <div class="card-icon">
                         <i class="fas fa-balance-scale"></i>
@@ -87,7 +85,8 @@
                             <div class="progress-container">
                                 <span class="progress-text" th:text="${processo.progresso} + '%'">17%</span>
                                 <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" th:style="'width: ' + ${processo.progresso} + '%'"></div>
+                                    <div class="progress-bar-fill" th:style="'width: ' + ${processo.progresso} + '%'">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -97,19 +96,19 @@
 
                 <!-- Timeline Container (Initially Hidden) -->
                 <div th:id="'timeline-container-' + ${processo.id}" class="hidden">
-                    <div th:attr="hx-get=@{/processos/{id}/timeline(id=${processo.id})}"
-                         hx-trigger="revealed"
-                         hx-swap="innerHTML">
-                         <!-- Loading State -->
-                         <div class="p-8 text-center text-slate-400">
-                             <i class="fas fa-circle-notch fa-spin mr-2"></i> Carregando linha do tempo...
-                         </div>
+                    <div th:attr="hx-get=@{/processos/{id}/timeline(id=${processo.id})}" hx-trigger="revealed"
+                        hx-swap="innerHTML">
+                        <!-- Loading State -->
+                        <div class="p-8 text-center text-slate-400">
+                            <i class="fas fa-circle-notch fa-spin mr-2"></i> Carregando linha do tempo...
+                        </div>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Empty State -->
-            <div th:if="${processos.empty}" class="text-center py-12 bg-white rounded-lg border border-dashed border-slate-300">
+            <div th:if="${processos.empty}"
+                class="text-center py-12 bg-white rounded-lg border border-dashed border-slate-300">
                 <i class="fas fa-folder-open text-4xl text-slate-300 mb-3"></i>
                 <p class="text-slate-500">Nenhum processo encontrado.</p>
             </div>
@@ -117,102 +116,179 @@
 
         <!-- New Process Modal (Moved Inside for Scoping) -->
         <div id="newProcessModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="font-playfair text-xl font-bold text-[var(--navy-blue)]">Novo Processo</h2>
-                    <button onclick="closeModal()" class="btn-ghost">
+            <div class="modal-content modal-content-premium">
+                <div class="modal-header modal-header-premium">
+                    <h2 class="font-playfair">Novo Processo</h2>
+                    <button onclick="closeModal()" class="btn-ghost" title="Fechar">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 <form th:action="@{/processos/novo}" method="post">
-                    <div class="modal-body">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="form-group col-span-2">
-                                <label class="form-label">Número do Processo</label>
-                                <input type="text" name="numeroProcesso" class="form-input" required placeholder="0000000-00.0000.0.00.0000">
+                    <div class="modal-body modal-body-premium">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+
+                            <!-- Número do Processo -->
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">Número do Processo</label>
+                                <div class="form-control-wrapper">
+                                    <i class="fas fa-hashtag form-control-icon"></i>
+                                    <input type="text" name="numeroProcesso" class="form-input-premium" required
+                                        placeholder="0000000-00.0000.0.00.0000"
+                                        th:value="${processoDraft != null} ? ${processoDraft.numeroProcesso} : ''">
+                                </div>
                             </div>
-                            <div class="form-group col-span-2">
-                                <label class="form-label">Título / Assunto</label>
-                                <input type="text" name="titulo" class="form-input" required placeholder="Ex: Ação de Cobrança">
+
+                            <!-- Título / Assunto -->
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">Título / Assunto</label>
+                                <div class="form-control-wrapper">
+                                    <i class="fas fa-heading form-control-icon"></i>
+                                    <input type="text" name="titulo" class="form-input-premium" required
+                                        placeholder="Ex: Ação de Cobrança"
+                                        th:value="${processoDraft != null} ? ${processoDraft.titulo} : ''">
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label">Tipo</label>
-                                <select name="tipo" class="form-select" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="Trabalhista">Trabalhista</option>
-                                    <option value="Cível">Cível</option>
-                                    <option value="Família">Família</option>
-                                    <option value="Tributário">Tributário</option>
-                                    <option value="Previdenciário">Previdenciário</option>
-                                    <option value="Criminal">Criminal</option>
-                                    <option value="Administrativo">Administrativo</option>
-                                </select>
+
+                            <!-- Tipo -->
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">Tipo de Processo</label>
+                                <div class="form-control-wrapper">
+                                    <i class="fas fa-balance-scale form-control-icon"></i>
+                                    <select name="tipo" class="form-select-premium" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="Trabalhista"
+                                            th:selected="${processoDraft != null and processoDraft.tipo == 'Trabalhista'}">
+                                            Trabalhista</option>
+                                        <option value="Cível"
+                                            th:selected="${processoDraft != null and processoDraft.tipo == 'Cível'}">
+                                            Cível</option>
+                                        <option value="Família"
+                                            th:selected="${processoDraft != null and processoDraft.tipo == 'Família'}">
+                                            Família</option>
+                                        <option value="Tributário"
+                                            th:selected="${processoDraft != null and processoDraft.tipo == 'Tributário'}">
+                                            Tributário</option>
+                                        <option value="Previdenciário"
+                                            th:selected="${processoDraft != null and processoDraft.tipo == 'Previdenciário'}">
+                                            Previdenciário</option>
+                                        <option value="Criminal"
+                                            th:selected="${processoDraft != null and processoDraft.tipo == 'Criminal'}">
+                                            Criminal</option>
+                                        <option value="Administrativo"
+                                            th:selected="${processoDraft != null and processoDraft.tipo == 'Administrativo'}">
+                                            Administrativo</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label">Cliente</label>
-                                <select name="cliente.id" class="form-select" required>
-                                    <option value="">Selecione...</option>
-                                    <option th:each="cliente : ${clientes}" 
-                                            th:value="${cliente.id}" 
-                                            th:text="${cliente.nome}">Cliente Nome</option>
-                                </select>
+
+                            <!-- Cliente -->
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">Cliente</label>
+                                <div class="form-control-wrapper">
+                                    <i class="fas fa-user-tie form-control-icon"></i>
+                                    <select name="cliente.id" class="form-select-premium" required>
+                                        <option value="">Selecione...</option>
+                                        <option th:each="cliente : ${clientes}" th:value="${cliente.id}"
+                                            th:text="${cliente.nome}"
+                                            th:selected="${processoDraft != null and processoDraft.cliente != null and processoDraft.cliente.id == cliente.id}">
+                                            Cliente Nome</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label">Vara</label>
-                                <input type="text" name="vara" class="form-input" placeholder="Ex: 1ª Vara Cível">
+
+                            <!-- Vara -->
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">Vara</label>
+                                <div class="form-control-wrapper">
+                                    <i class="fas fa-building-columns form-control-icon"></i>
+                                    <input type="text" name="vara" class="form-input-premium"
+                                        placeholder="Ex: 1ª Vara Cível"
+                                        th:value="${processoDraft != null} ? ${processoDraft.vara} : ''">
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label">Comarca</label>
-                                <input type="text" name="comarca" class="form-input" placeholder="Ex: São Paulo">
+
+                            <!-- Comarca -->
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">Comarca</label>
+                                <div class="form-control-wrapper">
+                                    <i class="fas fa-location-dot form-control-icon"></i>
+                                    <input type="text" name="comarca" class="form-input-premium"
+                                        placeholder="Ex: São Paulo"
+                                        th:value="${processoDraft != null} ? ${processoDraft.comarca} : ''">
+                                </div>
                             </div>
-                            <div class="form-group col-span-2">
-                                <label class="form-label">Advogado Responsável</label>
-                                <select name="advogadoResponsavel.id" class="form-select" required>
-                                    <option value="">Selecione...</option>
-                                    <option th:each="advogado : ${advogados}" 
-                                            th:value="${advogado.id}" 
-                                            th:text="${advogado.nomeCompleto}">Advogado Nome</option>
-                                </select>
+
+                            <!-- Advogado Responsável -->
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">Advogado Responsável</label>
+                                <div class="form-control-wrapper">
+                                    <i class="fas fa-user-shield form-control-icon"></i>
+                                    <select name="advogadoResponsavel.id" class="form-select-premium" required>
+                                        <option value="">Selecione...</option>
+                                        <option th:each="advogado : ${advogados}" th:value="${advogado.id}"
+                                            th:text="${advogado.nomeCompleto}"
+                                            th:selected="${processoDraft != null and processoDraft.advogadoResponsavel != null and processoDraft.advogadoResponsavel.id == advogado.id}">
+                                            Advogado Nome</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="form-group col-span-2">
-                                <label class="form-label">Valor da Causa</label>
-                                <input type="text" name="valorCausa" class="form-input" placeholder="R$ 0,00">
+
+                            <!-- Valor da Causa -->
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">Valor da Causa</label>
+                                <div class="form-control-wrapper">
+                                    <i class="fas fa-money-bill-wave form-control-icon"></i>
+                                    <input type="text" name="valorCausa" class="form-input-premium"
+                                        placeholder="R$ 0,00"
+                                        th:value="${processoDraft != null} ? ${processoDraft.valorCausa} : ''">
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" onclick="closeModal()" class="btn btn-secondary">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Salvar Processo</button>
+                    <div class="modal-footer modal-footer-premium">
+                        <button type="button" onclick="closeModal()" class="btn-premium-secondary">Cancelar</button>
+                        <button type="submit" class="btn-premium-primary">
+                            <i class="fas fa-save mr-2"></i> Salvar Processo
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
 
-    <!-- Checklist Modal (Placeholder) -->
-    <div th:replace="~{fragments/checklist-modal :: modal}"></div>
+        <!-- Checklist Modal (Placeholder) -->
+        <div th:replace="~{fragments/checklist-modal :: modal}"></div>
 
     </main>
 
     <!-- Scripts -->
     <script>
-        document.body.addEventListener('htmx:configRequest', function(evt) {
+        document.body.addEventListener('htmx:configRequest', function (evt) {
             var token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
             var header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
             evt.detail.headers[header] = token;
         });
 
-        document.body.addEventListener('htmx:afterSwap', function(evt) {
+        document.body.addEventListener('htmx:afterSwap', function (evt) {
             if (!evt.detail || !evt.detail.target || evt.detail.target.id !== 'checklist-modal-body') {
                 return;
             }
+
+            // Detecta qual modal está sendo carregado para ajustar proporções
+            const isSeguradora = evt.detail.target.innerHTML.includes('enviado-seg-modal-premium');
+            const modalWidth = isSeguradora ? 950 : 860;
+
             Swal.fire({
-                title: 'Checklist',
                 html: evt.detail.target.innerHTML,
                 showConfirmButton: false,
                 showCancelButton: false,
-                width: 860
+                width: modalWidth,
+                padding: '0.5rem',
+                customClass: {
+                    popup: 'modal-content-premium'
+                }
             });
-            setTimeout(function(){
+
+            setTimeout(function () {
                 var htmlContainer = document.querySelector('.swal2-container .swal2-html-container');
                 if (htmlContainer && window.htmx && typeof htmx.process === 'function') {
                     htmx.process(htmlContainer);
@@ -230,10 +306,10 @@
                 html: clone,
                 showConfirmButton: false,
                 showCancelButton: false,
-                width: 860,
+                width: 950,
                 padding: 0
-            }).then(function(){});
-            setTimeout(function(){
+            }).then(function () { });
+            setTimeout(function () {
                 var container = document.querySelector('.swal2-container .modal-content');
                 if (!container) return;
                 var form = container.querySelector('form');
@@ -242,7 +318,7 @@
                 if (num && window.uiMaskProcessNumberInput) window.uiMaskProcessNumberInput(num);
                 if (val && window.uiMaskMoneyInput) window.uiMaskMoneyInput(val);
                 if (form) {
-                    form.addEventListener('submit', function(e){
+                    form.addEventListener('submit', function (e) {
                         var errors = [];
                         var titulo = form.querySelector('input[name="titulo"]').value.trim();
                         var tipo = form.querySelector('select[name="tipo"]').value.trim();
@@ -257,7 +333,7 @@
                         if (!advSel) errors.push('Selecione o advogado responsável.');
                         if (errors.length) {
                             e.preventDefault();
-                            Swal.fire({icon:'warning', title:'Dados incompletos', html:'<ul style=\"text-align:left;padding-left:18px;margin:0;\">'+errors.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul>'});
+                            Swal.fire({ icon: 'warning', title: 'Dados incompletos', html: '<ul style=\"text-align:left;padding-left:18px;margin:0;\">' + errors.map(function (t) { return '<li>' + t + '</li>'; }).join('') + '</ul>' });
                             return;
                         }
                         if (val) {
@@ -293,7 +369,7 @@
             var container = document.getElementById('timeline-container-' + id);
             var card = document.getElementById('card-' + id);
             var chevron = document.getElementById('chevron-' + id);
-            
+
             if (container.classList.contains('hidden')) {
                 // Expand
                 container.classList.remove('hidden');
@@ -313,6 +389,29 @@
             }
         }
     </script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const novoProcessoErro = /*[[${novoProcessoErro}]]*/ null;
+        const urlParams = new URLSearchParams(window.location.search);
+        const processoSucesso = urlParams.has('sucesso');
+
+        if (novoProcessoErro) {
+            openModal();
+            setTimeout(function () {
+                if (window.uiToastError) {
+                    window.uiToastError(novoProcessoErro);
+                }
+            }, 500);
+        } else if (processoSucesso) {
+            if (window.uiToastSuccess) {
+                window.uiToastSuccess('Processo cadastrado com sucesso!');
+            }
+            // Limpa o parâmetro da URL sem recarregar a página
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+        /*]]>*/
+    </script>
 
 </body>
+
 </html>

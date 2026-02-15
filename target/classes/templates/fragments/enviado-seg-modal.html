@@ -1,0 +1,87 @@
+<div th:fragment="content" class="enviado-seg-modal-premium p-1">
+    <div class="modal-header-premium mb-4">
+        <h3 class="text-lg font-playfair font-bold text-[var(--navy-blue)]">
+            <i class="fas fa-paper-plane mr-2 text-[var(--gold)]"></i>
+            Enviado para Seguradora
+        </h3>
+        <p class="text-xs text-gray-500">Defina o próximo passo do processo junto à seguradora.</p>
+    </div>
+
+    <div th:if="${successMessage}"
+        class="mb-4 p-3 rounded-xl border border-green-200 bg-green-50 text-green-800 text-xs flex items-center animate-fade-in">
+        <i class="fas fa-check-circle mr-2 text-base"></i>
+        <span th:text="${successMessage}">Atualizado com sucesso</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- OPÇÃO A: GEROU SINISTRO -->
+        <div class="p-4 rounded-xl border border-blue-100 bg-blue-50/50 flex flex-col justify-between">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="bg-blue-600 p-2 rounded-lg text-white shadow-sm">
+                    <i class="fas fa-barcode text-sm"></i>
+                </div>
+                <h4 class="text-blue-900 font-bold text-sm">Gerou Sinistro?</h4>
+            </div>
+
+            <form th:attr="hx-post=@{/processos/etapa/{eid}/enviado-seg/sinistro(eid=${etapa.id})}"
+                hx-target="closest .enviado-seg-modal-premium" hx-encoding="multipart/form-data" hx-swap="outerHTML"
+                class="space-y-2">
+                <input type="text" name="sinistroNumero" placeholder="Nº Sinistro"
+                    class="form-input-premium !py-1.5 !text-xs" required>
+                <button type="submit"
+                    class="btn-premium-primary !bg-blue-600 !border-blue-700 hover:!bg-blue-700 !w-full !py-1.5 !text-xs">
+                    Registrar Sinistro
+                </button>
+            </form>
+        </div>
+
+        <!-- OPÇÃO B: ANÁLISE -->
+        <div class="p-4 rounded-xl border border-amber-100 bg-amber-50/50 flex flex-col justify-between">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="bg-[var(--gold)] p-2 rounded-lg text-white shadow-sm">
+                    <i class="fas fa-tasks text-sm"></i>
+                </div>
+                <h4 class="text-amber-900 font-bold text-sm">Sem Sinistro?</h4>
+            </div>
+
+            <div class="space-y-2">
+                <button type="button"
+                    class="btn-premium-primary !bg-green-600 !border-green-700 hover:!bg-green-700 !w-full !py-1.5 !text-[11px]"
+                    th:attr="hx-post=@{/processos/etapa/{eid}/enviado-seg/aprovado(eid=${etapa.id})}"
+                    hx-target="closest .enviado-seg-modal-premium" hx-encoding="multipart/form-data"
+                    hx-swap="outerHTML">
+                    <i class="fas fa-check-double mr-1"></i>Aprovado Direto
+                </button>
+
+                <form th:attr="hx-post=@{/processos/etapa/{eid}/enviado-seg/pendencia(eid=${etapa.id})}"
+                    hx-target="closest .enviado-seg-modal-premium" hx-encoding="multipart/form-data" hx-swap="outerHTML"
+                    class="flex gap-1">
+                    <input type="text" name="pendenciaDescricao" placeholder="Pendência..."
+                        class="form-input-premium !py-1.5 !text-xs flex-1" required>
+                    <button type="submit"
+                        class="btn-premium-primary !bg-amber-600 !border-amber-700 hover:!bg-amber-700 !px-2 !py-1.5 !text-xs">
+                        OK
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 flex justify-end">
+        <button type="button" class="btn-premium-secondary !py-1 !px-3 font-semibold text-xs"
+            onclick="closeChecklistModal()">Fechar</button>
+    </div>
+
+    <script th:if="${etapa.status == 'Concluído'}" th:inline="javascript">
+        if (window.closeChecklistModal) {
+            window.closeChecklistModal();
+        } else {
+            Swal.close();
+        }
+    </script>
+
+    <div th:if="${hxOobSwap}">
+        <div th:replace="~{fragments/timeline-view :: timeline}" hx-swap-oob="true"></div>
+        <div th:replace="~{fragments/progress-bar :: progressBar(${processo})}" hx-swap-oob="true"></div>
+    </div>
+</div>

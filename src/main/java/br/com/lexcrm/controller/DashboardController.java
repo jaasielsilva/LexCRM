@@ -176,7 +176,7 @@ public class DashboardController {
                     .limit(10)
                     .toList();
             case "ativos" -> todos.stream()
-                    .filter(p -> p.getStatus() == null || !"Concluído".equalsIgnoreCase(p.getStatus()))
+                    .filter(p -> !isConcluido(p))
                     .limit(10)
                     .toList();
             case "arquivados" -> todos.stream()

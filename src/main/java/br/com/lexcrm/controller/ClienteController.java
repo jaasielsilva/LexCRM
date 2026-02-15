@@ -41,6 +41,11 @@ public class ClienteController {
         model.addAttribute("currentPage", clientesPage.getNumber());
         model.addAttribute("totalPages", clientesPage.getTotalPages());
         model.addAttribute("pageSize", clientesPage.getSize());
+        model.addAttribute("totalElements", clientesPage.getTotalElements());
+        long from = clientesPage.getTotalElements() == 0 ? 0 : (long) clientesPage.getNumber() * clientesPage.getSize() + 1;
+        long to = (long) clientesPage.getNumber() * clientesPage.getSize() + clientesPage.getNumberOfElements();
+        model.addAttribute("fromItem", from);
+        model.addAttribute("toItem", to);
         return "clientes/index";
     }
 

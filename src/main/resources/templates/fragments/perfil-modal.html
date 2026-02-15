@@ -1,0 +1,83 @@
+<!-- Perfil Modal Content -->
+<div th:fragment="content" class="perfil-container p-2">
+    <div class="perfil-header mb-4 flex items-center justify-between">
+        <h3 class="text-xl font-playfair font-bold text-[var(--navy-blue)]">
+            <i class="fas fa-user-circle mr-2 text-[var(--gold)]"></i>
+            Meu Perfil
+        </h3>
+        <span class="badge bg-navy-blue text-xs py-1 px-3 text-white rounded-full"
+            th:text="${usuario.role.name().replace('ROLE_', '')}">ADMIN</span>
+    </div>
+
+    <!-- Abas / Toggle entre Info e Senha -->
+    <div class="flex border-b border-gray-100 mb-6">
+        <button onclick="togglePerfilTab('info')" id="btn-tab-info"
+            class="tab-btn active px-4 py-2 text-sm font-semibold border-b-2 border-[var(--navy-blue)] text-[var(--navy-blue)]">
+            Dados Pessoais
+        </button>
+        <button onclick="togglePerfilTab('senha')" id="btn-tab-senha"
+            class="tab-btn px-4 py-2 text-sm font-semibold text-gray-400 border-b-2 border-transparent">
+            Alterar Senha
+        </button>
+    </div>
+
+    <!-- Form Dados Pessoais -->
+    <form id="form-perfil-info" th:attr="hx-post=@{/perfil/salvar}" hx-swap="none" class="space-y-4">
+        <div class="form-group-premium">
+            <label class="form-label-premium">Nome Completo</label>
+            <div class="form-control-wrapper">
+                <i class="fas fa-address-card form-control-icon"></i>
+                <input type="text" name="nomeCompleto" class="form-input-premium" th:value="${usuario.nomeCompleto}"
+                    required>
+            </div>
+        </div>
+        <div class="form-group-premium">
+            <label class="form-label-premium">Usuário / Login</label>
+            <div class="form-control-wrapper">
+                <i class="fas fa-user form-control-icon"></i>
+                <input type="text" name="username" class="form-input-premium" th:value="${usuario.username}" required>
+            </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+            <button type="button" class="btn-premium-secondary" onclick="closeModal()">Cancelar</button>
+            <button type="submit" class="btn-premium-primary">Salvar Alterações</button>
+        </div>
+    </form>
+
+    <!-- Form Alterar Senha (Oculto Inicialmente) -->
+    <form id="form-perfil-senha" th:attr="hx-post=@{/perfil/senha}" hx-swap="none" class="space-y-4 hidden">
+        <div class="form-group-premium">
+            <label class="form-label-premium">Senha Atual</label>
+            <div class="form-control-wrapper">
+                <i class="fas fa-lock form-control-icon"></i>
+                <input type="password" name="senhaAtual" class="form-input-premium" required>
+            </div>
+        </div>
+        <div class="form-group-premium">
+            <label class="form-label-premium">Nova Senha</label>
+            <div class="form-control-wrapper">
+                <i class="fas fa-key form-control-icon"></i>
+                <input type="password" name="novaSenha" class="form-input-premium" required>
+            </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+            <button type="button" class="btn-premium-secondary" onclick="closeModal()">Cancelar</button>
+            <button type="submit" class="btn-premium-primary">Atualizar Senha</button>
+        </div>
+    </form>
+
+
+    <style>
+        .hidden {
+            display: none;
+        }
+
+        .tab-btn {
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: var(--navy-blue);
+        }
+    </style>
+</div>

@@ -1,66 +1,115 @@
-<div th:fragment="content" class="checklist-container">
-    <div class="checklist-header mb-4">
-        <h3 class="text-lg font-bold text-[var(--navy-blue)]">
+<!-- Laudo Médico Modal Content -->
+<div th:fragment="content" class="laudo-modal-premium p-1">
+    <div class="modal-header-premium mb-4">
+        <h3 class="text-xl font-playfair font-bold text-[var(--navy-blue)]">
             <i class="fas fa-file-medical mr-2 text-[var(--gold)]"></i>
             Laudo Médico
         </h3>
-        <p class="text-sm text-gray-500">Informe os dados do laudo e gere a pendência de pagamento.</p>
+        <p class="text-sm text-gray-500">Informe os dados do laudo para gerar a pendência financeira.</p>
     </div>
 
-    <form id="laudo-form" th:attr="hx-post=@{/processos/etapa/{eid}/laudo/save(eid=${etapa.id})}"
-          hx-target="#checklist-modal-body"
-          hx-swap="innerHTML">
-        <div class="grid grid-cols-1 gap-3">
-            <div>
-                <label class="text-xs text-gray-600 mb-1 block">Médico</label>
-                <input type="text" name="nomeMedico" class="form-input" placeholder="Nome do médico" required>
-            </div>
-            <div>
-                <label class="text-xs text-gray-600 mb-1 block">Valor do Laudo</label>
-                <input type="text" name="valorLaudo" class="form-input" placeholder="R$ 0,00" onfocus="if(window.uiMaskMoneyInput){uiMaskMoneyInput(this)}" required>
-            </div>
-            <div>
-                <label class="text-xs text-gray-600 mb-1 block">Anexar Laudo (opcional)</label>
-                <input type="file" name="arquivoLaudo" class="form-control">
-            </div>
-        </div>
-        <div class="mt-4 flex justify-end gap-2">
-            <button type="button" class="btn btn-secondary" onclick="closeChecklistModal()">Fechar</button>
-            <button type="submit" class="btn btn-primary">Salvar</button>
-        </div>
-    </form>
+    <!-- Seção de Registro (Só aparece se NÃO houver pendência financeira ou se for para editar) -->
+    <div th:if="${financeiroPendente == null}"
+        class="bg-gray-50 p-4 rounded-xl border border-gray-100 mb-4 transition-all hover:shadow-md">
+        <form id="laudo-form" th:attr="hx-post=@{/processos/etapa/{eid}/laudo/save(eid=${etapa.id})}"
+            hx-target="#checklist-modal-body" hx-encoding="multipart/form-data" hx-swap="innerHTML" class="space-y-4">
 
-    <div class="mt-6 pt-4 border-t border-gray-100" th:if="${financeiroPendente != null}">
-        <div class="flex items-center justify-between mb-2">
-            <span class="text-sm font-semibold text-gray-700">Pagamento pendente</span>
-            <span class="badge bg-danger">Pendente</span>
-        </div>
-        <div class="text-xs text-gray-600 mb-3">
-            <div th:text="${financeiroPendente.descricao}">Médico</div>
-            <div th:text="${#numbers.formatCurrency(financeiroPendente.valor)}">R$ 0,00</div>
-        </div>
-
-        <form id="pagamento-form" th:attr="hx-post=@{/processos/etapa/{eid}/laudo/pay(eid=${etapa.id}, fid=${financeiroPendente.id})}"
-              hx-target="#checklist-modal-body"
-              hx-swap="innerHTML">
-            <div class="grid grid-cols-1 gap-3">
-                <div>
-                    <label class="text-xs text-gray-600 mb-1 block">Data do Pagamento</label>
-                    <input type="date" name="dataPagamento" class="form-input" required>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-group-premium">
+                    <label class="form-label-premium">Médico Responsável</label>
+                    <div class="form-control-wrapper">
+                        <i class="fas fa-user-md form-control-icon"></i>
+                        <input type="text" name="nomeMedico" class="form-input-premium" placeholder="Nome do médico"
+                            required>
+                    </div>
                 </div>
-                <div>
-                    <label class="text-xs text-gray-600 mb-1 block">Comprovante (opcional)</label>
-                    <input type="file" name="comprovante" class="form-control">
+                <div class="form-group-premium">
+                    <label class="form-label-premium">Valor do Laudo</label>
+                    <div class="form-control-wrapper">
+                        <i class="fas fa-hand-holding-usd form-control-icon"></i>
+                        <input type="text" name="valorLaudo" class="form-input-premium" placeholder="R$ 0,00"
+                            onfocus="if(window.uiMaskMoneyInput){uiMaskMoneyInput(this)}" required>
+                    </div>
                 </div>
             </div>
-            <div class="mt-3 flex justify-end">
-                <button type="submit" class="btn btn-success">Marcar como Pago</button>
+
+            <div class="form-group-premium">
+                <label class="form-label-premium">Anexar Laudo (PDF/Imagem)</label>
+                <div class="form-control-wrapper">
+                    <i class="fas fa-cloud-upload-alt form-control-icon"></i>
+                    <input type="file" name="arquivoLaudo" class="form-input-premium py-2">
+                </div>
+                <p class="text-[10px] text-gray-400 mt-1">* O anexo será vinculado ao processo após o salvamento.</p>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+                <button type="button" class="btn-premium-secondary" onclick="closeChecklistModal()">Cancelar</button>
+                <button type="submit" class="btn-premium-primary">
+                    <i class="fas fa-save mr-2"></i>Registrar Laudo
+                </button>
             </div>
         </form>
     </div>
 
+    <!-- Seção de Pagamento (Aparece apenas quando há uma pendência) -->
+    <div th:if="${financeiroPendente != null}"
+        class="bg-amber-50 p-4 rounded-xl border border-amber-200 animate-pulse-subtle">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h4 class="text-sm font-bold text-amber-900 uppercase tracking-wider">Pagamento Pendente</h4>
+                <p class="text-xs text-amber-700" th:text="${financeiroPendente.descricao}"></p>
+            </div>
+            <div class="text-right">
+                <span class="text-lg font-bold text-amber-900"
+                    th:text="${#numbers.formatCurrency(financeiroPendente.valor)}">R$ 0,00</span>
+            </div>
+        </div>
+
+        <form id="pagamento-form"
+            th:attr="hx-post=@{/processos/etapa/{eid}/laudo/pay(eid=${etapa.id}, fid=${financeiroPendente.id})}"
+            hx-target="#checklist-modal-body" hx-encoding="multipart/form-data" hx-swap="innerHTML" class="space-y-4">
+
+            <div class="form-group-premium">
+                <label class="form-label-premium">Data da Transferência/Pagamento</label>
+                <div class="form-control-wrapper">
+                    <i class="fas fa-calendar-check form-control-icon"></i>
+                    <input type="date" name="dataPagamento" class="form-input-premium" required
+                        th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                </div>
+            </div>
+
+            <div class="form-group-premium">
+                <label class="form-label-premium">Comprovante de Pagamento</label>
+                <div class="form-control-wrapper">
+                    <i class="fas fa-receipt form-control-icon"></i>
+                    <input type="file" name="comprovante" class="form-input-premium py-2">
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+                <button type="button" class="btn-premium-secondary" onclick="closeChecklistModal()">Fechar</button>
+                <button type="submit" class="btn-premium-primary !bg-green-600 !border-green-700 hover:!bg-green-700">
+                    <i class="fas fa-check-double mr-2"></i>Marcar como Pago
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Script para feedback e fechamento -->
+    <script th:if="${etapa.status == 'Concluído'}" th:inline="javascript">
+        if (window.closeChecklistModal) {
+            window.closeChecklistModal();
+        } else {
+            Swal.close();
+        }
+        if (window.uiToastSuccess) {
+            window.uiToastSuccess('Laudo médico registrado e pago com sucesso!');
+        }
+    </script>
+
+    <!-- OOB Updates -->
     <div th:if="${hxOobSwap}">
-        <div th:replace="~{fragments/timeline-view :: timeline}" hx-swap-oob="true"></div>
-        <div th:replace="~{fragments/progress-bar :: progressBar(${processo})}" hx-swap-oob="true"></div>
+        <div th:replace="~{fragments/timeline-view :: timeline}"></div>
+        <div th:replace="~{fragments/progress-bar :: progressBar(${processo})}"></div>
     </div>
 </div>

@@ -92,25 +92,33 @@
                         </tbody>
                     </table>
                 </div>
-                <nav th:if="${clientesPage != null and totalPages > 1}" aria-label="Clientes" class="p-3">
-                    <ul class="pagination pagination-sm mb-0 justify-content-center">
-                        <li class="page-item" th:classappend="${clientesPage.first} ? ' disabled'">
-                            <a class="page-link" th:href="@{'/clientes'(page=${currentPage - 1}, size=${pageSize})}" aria-label="Anterior">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                            class="page-item"
-                            th:classappend="${i == currentPage} ? ' active'">
-                            <a class="page-link" th:href="@{'/clientes'(page=${i}, size=${pageSize})}" th:text="${i + 1}">1</a>
-                        </li>
-                        <li class="page-item" th:classappend="${clientesPage.last} ? ' disabled'">
-                            <a class="page-link" th:href="@{'/clientes'(page=${currentPage + 1}, size=${pageSize})}" aria-label="Próximo">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                <div class="d-flex align-items-center justify-content-between border-top p-3">
+                    <div class="small text-muted">
+                        Mostrando <span th:text="${fromItem}">0</span>–<span th:text="${toItem}">0</span> de <span th:text="${totalElements}">0</span>
+                    </div>
+                    <div class="btn-group" role="group" aria-label="Paginação">
+                        <a class="btn btn-outline-secondary btn-sm"
+                           th:classappend="${clientesPage.first} ? ' disabled'"
+                           th:href="@{'/clientes'(page=${currentPage - 1}, size=${pageSize})}">
+                            Anterior
+                        </a>
+                        <a class="btn btn-outline-secondary btn-sm"
+                           th:classappend="${clientesPage.last} ? ' disabled'"
+                           th:href="@{'/clientes'(page=${currentPage + 1}, size=${pageSize})}">
+                            Próximo
+                        </a>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <label class="small text-muted me-2">Itens por página</label>
+                        <select class="form-select form-select-sm"
+                                th:value="${pageSize}"
+                                onchange="location.href='/clientes?size=' + this.value">
+                            <option value="10" th:selected="${pageSize == 10}">10</option>
+                            <option value="20" th:selected="${pageSize == 20}">20</option>
+                            <option value="50" th:selected="${pageSize == 50}">50</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
     </main>

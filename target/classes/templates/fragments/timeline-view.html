@@ -1,11 +1,13 @@
-<div th:fragment="timeline" class="timeline-panel" th:id="'timeline-panel-' + ${processoSelecionado.id}">
+<div th:fragment="timeline" class="timeline-panel" th:id="'timeline-panel-' + ${processoSelecionado.id}"
+    th:attr="hx-swap-oob=${timelineOob} ? 'true' : null">
     <!-- Header -->
     <div class="timeline-header">
         <div>
-            <h3 class="timeline-title">Linha do Tempo — <span th:text="${processoSelecionado.numeroProcesso}">000000</span></h3>
+            <h3 class="timeline-title">Linha do Tempo — <span
+                    th:text="${processoSelecionado.numeroProcesso}">000000</span></h3>
             <p class="timeline-subtitle">
-                <span th:text="${processoSelecionado.cliente.nome}">Cliente</span> • 
-                <span th:text="${processoSelecionado.vara}">Vara</span> • 
+                <span th:text="${processoSelecionado.cliente.nome}">Cliente</span> •
+                <span th:text="${processoSelecionado.vara}">Vara</span> •
                 <span th:text="${processoSelecionado.comarca}">Local</span>
             </p>
         </div>
@@ -18,39 +20,61 @@
     <div class="timeline-scroll-area">
         <div class="timeline-steps-container">
             <!-- Loop Steps -->
-            <div th:each="etapa, iterStat : ${processoSelecionado.etapas}" 
-                 class="timeline-step-item"
-                 th:classappend="${etapa.status == 'Concluído' ? 'status-concluido' : (etapa.status == 'Em Andamento' ? 'status-em-andamento' : 'status-pendente')} + 
+            <div th:each="etapa, iterStat : ${processoSelecionado.etapas}" class="timeline-step-item"
+                th:classappend="${etapa.status == 'Concluído' ? 'status-concluido' : (etapa.status == 'Em Andamento' ? 'status-em-andamento' : 'status-pendente')} + 
                                  (${etapa.status == 'Concluído' || etapa.status == 'Em Andamento' ? ' line-active' : ''})">
-                
+
                 <!-- Indicator Circle (Clickable) -->
                 <div class="step-circle"
-                     th:if="${!(etapa.nome == 'Documentação' or etapa.nome == 'Documentos Solicitados' or etapa.nome == 'Laudo Médico Recebido')}"
-                     th:attr="hx-post=@{/processos/{pid}/etapa/{eid}/toggle(pid=${processoSelecionado.id}, eid=${etapa.id})}"
-                     hx-target="closest .timeline-panel"
-                     hx-swap="outerHTML">
+                    th:if="${!(etapa.nome == 'Documentação' or etapa.nome == 'Documentos Recebidos' or etapa.nome == 'Aguardando Assinatura' or etapa.nome == 'Laudo Médico Recebido' or etapa.nome == 'Sinistro Gerado' or etapa.nome == 'Enviado para Seguradora')}"
+                    th:attr="hx-post=@{/processos/{pid}/etapa/{eid}/toggle(pid=${processoSelecionado.id}, eid=${etapa.id})}"
+                    hx-target="closest .timeline-panel" hx-swap="outerHTML">
                     <i th:if="${etapa.status == 'Concluído'}" class="fas fa-check"></i>
                     <i th:if="${etapa.status == 'Em Andamento'}" class="fas fa-clock"></i>
                     <i th:if="${etapa.status == 'Pendente'}" class="fas fa-exclamation"></i>
                 </div>
-                
-                <!-- Special Circle for 'Documentação' -->
-                <div class="step-circle"
-                     th:if="${etapa.nome == 'Documentação' or etapa.nome == 'Documentos Solicitados'}"
-                     th:attr="hx-get=@{/processos/etapa/{eid}/checklist(eid=${etapa.id})}"
-                     hx-target="#checklist-modal-body"
-                     hx-swap="innerHTML">
+
+                <!-- Special Circle for 'Checklist' -->
+                <div class="step-circle" th:if="${etapa.nome == 'Documentação' or etapa.nome == 'Documentos Recebidos'}"
+                    th:attr="hx-get=@{/processos/etapa/{eid}/checklist(eid=${etapa.id})}"
+                    hx-target="#checklist-modal-body" hx-swap="innerHTML">
+                    <i th:if="${etapa.status == 'Concluído'}" class="fas fa-check"></i>
+                    <i th:if="${etapa.status == 'Em Andamento'}" class="fas fa-clock"></i>
+                    <i th:if="${etapa.status == 'Pendente'}" class="fas fa-exclamation"></i>
+                </div>
+
+                <!-- Special Circle for 'Aguardando Assinatura' -->
+                <div class="step-circle" th:if="${etapa.nome == 'Aguardando Assinatura'}"
+                    th:attr="hx-get=@{/processos/etapa/{eid}/assinatura(eid=${etapa.id})}"
+                    hx-target="#checklist-modal-body" hx-swap="innerHTML">
                     <i th:if="${etapa.status == 'Concluído'}" class="fas fa-check"></i>
                     <i th:if="${etapa.status == 'Em Andamento'}" class="fas fa-clock"></i>
                     <i th:if="${etapa.status == 'Pendente'}" class="fas fa-exclamation"></i>
                 </div>
 
                 <!-- Special Circle for 'Laudo Médico Recebido' -->
-                <div class="step-circle"
-                     th:if="${etapa.nome == 'Laudo Médico Recebido'}"
-                     th:attr="hx-get=@{/processos/etapa/{eid}/laudo(eid=${etapa.id})}"
-                     hx-target="#checklist-modal-body"
-                     hx-swap="innerHTML">
+                <div class="step-circle" th:if="${etapa.nome == 'Laudo Médico Recebido'}"
+                    th:attr="hx-get=@{/processos/etapa/{eid}/laudo(eid=${etapa.id})}" hx-target="#checklist-modal-body"
+                    hx-swap="innerHTML">
+                    <i th:if="${etapa.status == 'Concluído'}" class="fas fa-check"></i>
+                    <i th:if="${etapa.status == 'Em Andamento'}" class="fas fa-clock"></i>
+                    <i th:if="${etapa.status == 'Pendente'}" class="fas fa-exclamation"></i>
+                </div>
+
+                <!-- Special Circle for 'Enviado para Seguradora' -->
+                <div class="step-circle" th:if="${etapa.nome == 'Enviado para Seguradora'}"
+                    th:attr="hx-get=${canEnviadoSeg} ? @{/processos/etapa/{eid}/enviado-seg(eid=${etapa.id})} : null"
+                    hx-target="#checklist-modal-body" hx-swap="innerHTML"
+                    th:styleappend="${!canEnviadoSeg} ? ';opacity:0.5;pointer-events:none;cursor:not-allowed;' : ''">
+                    <i th:if="${etapa.status == 'Concluído'}" class="fas fa-check"></i>
+                    <i th:if="${etapa.status == 'Em Andamento'}" class="fas fa-clock"></i>
+                    <i th:if="${etapa.status == 'Pendente'}" class="fas fa-exclamation"></i>
+                </div>
+
+                <!-- Special Circle for 'Sinistro Gerado' -->
+                <div class="step-circle" th:if="${etapa.nome == 'Sinistro Gerado'}"
+                    th:attr="hx-get=@{/processos/etapa/{eid}/seguradora(eid=${etapa.id})}"
+                    hx-target="#checklist-modal-body" hx-swap="innerHTML">
                     <i th:if="${etapa.status == 'Concluído'}" class="fas fa-check"></i>
                     <i th:if="${etapa.status == 'Em Andamento'}" class="fas fa-clock"></i>
                     <i th:if="${etapa.status == 'Pendente'}" class="fas fa-exclamation"></i>
@@ -58,12 +82,10 @@
 
                 <!-- Card (Also Clickable for better UX) -->
                 <div class="step-card"
-                     th:if="${!(etapa.nome == 'Documentação' or etapa.nome == 'Documentos Solicitados' or etapa.nome == 'Laudo Médico Recebido')}"
-                     th:attr="hx-post=@{/processos/{pid}/etapa/{eid}/toggle(pid=${processoSelecionado.id}, eid=${etapa.id})}"
-                     hx-target="closest .timeline-panel"
-                     hx-swap="outerHTML"
-                     style="cursor: pointer;">
-                    
+                    th:if="${!(etapa.nome == 'Documentação' or etapa.nome == 'Documentos Recebidos' or etapa.nome == 'Aguardando Assinatura' or etapa.nome == 'Laudo Médico Recebido' or etapa.nome == 'Sinistro Gerado' or etapa.nome == 'Enviado para Seguradora')}"
+                    th:attr="hx-post=@{/processos/{pid}/etapa/{eid}/toggle(pid=${processoSelecionado.id}, eid=${etapa.id})}"
+                    hx-target="closest .timeline-panel" hx-swap="outerHTML" style="cursor: pointer;">
+
                     <!-- Status Label -->
                     <div class="step-status-text">
                         <i th:if="${etapa.status == 'Concluído'}" class="fas fa-check"></i>
@@ -78,24 +100,47 @@
                     <!-- Description -->
                     <div class="step-desc-text" th:text="${etapa.descricao}">Descrição da etapa...</div>
 
-                    <!-- Date -->
-                    <div class="step-date-text" th:if="${etapa.data != null}" th:text="${#temporals.format(etapa.data, 'dd/MM/yyyy')}">10/01/2024</div>
+                    <!-- Date + Aging -->
+                    <div class="step-date-text" th:if="${etapa.data != null}">
+                        <span th:text="${#temporals.format(etapa.data, 'dd/MM/yyyy')}">10/01/2024</span>
+                        <span class="text-muted small ms-2"
+                            th:text="${T(java.time.temporal.ChronoUnit).DAYS.between(etapa.data, today)} + 'd'">0d</span>
+                    </div>
                     <div class="step-date-text" th:if="${etapa.data == null}">-</div>
-                    
+
                     <!-- Medical Payment Badge -->
                     <div th:if="${etapa.nome == 'Laudo Médico Recebido' and temPendenciaMedica}" class="mt-2">
                         <span class="badge bg-danger">Pagamento pendente</span>
                     </div>
                 </div>
 
-                <!-- Special Card for 'Documentação' -->
-                <div class="step-card"
-                     th:if="${etapa.nome == 'Documentação' or etapa.nome == 'Documentos Solicitados'}"
-                     th:attr="hx-get=@{/processos/etapa/{eid}/checklist(eid=${etapa.id})}"
-                     hx-target="#checklist-modal-body"
-                     hx-swap="innerHTML"
-                     style="cursor: pointer;">
-                    
+                <!-- Special Card for 'Enviado para Seguradora' -->
+                <div class="step-card" th:if="${etapa.nome == 'Enviado para Seguradora'}"
+                    th:attr="hx-get=${canEnviadoSeg} ? @{/processos/etapa/{eid}/enviado-seg(eid=${etapa.id})} : null"
+                    hx-target="#checklist-modal-body" hx-swap="innerHTML" style="cursor: pointer;"
+                    th:styleappend="${!canEnviadoSeg} ? ';opacity:0.6;pointer-events:none;cursor:not-allowed;' : ''">
+                    <div class="step-status-text">
+                        <i th:if="${etapa.status == 'Concluído'}" class="fas fa-check"></i>
+                        <i th:if="${etapa.status == 'Em Andamento'}" class="far fa-clock"></i>
+                        <i th:if="${etapa.status == 'Pendente'}" class="fas fa-exclamation-circle"></i>
+                        <span th:text="${etapa.status}">STATUS</span>
+                    </div>
+                    <div class="step-title-text" th:text="${etapa.nome}">Enviado para Seguradora</div>
+                    <div class="step-desc-text" th:text="${etapa.descricao}">Processo enviado à seguradora</div>
+                    <div class="text-muted small" th:if="${!canEnviadoSeg}">Conclua o Laudo para habilitar</div>
+                    <div class="step-date-text" th:if="${etapa.data != null}">
+                        <span th:text="${#temporals.format(etapa.data, 'dd/MM/yyyy')}">10/01/2024</span>
+                        <span class="text-muted small ms-2"
+                            th:text="${T(java.time.temporal.ChronoUnit).DAYS.between(etapa.data, today)} + 'd'">0d</span>
+                    </div>
+                    <div class="step-date-text" th:if="${etapa.data == null}">-</div>
+                </div>
+
+                <!-- Special Card for 'Checklist' -->
+                <div class="step-card" th:if="${etapa.nome == 'Documentação' or etapa.nome == 'Documentos Recebidos'}"
+                    th:attr="hx-get=@{/processos/etapa/{eid}/checklist(eid=${etapa.id})}"
+                    hx-target="#checklist-modal-body" hx-swap="innerHTML" style="cursor: pointer;">
+
                     <!-- Status Label -->
                     <div class="step-status-text">
                         <i th:if="${etapa.status == 'Concluído'}" class="fas fa-check"></i>
@@ -110,10 +155,14 @@
                     <!-- Description -->
                     <div class="step-desc-text" th:text="${etapa.descricao}">Descrição da etapa...</div>
 
-                    <!-- Date -->
-                    <div class="step-date-text" th:if="${etapa.data != null}" th:text="${#temporals.format(etapa.data, 'dd/MM/yyyy')}">10/01/2024</div>
+                    <!-- Date + Aging -->
+                    <div class="step-date-text" th:if="${etapa.data != null}">
+                        <span th:text="${#temporals.format(etapa.data, 'dd/MM/yyyy')}">10/01/2024</span>
+                        <span class="text-muted small ms-2"
+                            th:text="${T(java.time.temporal.ChronoUnit).DAYS.between(etapa.data, today)} + 'd'">0d</span>
+                    </div>
                     <div class="step-date-text" th:if="${etapa.data == null}">-</div>
-                    
+
                     <!-- Medical Payment Badge -->
                     <div th:if="${etapa.nome == 'Laudo Médico Recebido' and temPendenciaMedica}" class="mt-2">
                         <span class="badge bg-danger">Pagamento pendente</span>
@@ -121,13 +170,10 @@
                 </div>
 
                 <!-- Special Card for 'Laudo Médico Recebido' -->
-                <div class="step-card"
-                     th:if="${etapa.nome == 'Laudo Médico Recebido'}"
-                     th:attr="hx-get=@{/processos/etapa/{eid}/laudo(eid=${etapa.id})}"
-                     hx-target="#checklist-modal-body"
-                     hx-swap="innerHTML"
-                     style="cursor: pointer;">
-                    
+                <div class="step-card" th:if="${etapa.nome == 'Laudo Médico Recebido'}"
+                    th:attr="hx-get=@{/processos/etapa/{eid}/laudo(eid=${etapa.id})}" hx-target="#checklist-modal-body"
+                    hx-swap="innerHTML" style="cursor: pointer;">
+
                     <div class="step-status-text">
                         <i th:if="${etapa.status == 'Concluído'}" class="fas fa-check"></i>
                         <i th:if="${etapa.status == 'Em Andamento'}" class="far fa-clock"></i>
@@ -136,11 +182,54 @@
                     </div>
                     <div class="step-title-text" th:text="${etapa.nome}">Laudo Médico Recebido</div>
                     <div class="step-desc-text" th:text="${etapa.descricao}">Descrição da etapa...</div>
-                    <div class="step-date-text" th:if="${etapa.data != null}" th:text="${#temporals.format(etapa.data, 'dd/MM/yyyy')}">10/01/2024</div>
+                    <div class="step-date-text" th:if="${etapa.data != null}">
+                        <span th:text="${#temporals.format(etapa.data, 'dd/MM/yyyy')}">10/01/2024</span>
+                        <span class="text-muted small ms-2"
+                            th:text="${T(java.time.temporal.ChronoUnit).DAYS.between(etapa.data, today)} + 'd'">0d</span>
+                    </div>
                     <div class="step-date-text" th:if="${etapa.data == null}">-</div>
                     <div th:if="${temPendenciaMedica}" class="mt-2">
                         <span class="badge bg-danger">Pagamento pendente</span>
                     </div>
+                </div>
+
+                <!-- Special Card for 'Aguardando Assinatura' -->
+                <div class="step-card" th:if="${etapa.nome == 'Aguardando Assinatura'}"
+                    th:attr="hx-get=@{/processos/etapa/{eid}/assinatura(eid=${etapa.id})}"
+                    hx-target="#checklist-modal-body" hx-swap="innerHTML" style="cursor: pointer;">
+                    <div class="step-status-text">
+                        <i th:if="${etapa.status == 'Concluído'}" class="fas fa-check"></i>
+                        <i th:if="${etapa.status == 'Em Andamento'}" class="far fa-clock"></i>
+                        <i th:if="${etapa.status == 'Pendente'}" class="fas fa-exclamation-circle"></i>
+                        <span th:text="${etapa.status}">STATUS</span>
+                    </div>
+                    <div class="step-title-text" th:text="${etapa.nome}">Aguardando Assinatura</div>
+                    <div class="step-desc-text" th:text="${etapa.descricao}">Cliente precisa assinar documentos</div>
+                    <div class="step-date-text" th:if="${etapa.data != null}">
+                        <span th:text="${#temporals.format(etapa.data, 'dd/MM/yyyy')}">10/01/2024</span>
+                        <span class="text-muted small ms-2"
+                            th:text="${T(java.time.temporal.ChronoUnit).DAYS.between(etapa.data, today)} + 'd'">0d</span>
+                    </div>
+                    <div class="step-date-text" th:if="${etapa.data == null}">-</div>
+                </div>
+
+                <div class="step-card" th:if="${etapa.nome == 'Sinistro Gerado'}"
+                    th:attr="hx-get=@{/processos/etapa/{eid}/seguradora(eid=${etapa.id})}"
+                    hx-target="#checklist-modal-body" hx-swap="innerHTML" style="cursor: pointer;">
+                    <div class="step-status-text">
+                        <i th:if="${etapa.status == 'Concluído'}" class="fas fa-check"></i>
+                        <i th:if="${etapa.status == 'Em Andamento'}" class="far fa-clock"></i>
+                        <i th:if="${etapa.status == 'Pendente'}" class="fas fa-exclamation-circle"></i>
+                        <span th:text="${etapa.status}">STATUS</span>
+                    </div>
+                    <div class="step-title-text" th:text="${etapa.nome}">Sinistro Gerado</div>
+                    <div class="step-desc-text" th:text="${etapa.descricao}">Sinistro registrado</div>
+                    <div class="step-date-text" th:if="${etapa.data != null}">
+                        <span th:text="${#temporals.format(etapa.data, 'dd/MM/yyyy')}">10/01/2024</span>
+                        <span class="text-muted small ms-2"
+                            th:text="${T(java.time.temporal.ChronoUnit).DAYS.between(etapa.data, today)} + 'd'">0d</span>
+                    </div>
+                    <div class="step-date-text" th:if="${etapa.data == null}">-</div>
                 </div>
             </div>
         </div>

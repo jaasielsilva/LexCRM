@@ -1,0 +1,49 @@
+<div th:fragment="content" class="assinatura-modal-container">
+    <div class="mb-4">
+        <h3 class="text-lg font-bold text-[var(--navy-blue)]">
+            <i class="fas fa-pen-fancy mr-2 text-[var(--gold)]"></i>
+            Aguardando Assinatura
+        </h3>
+    </div>
+
+    <div th:if="${successMessage}" class="mb-4 p-3 rounded border border-green-200 bg-green-50 text-green-800 text-sm">
+        <span th:text="${successMessage}">Status atualizado</span>
+    </div>
+
+    <div class="space-y-4">
+        <div class="p-3 bg-amber-50 border border-amber-200 rounded">
+            <p class="text-sm text-amber-800">
+                <strong>Enviado ao cliente. Aguardando retorno.</strong><br>
+                Enviou para o cliente a documentação para assinatura?
+            </p>
+            <div class="mt-2">
+                <button type="button" class="btn btn-warning text-xs"
+                    th:attr="hx-post=@{/processos/etapa/{eid}/assinatura/enviar(eid=${etapa.id})}"
+                    hx-target="closest .assinatura-modal-container" hx-swap="outerHTML">
+                    Sim, enviei ao cliente
+                </button>
+            </div>
+        </div>
+
+        <div class="p-3 bg-green-50 border border-green-200 rounded">
+            <p class="text-sm text-green-800">Já recebeu a documentação assinada? Marque como concluído.</p>
+            <div class="mt-2 flex items-center gap-2">
+                <button type="button" class="btn btn-success"
+                    th:attr="hx-post=@{/processos/etapa/{eid}/assinatura/anexar(eid=${etapa.id})}"
+                    hx-target="closest .assinatura-modal-container" hx-swap="outerHTML">
+                    Marcar como Concluído
+                </button>
+                <span class="text-xs text-gray-500">Anexo será tratado em etapa posterior.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 flex justify-end">
+        <button type="button" class="btn btn-secondary" onclick="closeChecklistModal()">Fechar</button>
+    </div>
+
+    <div th:if="${hxOobSwap}">
+        <div th:replace="~{fragments/timeline-view :: timeline}"></div>
+        <div th:replace="~{fragments/progress-bar :: progressBar(${processo})}"></div>
+    </div>
+</div>

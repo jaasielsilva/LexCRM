@@ -21,6 +21,7 @@ public class Processo {
     private String titulo;
     private String status; // Pendente, Em Andamento, Concluído
     private String tipo; // Cível, Trabalhista, Médico
+    private String sinistroNumero;
 
     private String vara;
     private String comarca;

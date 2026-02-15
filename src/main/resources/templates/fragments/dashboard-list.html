@@ -72,6 +72,8 @@
                     <th>Cliente</th>
                     <th>Tipo</th>
                     <th>Status</th>
+                    <th>Etapa Atual</th>
+                    <th>Data</th>
                     <th>Responsável</th>
                     <th class="text-end">Valor</th>
                 </tr>
@@ -85,10 +87,21 @@
                     </td>
                     <td class="small">
                         <span class="badge"
-                              th:with="finalizado=${processo.etapas.?[nome == 'Processo Finalizado' and status == 'Concluído']}, emand=${processo.etapas.?[status == 'Em Andamento']}, showStatus=${!#lists.isEmpty(finalizado) ? 'Concluído' : (!#lists.isEmpty(emand) ? 'Em Andamento' : (processo.status != null ? processo.status : 'Pendente'))}"
-                              th:classappend="${showStatus == 'Concluído' ? ' bg-success' : (showStatus == 'Em Andamento' ? ' bg-warning text-dark' : ' bg-danger')}"
-                              th:text="${showStatus}">STATUS</span>
+                              th:with="finalizado=${processo.etapas.?[nome == 'Processo Finalizado' and status == 'Concluído']},
+                                       emand=${processo.etapas.?[status == 'Em Andamento']},
+                                       showStatus=${!#lists.isEmpty(finalizado) ? 'Concluído' : (!#lists.isEmpty(emand) ? 'Em Andamento' : (processo.status != null ? processo.status : 'Pendente'))},
+                                       key=${#strings.toLowerCase(#strings.replace(showStatus, '_', ' '))},
+                                       showClass=${#strings.contains(key,'conclu') ? ' bg-success' : (#strings.contains(key,'andament') ? ' bg-warning text-dark' : ' bg-danger')},
+                                       showLabel=${#strings.contains(key,'conclu') ? 'Concluído' : (#strings.contains(key,'andament') ? 'Em Andamento' : 'Pendente')}"
+                              th:classappend="${showClass}"
+                              th:text="${showLabel}">STATUS</span>
                     </td>
+                    <td class="small"
+                        th:with="pend=${processo.etapas.?[status != 'Concluído']}, idx=${#lists.size(processo.etapas) - 1}, curr=${!#lists.isEmpty(pend) ? pend[0] : processo.etapas[idx]}"
+                        th:text="${curr?.nome}">Etapa</td>
+                    <td class="small text-nowrap"
+                        th:with="pend=${processo.etapas.?[status != 'Concluído']}, idx=${#lists.size(processo.etapas) - 1}, curr=${!#lists.isEmpty(pend) ? pend[0] : processo.etapas[idx]}"
+                        th:text="${curr?.data != null ? #temporals.format(curr.data, 'dd/MM/yyyy') : '-'}">-</td>
                     <td class="small" th:text="${processo.advogadoResponsavel?.nomeCompleto}">Responsável</td>
                     <td class="small text-end fw-semibold" th:text="${processo.valorCausa != null ? #numbers.formatCurrency(processo.valorCausa) : '-'}">-</td>
                 </tr>

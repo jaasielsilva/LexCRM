@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,8 +31,8 @@ public class ProcessoController {
 
     @GetMapping
     public String index(@RequestParam(required = false) String filtro,
-                        @RequestParam(required = false) Long clienteId,
-                        Model model) {
+            @RequestParam(required = false) Long clienteId,
+            Model model) {
         List<Processo> processos;
 
         String filtroKey = filtro == null ? "" : filtro.trim().toLowerCase();
@@ -85,7 +86,7 @@ public class ProcessoController {
                                     && !"Concluído".equalsIgnoreCase(e.getStatus())))
                     .toList();
             case "ativos" -> todos.stream()
-                    .filter(p -> p.getStatus() == null || !"Concluído".equalsIgnoreCase(p.getStatus()))
+                    .filter(p -> !isConcluido(p))
                     .toList();
             case "arquivados" -> todos.stream()
                     .filter(p -> "Concluído".equalsIgnoreCase(p.getStatus())
@@ -97,12 +98,13 @@ public class ProcessoController {
                     .filter(p -> p.getTipo() != null && "Cível".equalsIgnoreCase(p.getTipo()))
                     .toList();
             case "etapa_cadastro_cliente", "etapa_documentos_solicitados", "etapa_documentos_recebidos",
-                 "etapa_analise_documental", "etapa_pendencia_documental", "etapa_aguardando_assinatura",
-                 "etapa_pericia_medica", "etapa_laudo_recebido", "etapa_enviado_seguradora",
-                 "etapa_analise_seguradora", "etapa_pendencia_seguradora", "etapa_sinistro_gerado",
-                 "etapa_processo_finalizado" -> todos.stream()
-                    .filter(p -> filtroKey.equals(currentStageKey(p)))
-                    .toList();
+                    "etapa_analise_documental", "etapa_pendencia_documental", "etapa_aguardando_assinatura",
+                    "etapa_pericia_medica", "etapa_laudo_recebido", "etapa_enviado_seguradora",
+                    "etapa_analise_seguradora", "etapa_pendencia_seguradora", "etapa_sinistro_gerado",
+                    "etapa_processo_finalizado" ->
+                todos.stream()
+                        .filter(p -> filtroKey.equals(currentStageKey(p)))
+                        .toList();
             default -> todos;
         };
 
@@ -163,6 +165,19 @@ public class ProcessoController {
         };
     }
 
+    private boolean isConcluido(Processo processo) {
+        String s = processo != null && processo.getStatus() != null ? processo.getStatus().trim().toLowerCase() : "";
+        boolean statusConcluido = "concluído".equals(s) || "concluido".equals(s);
+        boolean etapaFinalConcluida = processo != null
+                && processo.getEtapas() != null
+                && processo.getEtapas().stream().anyMatch(e -> e != null
+                        && e.getNome() != null
+                        && e.getStatus() != null
+                        && "processo finalizado".equalsIgnoreCase(e.getNome())
+                        && "concluído".equalsIgnoreCase(e.getStatus()));
+        return statusConcluido || etapaFinalConcluida;
+    }
+
     @GetMapping("/pendentes/fragment")
     public String getProcessosPendentesFragment(Model model) {
         model.addAttribute("processos", processoRepository.findByStatus("Pendente"));
@@ -180,27 +195,38 @@ public class ProcessoController {
     }
 
     @PostMapping("/novo")
-    public String criarProcesso(Processo processo) {
+    public String criarProcesso(Processo processo, Model model) {
         // Set defaults
         processo.setStatus("Pendente");
         processo.setDataAbertura(LocalDate.now());
         processo.setTenantId("T001"); // Fixed for now
 
+        // Unique check for process number per tenant
+        if (processo.getNumeroProcesso() != null
+                && processoRepository.existsByNumeroProcessoAndTenantId(processo.getNumeroProcesso().trim(),
+                        processo.getTenantId())) {
+            model.addAttribute("processos", processoRepository.findAllWithDetails());
+            model.addAttribute("clientes", clienteRepository.findAll());
+            model.addAttribute("advogados", usuarioRepository.findAll());
+            model.addAttribute("novoProcessoErro", "Já existe um processo com este número.");
+            model.addAttribute("processoDraft", processo);
+            return "processos/index";
+        }
+
         List<String[]> etapasPadrao = Arrays.asList(
-                new String[]{"Cadastro do Cliente", "Cliente cadastrado no sistema"},
-                new String[]{"Documentos Solicitados", "Lista de documentos enviada ao cliente"},
-                new String[]{"Documentos Recebidos", "Cliente enviou os documentos"},
-                new String[]{"Análise Documental", "Análise dos documentos"},
-                new String[]{"Pendência Documental", "Existem documentos pendentes"},
-                new String[]{"Aguardando Assinatura", "Cliente precisa assinar documentos"},
-                new String[]{"Perícia Médica", "Documentos enviados ao médico"},
-                new String[]{"Laudo Médico Recebido", "Laudo médico recebido"},
-                new String[]{"Enviado para Seguradora", "Processo enviado à seguradora"},
-                new String[]{"Em Análise pela Seguradora", "Seguradora analisando"},
-                new String[]{"Pendência com Seguradora", "Seguradora solicitou correção"},
-                new String[]{"Sinistro Gerado", "Sinistro registrado"},
-                new String[]{"Processo Finalizado", "Processo concluído"}
-        );
+                new String[] { "Cadastro do Cliente", "Cliente cadastrado no sistema" },
+                new String[] { "Documentos Solicitados", "Lista de documentos enviada ao cliente" },
+                new String[] { "Documentos Recebidos", "Cliente enviou os documentos" },
+                new String[] { "Análise Documental", "Análise dos documentos" },
+                new String[] { "Pendência Documental", "Existem documentos pendentes" },
+                new String[] { "Aguardando Assinatura", "Cliente precisa assinar documentos" },
+                new String[] { "Perícia Médica", "Documentos enviados ao médico" },
+                new String[] { "Laudo Médico Recebido", "Laudo médico recebido" },
+                new String[] { "Enviado para Seguradora", "Processo enviado à seguradora" },
+                new String[] { "Em Análise pela Seguradora", "Seguradora analisando" },
+                new String[] { "Pendência com Seguradora", "Seguradora solicitou correção" },
+                new String[] { "Sinistro Gerado", "Sinistro registrado" },
+                new String[] { "Processo Finalizado", "Processo concluído" });
 
         for (int i = 0; i < etapasPadrao.size(); i++) {
             EtapaProcesso etapa = new EtapaProcesso();
@@ -209,19 +235,18 @@ public class ProcessoController {
             etapa.setOrdem(i + 1);
             etapa.setProcesso(processo);
             etapa.setStatus("Pendente");
-            
-            if ("Documentos Solicitados".equals(etapa.getNome())) {
+
+            if ("Documentos Recebidos".equals(etapa.getNome())) {
                 List<String> docs = Arrays.asList(
-                    "RG ou CNH",
-                    "Comprovante de residência",
-                    "Carteira de trabalho (Digital/PDF)",
-                    "Últimos 3 holerites antes do diagnóstico",
-                    "Documentos médicos (Laudos, Tomografia, Raio-X, Prontuário)",
-                    "Dados bancários para indenização",
-                    "E-mail para envio de documentação",
-                    "B.O ou C.A.T (caso tenha)"
-                );
-                
+                        "RG ou CNH",
+                        "Comprovante de residência",
+                        "Carteira de trabalho (Digital/PDF)",
+                        "Últimos 3 holerites antes do diagnóstico",
+                        "Documentos médicos (Laudos, Tomografia, Raio-X, Prontuário)",
+                        "Dados bancários para indenização",
+                        "E-mail para envio de documentação",
+                        "B.O ou C.A.T (caso tenha)");
+
                 for (String docName : docs) {
                     DocumentoChecklist doc = new DocumentoChecklist();
                     doc.setNome(docName);
@@ -230,39 +255,46 @@ public class ProcessoController {
                     etapa.getChecklist().add(doc);
                 }
             }
-            
+
             processo.getEtapas().add(etapa);
         }
 
         processoRepository.save(processo);
-        
-        return "redirect:/processos";
+
+        return "redirect:/processos?sucesso";
     }
 
     @GetMapping("/{id}/timeline")
     public String getTimeline(@PathVariable Long id, Model model) {
-        Processo processo = processoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Processo não encontrado: " + id));
+        Processo processo = processoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Processo não encontrado: " + id));
 
         // Adiciona atributo HTMX OOB para atualizar a barra de progresso
         model.addAttribute("processo", processo);
         model.addAttribute("processoSelecionado", processo);
         model.addAttribute("temPendenciaMedica", hasPendenciaMedica(processo.getId()));
+        model.addAttribute("today", LocalDate.now());
         model.addAttribute("hxOobSwap", true); // Flag auxiliar se necessário
+        model.addAttribute("timelineOob", false);
+        model.addAttribute("canEnviadoSeg", canEnviadoSeg(processo));
 
         // Retorna um template wrapper que inclui os dois fragmentos
-        // Como o Thymeleaf normal retorna um único template, vamos retornar um template especial 'fragments/htmx-updates'
-        // Ou podemos concatenar manualmente se não quisermos criar um novo arquivo, mas criar um arquivo é mais limpo.
-        // Opção B: Retornar o timeline e adicionar o progress-bar como OOB no mesmo response.
+        // Como o Thymeleaf normal retorna um único template, vamos retornar um template
+        // especial 'fragments/htmx-updates'
+        // Ou podemos concatenar manualmente se não quisermos criar um novo arquivo, mas
+        // criar um arquivo é mais limpo.
+        // Opção B: Retornar o timeline e adicionar o progress-bar como OOB no mesmo
+        // response.
         // O Thymeleaf + HTMX geralmente requer que retornemos múltiplos fragmentos.
         // Vamos usar um fragmento wrapper simples.
-        
+
         return "fragments/htmx-response-wrapper";
     }
 
     @PostMapping("/{processoId}/etapa/{etapaId}/toggle")
     public String toggleEtapa(@PathVariable Long processoId, @PathVariable Long etapaId, Model model) {
         EtapaProcesso etapa = etapaProcessoRepository.findById(etapaId).orElseThrow();
-        
+
         // Cycle Status
         switch (etapa.getStatus()) {
             case "Pendente":
@@ -280,9 +312,9 @@ public class ProcessoController {
             default:
                 etapa.setStatus("Pendente");
         }
-        
+        aplicarRegrasDeEtapaAoConcluir(etapa);
         etapaProcessoRepository.save(etapa);
-        
+
         // Return the updated timeline for this process
         Processo processo = processoRepository.findById(processoId).orElseThrow();
         boolean finalizado = processo.getEtapas() != null && processo.getEtapas().stream()
@@ -298,23 +330,25 @@ public class ProcessoController {
             processo.setStatus(emAndamento ? "Em Andamento" : "Pendente");
         }
         processoRepository.save(processo);
-        
+
         // Prepare response with both timeline and progress bar (OOB)
         model.addAttribute("processo", processo);
         model.addAttribute("processoSelecionado", processo);
         model.addAttribute("temPendenciaMedica", hasPendenciaMedica(processo.getId()));
+        model.addAttribute("today", LocalDate.now());
         model.addAttribute("hxOobSwap", true);
-        
+        model.addAttribute("canEnviadoSeg", canEnviadoSeg(processo));
+
         return "fragments/htmx-response-wrapper";
     }
 
     @PostMapping("/{processoId}/etapa/{etapaId}/checklist/{docId}/toggle")
     @jakarta.transaction.Transactional
-    public String toggleChecklist(@PathVariable Long processoId, 
-                                  @PathVariable Long etapaId, 
-                                  @PathVariable Long docId, 
-                                  Model model) {
-        
+    public String toggleChecklist(@PathVariable Long processoId,
+            @PathVariable Long etapaId,
+            @PathVariable Long docId,
+            Model model) {
+
         // 1. Busca apenas a etapa (que já traz o checklist via EAGER)
         EtapaProcesso etapa = etapaProcessoRepository.findById(etapaId)
                 .orElseThrow(() -> new IllegalArgumentException("Etapa não encontrada"));
@@ -340,18 +374,22 @@ public class ProcessoController {
             etapa.setStatus("Concluído");
             etapa.setData(LocalDate.now());
         } else {
-            // Se estava concluído mas desmarcou um item, volta para Em Andamento (ou Pendente se nenhum marcado)
+            // Se estava concluído mas desmarcou um item, volta para Em Andamento (ou
+            // Pendente se nenhum marcado)
             if ("Concluído".equals(etapa.getStatus())) {
                 etapa.setStatus("Em Andamento");
             } else if (etapa.getChecklist().stream().noneMatch(DocumentoChecklist::isEntregue)) {
-                 etapa.setStatus("Pendente");
+                etapa.setStatus("Pendente");
             } else {
-                 etapa.setStatus("Em Andamento");
+                etapa.setStatus("Em Andamento");
             }
         }
 
-        // 6. Salva apenas a etapa. O CascadeType.ALL salvará o documento automaticamente.
+        // 6. Salva apenas a etapa. O CascadeType.ALL salvará o documento
+        // automaticamente.
         etapaProcessoRepository.save(etapa);
+
+        // Removida a sincronização com 'Documentos Recebidos' (etapa oculta no fluxo)
 
         // Retorna o fragmento atualizado
         model.addAttribute("etapa", etapa);
@@ -359,9 +397,12 @@ public class ProcessoController {
         model.addAttribute("processo", processoAtualizado);
         model.addAttribute("processoSelecionado", processoAtualizado);
         model.addAttribute("temPendenciaMedica", hasPendenciaMedica(etapa.getProcesso().getId()));
+        model.addAttribute("today", LocalDate.now());
         model.addAttribute("hxOobSwap", true);
-        
-        return "fragments/checklist-modal :: content"; 
+        model.addAttribute("timelineOob", true);
+        model.addAttribute("canEnviadoSeg", canEnviadoSeg(processoAtualizado));
+
+        return "fragments/checklist-modal :: content";
     }
 
     @GetMapping("/etapa/{etapaId}/checklist")
@@ -387,13 +428,67 @@ public class ProcessoController {
         }
         etapaProcessoRepository.save(etapa);
 
+        // Removida a sincronização com 'Documentos Recebidos' (etapa oculta no fluxo)
+
         model.addAttribute("etapa", etapa);
         Processo processoAtualizado = processoRepository.findById(etapa.getProcesso().getId()).orElseThrow();
         model.addAttribute("processo", processoAtualizado);
         model.addAttribute("processoSelecionado", processoAtualizado);
         model.addAttribute("temPendenciaMedica", hasPendenciaMedica(etapa.getProcesso().getId()));
+        model.addAttribute("today", LocalDate.now());
         model.addAttribute("hxOobSwap", true);
+        model.addAttribute("timelineOob", true);
+        model.addAttribute("canEnviadoSeg", canEnviadoSeg(processoAtualizado));
         return "fragments/checklist-modal :: content";
+    }
+
+    @GetMapping("/etapa/{etapaId}/assinatura")
+    public String getAssinaturaModal(@PathVariable Long etapaId, Model model) {
+        EtapaProcesso etapa = etapaProcessoRepository.findById(etapaId).orElseThrow();
+        model.addAttribute("etapa", etapa);
+        return "fragments/assinatura-modal :: content";
+    }
+
+    @PostMapping("/etapa/{etapaId}/assinatura/enviar")
+    public String enviarParaAssinatura(@PathVariable Long etapaId, Model model) {
+        EtapaProcesso etapa = etapaProcessoRepository.findById(etapaId).orElseThrow();
+        etapa.setStatus("Pendente"); // aguardando retorno do cliente
+        etapa.setData(LocalDate.now());
+        etapa.setDescricao("Documentação enviada ao cliente. Aguardando retorno.");
+        etapaProcessoRepository.save(etapa);
+
+        Processo processo = processoRepository.findById(etapa.getProcesso().getId()).orElseThrow();
+        model.addAttribute("processo", processo);
+        model.addAttribute("processoSelecionado", processo);
+        model.addAttribute("temPendenciaMedica", hasPendenciaMedica(processo.getId()));
+        model.addAttribute("today", LocalDate.now());
+        model.addAttribute("hxOobSwap", true);
+        model.addAttribute("timelineOob", true);
+        model.addAttribute("canEnviadoSeg", canEnviadoSeg(processo));
+        model.addAttribute("etapa", etapa);
+        model.addAttribute("successMessage", "Enviado ao cliente. Aguardando retorno.");
+        return "fragments/assinatura-modal :: content";
+    }
+
+    @PostMapping("/etapa/{etapaId}/assinatura/anexar")
+    public String anexarAssinatura(@PathVariable Long etapaId, Model model) {
+        EtapaProcesso etapa = etapaProcessoRepository.findById(etapaId).orElseThrow();
+        etapa.setStatus("Concluído");
+        etapa.setData(LocalDate.now());
+        etapa.setDescricao("Recebeu a documentação assinada");
+        etapaProcessoRepository.save(etapa);
+
+        Processo processo = processoRepository.findById(etapa.getProcesso().getId()).orElseThrow();
+        model.addAttribute("processo", processo);
+        model.addAttribute("processoSelecionado", processo);
+        model.addAttribute("temPendenciaMedica", hasPendenciaMedica(processo.getId()));
+        model.addAttribute("today", LocalDate.now());
+        model.addAttribute("hxOobSwap", true);
+        model.addAttribute("timelineOob", true);
+        model.addAttribute("canEnviadoSeg", canEnviadoSeg(processo));
+        model.addAttribute("etapa", etapa);
+        model.addAttribute("successMessage", "Assinatura confirmada com sucesso.");
+        return "fragments/assinatura-modal :: content";
     }
 
     @GetMapping("/etapa/{etapaId}/laudo")
@@ -413,9 +508,10 @@ public class ProcessoController {
 
     @PostMapping("/etapa/{etapaId}/laudo/save")
     public String salvarLaudo(@PathVariable Long etapaId,
-                              @RequestParam String nomeMedico,
-                              @RequestParam String valorLaudo,
-                              Model model) {
+            @RequestParam String nomeMedico,
+            @RequestParam String valorLaudo,
+            @RequestParam(value = "arquivoLaudo", required = false) org.springframework.web.multipart.MultipartFile arquivoLaudo,
+            Model model) {
         EtapaProcesso etapa = etapaProcessoRepository.findById(etapaId).orElseThrow();
         Processo processo = etapa.getProcesso();
 
@@ -429,36 +525,48 @@ public class ProcessoController {
         fin.setTenantId(processo.getTenantId());
         financeiroRepository.save(fin);
 
-        etapa.setStatus("Concluído");
+        etapa.setStatus("Em Andamento");
         etapa.setData(LocalDate.now());
+        etapa.setDescricao("Dados registrados. Aguardando pagamento do laudo.");
         etapaProcessoRepository.save(etapa);
 
+        model.addAttribute("etapa", etapa);
         model.addAttribute("processo", processoRepository.findById(processo.getId()).orElseThrow());
-        model.addAttribute("processoSelecionado", processo);
-        model.addAttribute("temPendenciaMedica", true);
+        model.addAttribute("financeiroPendente", fin);
         model.addAttribute("hxOobSwap", true);
-        return "fragments/htmx-response-wrapper";
+        return "fragments/laudo-modal :: content";
     }
 
     @PostMapping("/etapa/{etapaId}/laudo/pay")
     public String pagarLaudo(@PathVariable Long etapaId,
-                             @RequestParam Long fid,
-                             @RequestParam String dataPagamento,
-                             Model model) {
+            @RequestParam Long fid,
+            @RequestParam String dataPagamento,
+            @RequestParam(value = "comprovante", required = false) org.springframework.web.multipart.MultipartFile comprovante,
+            Model model) {
         EtapaProcesso etapa = etapaProcessoRepository.findById(etapaId).orElseThrow();
         Financeiro fin = financeiroRepository.findById(fid).orElseThrow();
         fin.setStatus("Pago");
         try {
             fin.setDataVencimento(java.time.LocalDate.parse(dataPagamento));
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         financeiroRepository.save(fin);
+
+        // Agora sim concluímos a etapa
+        etapa.setStatus("Concluído");
+        etapa.setData(LocalDate.now());
+        etapa.setDescricao("Laudo pago e registrado");
+        etapaProcessoRepository.save(etapa);
 
         Processo processo = processoRepository.findById(etapa.getProcesso().getId()).orElseThrow();
         model.addAttribute("processo", processo);
         model.addAttribute("processoSelecionado", processo);
         model.addAttribute("temPendenciaMedica", hasPendenciaMedica(processo.getId()));
+        model.addAttribute("today", LocalDate.now());
         model.addAttribute("hxOobSwap", true);
-        return "fragments/htmx-response-wrapper";
+        model.addAttribute("timelineOob", true);
+
+        return "fragments/laudo-modal :: content";
     }
 
     private boolean hasPendenciaMedica(Long processoId) {
@@ -467,13 +575,251 @@ public class ProcessoController {
                 .anyMatch(f -> f.getProcesso() != null && f.getProcesso().getId().equals(processoId));
     }
 
+    @GetMapping("/etapa/{etapaId}/seguradora")
+    public String getSeguradoraModal(@PathVariable Long etapaId, Model model) {
+        EtapaProcesso etapa = etapaProcessoRepository.findById(etapaId).orElseThrow();
+        Financeiro fin = financeiroRepository.findByStatusAndDescricaoContaining("Pendente", "Seg")
+                .stream()
+                .filter(f -> f.getProcesso() != null && f.getProcesso().getId().equals(etapa.getProcesso().getId()))
+                .findFirst()
+                .orElse(null);
+        model.addAttribute("etapa", etapa);
+        model.addAttribute("processo", etapa.getProcesso());
+        model.addAttribute("financeiroPendente", fin);
+        model.addAttribute("hxOobSwap", false);
+        return "fragments/seg-modal :: content";
+    }
+
+    @GetMapping("/etapa/{etapaId}/enviado-seg")
+    public String getEnviadoSegModal(@PathVariable Long etapaId, Model model) {
+        EtapaProcesso etapa = etapaProcessoRepository.findById(etapaId).orElseThrow();
+        model.addAttribute("etapa", etapa);
+        model.addAttribute("processo", etapa.getProcesso());
+        model.addAttribute("hxOobSwap", false);
+        return "fragments/enviado-seg-modal :: content";
+    }
+
+    @PostMapping("/etapa/{etapaId}/enviado-seg/sinistro")
+    public String registrarSinistro(@PathVariable Long etapaId,
+            @RequestParam String sinistroNumero,
+            @RequestParam(value = "arquivo", required = false) org.springframework.web.multipart.MultipartFile arquivo,
+            Model model) {
+        EtapaProcesso enviado = etapaProcessoRepository.findById(etapaId).orElseThrow();
+        Processo processo = processoRepository.findById(enviado.getProcesso().getId()).orElseThrow();
+        processo.setSinistroNumero(sinistroNumero != null ? sinistroNumero.trim() : null);
+        processoRepository.save(processo);
+
+        EtapaProcesso sinistro = processo.getEtapas().stream()
+                .filter(e -> e.getNome() != null && "Sinistro Gerado".equalsIgnoreCase(e.getNome()))
+                .findFirst().orElse(null);
+        if (sinistro != null) {
+            sinistro.setStatus("Em Andamento");
+            sinistro.setData(LocalDate.now());
+            etapaProcessoRepository.save(sinistro);
+        }
+        enviado.setStatus("Concluído");
+        enviado.setData(LocalDate.now());
+        etapaProcessoRepository.save(enviado);
+
+        model.addAttribute("processo", processo);
+        model.addAttribute("processoSelecionado", processo);
+        model.addAttribute("temPendenciaMedica", hasPendenciaMedica(processo.getId()));
+        model.addAttribute("today", LocalDate.now());
+        model.addAttribute("hxOobSwap", true);
+        model.addAttribute("timelineOob", true);
+        model.addAttribute("canEnviadoSeg", canEnviadoSeg(processo));
+        model.addAttribute("etapa", enviado);
+        model.addAttribute("successMessage", "Sinistro registrado no processo.");
+        return "fragments/enviado-seg-modal :: content";
+    }
+
+    @PostMapping("/etapa/{etapaId}/enviado-seg/aprovado")
+    public String seguradoraAprovou(@PathVariable Long etapaId, Model model) {
+        EtapaProcesso enviado = etapaProcessoRepository.findById(etapaId).orElseThrow();
+        Processo processo = processoRepository.findById(enviado.getProcesso().getId()).orElseThrow();
+        EtapaProcesso analise = processo.getEtapas().stream()
+                .filter(e -> e.getNome() != null && "Em Análise pela Seguradora".equalsIgnoreCase(e.getNome()))
+                .findFirst().orElse(null);
+        if (analise != null) {
+            analise.setStatus("Concluído");
+            analise.setData(LocalDate.now());
+            etapaProcessoRepository.save(analise);
+        }
+        enviado.setStatus("Concluído");
+        enviado.setData(LocalDate.now());
+        etapaProcessoRepository.save(enviado);
+
+        model.addAttribute("processo", processo);
+        model.addAttribute("processoSelecionado", processo);
+        model.addAttribute("temPendenciaMedica", hasPendenciaMedica(processo.getId()));
+        model.addAttribute("today", LocalDate.now());
+        model.addAttribute("hxOobSwap", true);
+        model.addAttribute("timelineOob", true);
+        model.addAttribute("canEnviadoSeg", canEnviadoSeg(processo));
+        model.addAttribute("etapa", enviado);
+        model.addAttribute("successMessage", "Aprovado pela seguradora.");
+        return "fragments/enviado-seg-modal :: content";
+    }
+
+    @PostMapping("/etapa/{etapaId}/enviado-seg/pendencia")
+    public String registrarPendenciaSeg(@PathVariable Long etapaId,
+            @RequestParam String pendenciaDescricao,
+            @RequestParam(value = "arquivo", required = false) org.springframework.web.multipart.MultipartFile arquivo,
+            Model model) {
+        EtapaProcesso enviado = etapaProcessoRepository.findById(etapaId).orElseThrow();
+        Processo processo = processoRepository.findById(enviado.getProcesso().getId()).orElseThrow();
+        EtapaProcesso pendSeg = processo.getEtapas().stream()
+                .filter(e -> e.getNome() != null && "Pendência com Seguradora".equalsIgnoreCase(e.getNome()))
+                .findFirst().orElse(null);
+        if (pendSeg != null) {
+            pendSeg.setStatus("Em Andamento");
+            pendSeg.setData(LocalDate.now());
+            if (pendenciaDescricao != null && !pendenciaDescricao.isBlank()) {
+                pendSeg.setDescricao(pendenciaDescricao.trim());
+            }
+            etapaProcessoRepository.save(pendSeg);
+        }
+        enviado.setStatus("Concluído");
+        enviado.setData(LocalDate.now());
+        etapaProcessoRepository.save(enviado);
+
+        model.addAttribute("processo", processo);
+        model.addAttribute("processoSelecionado", processo);
+        model.addAttribute("temPendenciaMedica", hasPendenciaMedica(processo.getId()));
+        model.addAttribute("today", LocalDate.now());
+        model.addAttribute("hxOobSwap", true);
+        model.addAttribute("timelineOob", true);
+        model.addAttribute("canEnviadoSeg", canEnviadoSeg(processo));
+        model.addAttribute("etapa", enviado);
+        model.addAttribute("successMessage", "Pendência registrada junto à seguradora.");
+        return "fragments/enviado-seg-modal :: content";
+    }
+
+    @PostMapping("/etapa/{etapaId}/seguradora/salvar")
+    public String salvarRecebivelSeguradora(@PathVariable Long etapaId,
+            @RequestParam String valorReceber,
+            Model model) {
+        EtapaProcesso etapa = etapaProcessoRepository.findById(etapaId).orElseThrow();
+        Processo processo = etapa.getProcesso();
+        java.math.BigDecimal valor = parseBRL(valorReceber);
+        Financeiro fin = new Financeiro();
+        fin.setDescricao("Seguradora - Receber");
+        fin.setValor(valor);
+        fin.setStatus("Pendente");
+        fin.setProcesso(processo);
+        fin.setTenantId(processo.getTenantId());
+        financeiroRepository.save(fin);
+
+        model.addAttribute("processo", processoRepository.findById(processo.getId()).orElseThrow());
+        model.addAttribute("processoSelecionado", processo);
+        model.addAttribute("temPendenciaMedica", hasPendenciaMedica(processo.getId()));
+        model.addAttribute("today", LocalDate.now());
+        model.addAttribute("hxOobSwap", true);
+        model.addAttribute("timelineOob", true);
+        model.addAttribute("financeiroPendente", fin);
+        model.addAttribute("etapa", etapa);
+        model.addAttribute("successMessage", "Recebível criado.");
+        model.addAttribute("canEnviadoSeg", canEnviadoSeg(processo));
+        return "fragments/seg-modal :: content";
+    }
+
+    @PostMapping("/etapa/{etapaId}/seguradora/receber")
+    public String receberSeguradora(@PathVariable Long etapaId,
+            @RequestParam Long fid,
+            @RequestParam String dataRecebimento,
+            Model model) {
+        EtapaProcesso etapa = etapaProcessoRepository.findById(etapaId).orElseThrow();
+        Financeiro fin = financeiroRepository.findById(fid).orElseThrow();
+        fin.setStatus("Pago");
+        try {
+            fin.setDataVencimento(java.time.LocalDate.parse(dataRecebimento));
+        } catch (Exception ignored) {
+        }
+        financeiroRepository.save(fin);
+
+        etapa.setStatus("Concluído");
+        etapa.setData(LocalDate.now());
+        etapaProcessoRepository.save(etapa);
+
+        Processo processo = processoRepository.findById(etapa.getProcesso().getId()).orElseThrow();
+        model.addAttribute("processo", processo);
+        model.addAttribute("processoSelecionado", processo);
+        model.addAttribute("temPendenciaMedica", hasPendenciaMedica(processo.getId()));
+        model.addAttribute("today", LocalDate.now());
+        model.addAttribute("hxOobSwap", true);
+        model.addAttribute("timelineOob", true);
+        model.addAttribute("financeiroPendente", null);
+        model.addAttribute("etapa", etapa);
+        model.addAttribute("successMessage", "Recebimento registrado.");
+        model.addAttribute("canEnviadoSeg", canEnviadoSeg(processo));
+        return "fragments/seg-modal :: content";
+    }
+
     private java.math.BigDecimal parseBRL(String v) {
-        if (v == null) return java.math.BigDecimal.ZERO;
+        if (v == null)
+            return java.math.BigDecimal.ZERO;
         String s = v.replace("R$", "").replace(".", "").replace(",", ".").replaceAll("\\s+", "");
         try {
             return new java.math.BigDecimal(s);
         } catch (Exception e) {
             return java.math.BigDecimal.ZERO;
         }
+    }
+
+    private void aplicarRegrasDeEtapaAoConcluir(EtapaProcesso etapa) {
+        if (!"Concluído".equalsIgnoreCase(etapa.getStatus())) {
+            return;
+        }
+        String nome = etapa.getNome() != null ? etapa.getNome().trim().toLowerCase() : "";
+        Processo p = etapa.getProcesso();
+        java.util.function.Predicate<EtapaProcesso> isConcluida = e -> e != null
+                && "Concluído".equalsIgnoreCase(e.getStatus());
+        java.util.function.Function<String, EtapaProcesso> findByName = (n) -> p.getEtapas().stream()
+                .filter(e -> e.getNome() != null && e.getNome().equalsIgnoreCase(n))
+                .findFirst().orElse(null);
+
+        if (nome.contains("análise documental") || nome.contains("analise documental")) {
+            EtapaProcesso docsSolic = findByName.apply("Documentos Solicitados");
+            if (docsSolic == null || !isConcluida.test(docsSolic)) {
+                etapa.setStatus("Em Andamento");
+                etapa.setData(LocalDate.now());
+            }
+        } else if (nome.contains("em análise pela seguradora") || nome.contains("em analise pela seguradora")) {
+            EtapaProcesso enviado = findByName.apply("Enviado para Seguradora");
+            if (enviado == null || !isConcluida.test(enviado)) {
+                etapa.setStatus("Em Andamento");
+                etapa.setData(LocalDate.now());
+            }
+        } else if (nome.contains("processo finalizado")) {
+            boolean anterioresConcluidas = p.getEtapas().stream()
+                    .filter(e -> e.getOrdem() != null && etapa.getOrdem() != null && e.getOrdem() < etapa.getOrdem())
+                    .filter(e -> {
+                        String n = e.getNome() != null ? e.getNome() : "";
+                        // Ignora etapas que são ocultas ou opcionais se estiverem pendentes
+                        boolean opcional = n.equalsIgnoreCase("Documentos Recebidos")
+                                || n.equalsIgnoreCase("Pendência Documental")
+                                || n.equalsIgnoreCase("Pendência com Seguradora");
+                        return !opcional || "Concluído".equalsIgnoreCase(e.getStatus())
+                                || "Em Andamento".equalsIgnoreCase(e.getStatus());
+                    })
+                    .allMatch(isConcluida);
+            if (!anterioresConcluidas) {
+                etapa.setStatus("Em Andamento");
+                etapa.setData(LocalDate.now());
+            }
+        }
+    }
+
+    private boolean canEnviadoSeg(Processo p) {
+        if (p == null || p.getEtapas() == null)
+            return false;
+        EtapaProcesso analise = p.getEtapas().stream()
+                .filter(e -> e.getNome() != null && "Análise Documental".equalsIgnoreCase(e.getNome()))
+                .findFirst().orElse(null);
+        EtapaProcesso laudo = p.getEtapas().stream()
+                .filter(e -> e.getNome() != null && "Laudo Médico Recebido".equalsIgnoreCase(e.getNome()))
+                .findFirst().orElse(null);
+        return analise != null && "Concluído".equalsIgnoreCase(analise.getStatus())
+                && laudo != null && "Concluído".equalsIgnoreCase(laudo.getStatus());
     }
 }

@@ -3,21 +3,29 @@
     --navy-blue: #1a2744;
     --navy-blue-light: #2a3b5e;
     --gold: #b8860b;
-    --gold-light: #fffdf5; /* Very light gold for bg */
-    --gold-border: #eab308; /* Amber-500ish */
-    
-    --green-text: #15803d; /* Green-700 */
-    --green-bg: #f0fdf4; /* Green-50 */
-    --green-border: #86efac; /* Green-300 */
-    
-    --red-text: #b91c1c; /* Red-700 */
-    --red-bg: #fef2f2; /* Red-50 */
-    --red-border: #fca5a5; /* Red-300 */
-    
+    --gold-light: #fffdf5;
+    /* Very light gold for bg */
+    --gold-border: #eab308;
+    /* Amber-500ish */
+
+    --green-text: #15803d;
+    /* Green-700 */
+    --green-bg: #f0fdf4;
+    /* Green-50 */
+    --green-border: #86efac;
+    /* Green-300 */
+
+    --red-text: #b91c1c;
+    /* Red-700 */
+    --red-bg: #fef2f2;
+    /* Red-50 */
+    --red-border: #fca5a5;
+    /* Red-300 */
+
     --gray-text: #64748b;
     --gray-bg: #f8fafc;
     --gray-border: #e2e8f0;
-    
+
     --main-bg: #f8fafc;
 }
 
@@ -50,7 +58,8 @@ body {
 }
 
 .page-title {
-    font-size: 2.5rem; /* 40px */
+    font-size: 2.5rem;
+    /* 40px */
     font-weight: 700;
     color: var(--navy-blue);
     margin: 0;
@@ -114,11 +123,12 @@ body {
 /* Process Card */
 .process-card {
     background: white;
-    border: 1px solid transparent; /* Invisible border by default */
+    border: 1px solid transparent;
+    /* Invisible border by default */
     border-radius: 12px;
     margin-bottom: 16px;
     transition: all 0.2s;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .process-card.expanded {
@@ -230,12 +240,14 @@ body {
 /* Timeline Container */
 .timeline-panel {
     border-top: 1px solid var(--gray-border);
-    padding: 32px 24px 24px; /* Top padding for spacing */
+    padding: 32px 24px 24px;
+    /* Top padding for spacing */
     background-color: white;
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
     /* Ensure it looks connected */
-    margin-top: -12px; /* Pull up to overlap bottom radius of card if separate, but here we will put it INSIDE the card container */
+    margin-top: -12px;
+    /* Pull up to overlap bottom radius of card if separate, but here we will put it INSIDE the card container */
 }
 
 /* Timeline specific styles will go in the fragment or here */
@@ -289,7 +301,8 @@ body {
 .timeline-steps-container {
     display: flex;
     min-width: max-content;
-    padding-top: 20px; /* Space for indicators */
+    padding-top: 20px;
+    /* Space for indicators */
 }
 
 .timeline-step-item {
@@ -305,7 +318,8 @@ body {
 .timeline-step-item::before {
     content: '';
     position: absolute;
-    top: 19px; /* Align with circle center */
+    top: 19px;
+    /* Align with circle center */
     left: -50%;
     width: 100%;
     height: 2px;
@@ -354,8 +368,10 @@ body {
 /* Status Variants */
 /* Concluído */
 .status-concluido .step-circle {
-    background-color: var(--green-bg); /* Check if bg needed */
-    border-color: transparent; /* Icon handles color? No, border is usually colored */
+    background-color: var(--green-bg);
+    /* Check if bg needed */
+    border-color: transparent;
+    /* Icon handles color? No, border is usually colored */
     background: #22c55e;
     border: none;
     color: white;
@@ -395,7 +411,8 @@ body {
 
 .status-pendente .step-card {
     border-color: #fee2e2;
-    background-color: #fff; /* Or very light red */
+    background-color: #fff;
+    /* Or very light red */
 }
 
 .status-pendente .step-status-text {
@@ -424,7 +441,8 @@ body {
 .step-desc-text {
     font-size: 0.75rem;
     color: var(--gray-text);
-    margin-bottom: auto; /* Push date to bottom */
+    margin-bottom: auto;
+    /* Push date to bottom */
     line-height: 1.3;
 }
 
@@ -437,8 +455,10 @@ body {
 
 /* Completed Line Color */
 .timeline-step-item.status-concluido::before {
-    background-color: #22c55e; /* Green line for completed steps? Or just previous? Usually previous. */
+    background-color: #22c55e;
+    /* Green line for completed steps? Or just previous? Usually previous. */
 }
+
 /* This selector is tricky. We want the line leading TO this step to be green if THIS step is completed?
    Or if the PREVIOUS step is completed?
    Usually: If Step 2 is active, line 1-2 is green.
@@ -757,3 +777,131 @@ body {
     padding: 12px 0;
 }
 
+
+/* --- Premium Modal & Form Enhancements --- */
+
+.modal-content-premium {
+    border-radius: 16px !important;
+    border: none !important;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+.modal-header-premium {
+    background: var(--navy-blue);
+    padding: 12px 32px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.modal-header-premium h2 {
+    color: white !important;
+    font-size: 1.35rem !important;
+    margin: 0;
+}
+
+.modal-header-premium .btn-ghost {
+    color: rgba(255, 255, 255, 0.7);
+    transition: color 0.2s;
+}
+
+.modal-header-premium .btn-ghost:hover {
+    color: white;
+}
+
+.modal-body-premium {
+    padding: 16px 32px !important;
+    background: #ffffff;
+}
+
+.form-group-premium {
+    margin-bottom: 8px;
+}
+
+.form-label-premium {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--gray-text);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.form-control-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.form-control-icon {
+    position: absolute;
+    left: 14px;
+    color: #94a3b8;
+    font-size: 0.95rem;
+    pointer-events: none;
+    transition: color 0.2s;
+}
+
+.form-input-premium,
+.form-select-premium {
+    width: 100%;
+    padding: 12px 14px 12px 40px !important;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    color: var(--navy-blue);
+    transition: all 0.2s ease;
+}
+
+.form-input-premium:focus,
+.form-select-premium:focus {
+    background-color: #fff;
+    border-color: var(--navy-blue);
+    box-shadow: 0 0 0 4px rgba(26, 39, 68, 0.1);
+    outline: none;
+}
+
+.form-input-premium:focus+.form-control-icon {
+    color: var(--navy-blue);
+}
+
+.modal-footer-premium {
+    padding: 20px 32px !important;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0 !important;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.btn-premium-primary {
+    background-color: var(--navy-blue);
+    color: white;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-weight: 600;
+    border: none;
+    transition: all 0.2s;
+}
+
+.btn-premium-primary:hover {
+    background-color: var(--navy-blue-light);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(26, 39, 68, 0.2);
+}
+
+.btn-premium-secondary {
+    background-color: white;
+    color: var(--gray-text);
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-weight: 600;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s;
+}
+
+.btn-premium-secondary:hover {
+    background-color: #f1f5f9;
+    color: var(--navy-blue);
+}
