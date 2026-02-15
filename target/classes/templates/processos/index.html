@@ -262,12 +262,6 @@
 
     <!-- Scripts -->
     <script>
-        document.body.addEventListener('htmx:configRequest', function (evt) {
-            var token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-            var header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-            evt.detail.headers[header] = token;
-        });
-
         document.body.addEventListener('htmx:afterSwap', function (evt) {
             if (!evt.detail || !evt.detail.target || evt.detail.target.id !== 'checklist-modal-body') {
                 return;

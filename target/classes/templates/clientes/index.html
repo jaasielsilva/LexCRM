@@ -1,25 +1,30 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clientes - JurisCRM</title>
 
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
 
     <script src="https://unpkg.com/htmx.org@1.9.6"></script>
 </head>
+
 <body>
 
     <div th:replace="~{fragments/sidebar :: sidebar(activePage='clientes')}"></div>
@@ -38,13 +43,9 @@
 
         <div class="search-container">
             <i class="fas fa-search search-icon"></i>
-            <input type="text"
-                   name="query"
-                   class="search-input"
-                   placeholder="Buscar por nome, CPF/CNPJ, e-mail ou telefone..."
-                   hx-get="/clientes/search"
-                   hx-trigger="keyup changed delay:400ms"
-                   hx-target="#client-list">
+            <input type="text" name="query" class="search-input"
+                placeholder="Buscar por nome, CPF/CNPJ, e-mail ou telefone..." hx-get="/clientes/search"
+                hx-trigger="keyup changed delay:400ms" hx-target="#client-list">
         </div>
 
         <div id="client-list" th:fragment="list">
@@ -70,21 +71,18 @@
                                 <td class="small" th:text="${c.email}">email</td>
                                 <td class="small phone-cell" th:text="${c.telefone}">telefone</td>
                                 <td class="text-end">
-                                    <button type="button"
-                                            class="btn btn-sm btn-outline-primary"
-                                            th:attr="data-id=${c.id},data-nome=${c.nome},data-cpfcnpj=${c.cpfCnpj},data-email=${c.email},data-telefone=${c.telefone}"
-                                            onclick="openClienteModalFromRow(this)">
+                                    <button type="button" class="btn btn-sm btn-outline-primary"
+                                        th:attr="data-id=${c.id},data-nome=${c.nome},data-cpfcnpj=${c.cpfCnpj},data-email=${c.email},data-telefone=${c.telefone}"
+                                        onclick="openClienteModalFromRow(this)">
                                         <i class="fas fa-pen"></i>
                                     </button>
                                     <a class="btn btn-sm btn-outline-secondary"
-                                       th:href="@{'/processos'(clienteId=${c.id})}"
-                                       title="Ver processos do cliente">
+                                        th:href="@{'/processos'(clienteId=${c.id})}" title="Ver processos do cliente">
                                         <i class="fas fa-folder-open"></i>
                                     </a>
-                                    <button type="button"
-                                            class="btn btn-sm btn-outline-danger"
-                                            th:attr="data-id=${c.id},data-nome=${c.nome}"
-                                            onclick="confirmDeleteClienteFromRow(this)">
+                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                        th:attr="data-id=${c.id},data-nome=${c.nome}"
+                                        onclick="confirmDeleteClienteFromRow(this)">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
@@ -94,25 +92,23 @@
                 </div>
                 <div class="d-flex align-items-center justify-content-between border-top p-3">
                     <div class="small text-muted">
-                        Mostrando <span th:text="${fromItem}">0</span>–<span th:text="${toItem}">0</span> de <span th:text="${totalElements}">0</span>
+                        Mostrando <span th:text="${fromItem}">0</span>–<span th:text="${toItem}">0</span> de <span
+                            th:text="${totalElements}">0</span>
                     </div>
                     <div class="btn-group" role="group" aria-label="Paginação">
-                        <a class="btn btn-outline-secondary btn-sm"
-                           th:classappend="${clientesPage.first} ? ' disabled'"
-                           th:href="@{'/clientes'(page=${currentPage - 1}, size=${pageSize})}">
+                        <a class="btn btn-outline-secondary btn-sm" th:classappend="${clientesPage.first} ? ' disabled'"
+                            th:href="@{'/clientes'(page=${currentPage - 1}, size=${pageSize})}">
                             Anterior
                         </a>
-                        <a class="btn btn-outline-secondary btn-sm"
-                           th:classappend="${clientesPage.last} ? ' disabled'"
-                           th:href="@{'/clientes'(page=${currentPage + 1}, size=${pageSize})}">
+                        <a class="btn btn-outline-secondary btn-sm" th:classappend="${clientesPage.last} ? ' disabled'"
+                            th:href="@{'/clientes'(page=${currentPage + 1}, size=${pageSize})}">
                             Próximo
                         </a>
                     </div>
                     <div class="d-flex align-items-center">
                         <label class="small text-muted me-2">Itens por página</label>
-                        <select class="form-select form-select-sm"
-                                th:value="${pageSize}"
-                                onchange="location.href='/clientes?size=' + this.value">
+                        <select class="form-select form-select-sm" th:value="${pageSize}"
+                            onchange="location.href='/clientes?size=' + this.value">
                             <option value="10" th:selected="${pageSize == 10}">10</option>
                             <option value="20" th:selected="${pageSize == 20}">20</option>
                             <option value="50" th:selected="${pageSize == 50}">50</option>
@@ -124,15 +120,6 @@
     </main>
 
     <script>
-        document.body.addEventListener('htmx:configRequest', function(evt) {
-            var tokenMeta = document.querySelector('meta[name="_csrf"]');
-            var headerMeta = document.querySelector('meta[name="_csrf_header"]');
-            if (!tokenMeta || !headerMeta) {
-                return;
-            }
-            evt.detail.headers[headerMeta.getAttribute('content')] = tokenMeta.getAttribute('content');
-        });
-
         function refreshClientesList() {
             var input = document.querySelector('input[name="query"]');
             var q = input ? (input.value || '') : '';
@@ -193,12 +180,12 @@
                     var input = dom.querySelector('input[name="cpfCnpj"]');
                     if (input && window.uiMaskCpfCnpjInput && window.uiFormatCpfCnpj) {
                         // Formatar valor inicial e aplicar máscara
-                        try { input.value = window.uiFormatCpfCnpj(input.value); } catch (e) {}
+                        try { input.value = window.uiFormatCpfCnpj(input.value); } catch (e) { }
                         window.uiMaskCpfCnpjInput(input);
                     }
                     var phone = dom.querySelector('input[name="telefone"]');
                     if (phone && window.uiMaskPhoneInput && window.uiFormatPhoneBR) {
-                        try { phone.value = window.uiFormatPhoneBR(phone.value); } catch (e) {}
+                        try { phone.value = window.uiFormatPhoneBR(phone.value); } catch (e) { }
                         window.uiMaskPhoneInput(phone);
                     }
                 },
@@ -323,8 +310,8 @@
         }
         function isValidCnpj(cnpj) {
             if (/^(\d)\1+$/.test(cnpj)) return false;
-            var w1 = [5,4,3,2,9,8,7,6,5,4,3,2];
-            var w2 = [6,5,4,3,2,9,8,7,6,5,4,3,2];
+            var w1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+            var w2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
             var s1 = 0, s2 = 0, i;
             for (i = 0; i < 12; i++) s1 += (cnpj.charCodeAt(i) - 48) * w1[i];
             var r1 = s1 % 11, d1 = r1 < 2 ? 0 : 11 - r1;
@@ -333,6 +320,9 @@
             return d1 === (cnpj.charCodeAt(12) - 48) && d2 === (cnpj.charCodeAt(13) - 48);
         }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 </body>
+
 </html>

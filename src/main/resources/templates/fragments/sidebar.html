@@ -137,6 +137,17 @@
                     btnInfo.classList.add('text-gray-400', 'border-transparent');
                 }
             }
+
+            // Global HTMX CSRF Configuration
+            document.body.addEventListener('htmx:configRequest', function (evt) {
+                const tokenMeta = document.querySelector('meta[name="_csrf"]');
+                const headerMeta = document.querySelector('meta[name="_csrf_header"]');
+                if (tokenMeta && headerMeta) {
+                    const token = tokenMeta.getAttribute('content');
+                    const header = headerMeta.getAttribute('content');
+                    evt.detail.headers[header] = token;
+                }
+            });
         </script>
     </div>
 
