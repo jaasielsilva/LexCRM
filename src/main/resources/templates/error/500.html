@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Erro Interno - LexCRM</title>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <link rel="stylesheet" th:href="@{/css/tailwind.css}">
+</head>
+<body class="bg-gray-100 h-screen flex flex-col items-center justify-center text-center p-4">
+    <div class="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full">
+        <div class="mb-6 text-yellow-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">500</h1>
+        <h2 class="text-xl font-semibold text-gray-600 mb-4">Erro Interno</h2>
+        <p class="text-gray-500 mb-8">Algo deu errado do nosso lado. Tente novamente mais tarde.</p>
+        <a href="/dashboard" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+            Tentar Novamente
+        </a>
+    </div>
+</body>
+</html>

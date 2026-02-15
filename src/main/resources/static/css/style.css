@@ -1,0 +1,452 @@
+:root {
+    /* Colors */
+    --navy-blue: #1a2744;
+    --navy-blue-light: #2a3b5e;
+    --gold: #b8860b;
+    --gold-light: #fffdf5; /* Very light gold for bg */
+    --gold-border: #eab308; /* Amber-500ish */
+    
+    --green-text: #15803d; /* Green-700 */
+    --green-bg: #f0fdf4; /* Green-50 */
+    --green-border: #86efac; /* Green-300 */
+    
+    --red-text: #b91c1c; /* Red-700 */
+    --red-bg: #fef2f2; /* Red-50 */
+    --red-border: #fca5a5; /* Red-300 */
+    
+    --gray-text: #64748b;
+    --gray-bg: #f8fafc;
+    --gray-border: #e2e8f0;
+    
+    --main-bg: #f8fafc;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--main-bg);
+    color: var(--navy-blue);
+}
+
+.font-playfair {
+    font-family: 'Playfair Display', serif;
+}
+
+/* Sidebar Overrides if needed (Moved to sidebar.css) */
+/* .sidebar removed to avoid conflict */
+
+/* Main Content Area */
+.main-content {
+    padding: 40px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* Header Section */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.page-title {
+    font-size: 2.5rem; /* 40px */
+    font-weight: 700;
+    color: var(--navy-blue);
+    margin: 0;
+    line-height: 1.1;
+}
+
+.page-subtitle {
+    font-size: 1rem;
+    color: var(--gray-text);
+    margin-top: 8px;
+    font-weight: 400;
+}
+
+.btn-new-process {
+    background-color: var(--navy-blue);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+
+.btn-new-process:hover {
+    background-color: var(--navy-blue-light);
+}
+
+/* Search Bar */
+.search-container {
+    margin-bottom: 32px;
+    position: relative;
+}
+
+.search-input {
+    width: 100%;
+    padding: 16px 16px 16px 48px;
+    border: 1px solid var(--gray-border);
+    border-radius: 8px;
+    font-size: 1rem;
+    color: var(--navy-blue);
+    background-color: white;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--navy-blue);
+}
+
+.search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 1.1rem;
+}
+
+/* Process Card */
+.process-card {
+    background: white;
+    border: 1px solid transparent; /* Invisible border by default */
+    border-radius: 12px;
+    margin-bottom: 16px;
+    transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.process-card.expanded {
+    border-color: var(--gold);
+    box-shadow: 0 4px 12px rgba(184, 134, 11, 0.15);
+}
+
+.card-content {
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    cursor: pointer;
+}
+
+.card-icon {
+    width: 48px;
+    height: 48px;
+    background-color: #f1f5f9;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #475569;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.card-info {
+    flex: 1;
+}
+
+.card-header-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.process-number {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--navy-blue);
+}
+
+.process-badge {
+    background-color: #e2e8f0;
+    color: #475569;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.card-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gray-text);
+    font-size: 0.9rem;
+}
+
+.meta-separator {
+    color: #cbd5e1;
+}
+
+.card-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.progress-container {
+    text-align: right;
+    width: 140px;
+}
+
+.progress-text {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--navy-blue);
+    margin-bottom: 4px;
+    display: block;
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 6px;
+    background-color: #e2e8f0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background-color: #22c55e;
+    border-radius: 3px;
+}
+
+.chevron-icon {
+    color: #94a3b8;
+    transition: transform 0.2s;
+}
+
+.process-card.expanded .chevron-icon {
+    transform: rotate(180deg);
+}
+
+/* Timeline Container */
+.timeline-panel {
+    border-top: 1px solid var(--gray-border);
+    padding: 32px 24px 24px; /* Top padding for spacing */
+    background-color: white;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    /* Ensure it looks connected */
+    margin-top: -12px; /* Pull up to overlap bottom radius of card if separate, but here we will put it INSIDE the card container */
+}
+
+/* Timeline specific styles will go in the fragment or here */
+.timeline-header {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.timeline-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--navy-blue);
+    margin-bottom: 4px;
+}
+
+.timeline-subtitle {
+    color: var(--gray-text);
+    font-size: 0.9rem;
+}
+
+.timeline-hint {
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+
+/* Timeline Scroll Area */
+.timeline-scroll-area {
+    overflow-x: auto;
+    padding-bottom: 20px;
+    /* Custom Scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.timeline-scroll-area::-webkit-scrollbar {
+    height: 8px;
+}
+
+.timeline-scroll-area::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.timeline-scroll-area::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 4px;
+}
+
+.timeline-steps-container {
+    display: flex;
+    min-width: max-content;
+    padding-top: 20px; /* Space for indicators */
+}
+
+.timeline-step-item {
+    width: 200px;
+    padding: 0 12px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Connector Line */
+.timeline-step-item::before {
+    content: '';
+    position: absolute;
+    top: 19px; /* Align with circle center */
+    left: -50%;
+    width: 100%;
+    height: 2px;
+    background-color: #e2e8f0;
+    z-index: 0;
+}
+
+.timeline-step-item:first-child::before {
+    display: none;
+}
+
+/* Indicator Circle */
+.step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    margin-bottom: 16px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.step-circle i {
+    font-size: 0.9rem;
+}
+
+/* Step Card */
+.step-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    width: 100%;
+    text-align: left;
+    transition: all 0.2s;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Status Variants */
+/* Concluído */
+.status-concluido .step-circle {
+    background-color: var(--green-bg); /* Check if bg needed */
+    border-color: transparent; /* Icon handles color? No, border is usually colored */
+    background: #22c55e;
+    border: none;
+    color: white;
+}
+
+.status-concluido .step-card {
+    border-color: var(--green-border);
+    background-color: var(--green-bg);
+}
+
+.status-concluido .step-status-text {
+    color: var(--green-text);
+}
+
+/* Em Andamento */
+.status-em-andamento .step-circle {
+    background-color: #fff;
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.status-em-andamento .step-card {
+    border-color: var(--gold);
+    background-color: var(--gold-light);
+}
+
+.status-em-andamento .step-status-text {
+    color: var(--gold);
+}
+
+/* Pendente */
+.status-pendente .step-circle {
+    background-color: white;
+    border-color: #fca5a5;
+    color: #fca5a5;
+}
+
+.status-pendente .step-card {
+    border-color: #fee2e2;
+    background-color: #fff; /* Or very light red */
+}
+
+.status-pendente .step-status-text {
+    color: #ef4444;
+}
+
+/* Step Typography */
+.step-status-text {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.step-title-text {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--navy-blue);
+    margin-bottom: 4px;
+    line-height: 1.2;
+}
+
+.step-desc-text {
+    font-size: 0.75rem;
+    color: var(--gray-text);
+    margin-bottom: auto; /* Push date to bottom */
+    line-height: 1.3;
+}
+
+.step-date-text {
+    font-size: 0.7rem;
+    color: var(--gray-text);
+    margin-top: 12px;
+    font-weight: 500;
+}
+
+/* Completed Line Color */
+.timeline-step-item.status-concluido::before {
+    background-color: #22c55e; /* Green line for completed steps? Or just previous? Usually previous. */
+}
+/* This selector is tricky. We want the line leading TO this step to be green if THIS step is completed?
+   Or if the PREVIOUS step is completed?
+   Usually: If Step 2 is active, line 1-2 is green.
+   Let's keep it simple: if a step is "Concluído", the line BEFORE it is green.
+*/
+
+/* Helper to color line before */
+.timeline-step-item.line-active::before {
+    background-color: #22c55e;
+}
+

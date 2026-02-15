@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:title-pattern="$CONTENT_TITLE - JurisCRM">JurisCRM</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/tailwind.css}">
+    
+    <!-- Tailwind CSS (CDN removed) -->
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <script>
+        // Optional: keep theme config if needed for JS interactions, though CSS handles styles now
+    </script>
+</head>
+<body>
+
+    <!-- Include Sidebar Fragment -->
+    <!-- We pass 'activePage' which should be defined in the content page via th:with -->
+    <div th:replace="~{fragments/sidebar :: sidebar(activePage=${activePage})}"></div>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <div layout:fragment="content">
+            <!-- Content will be injected here -->
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+        document.body.addEventListener('htmx:afterSwap', function(evt) {
+            lucide.createIcons();
+        });
+    </script>
+    <th:block layout:fragment="scripts"></th:block>
+
+</body>
+</html>

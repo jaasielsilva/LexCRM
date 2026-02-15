@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processos - JurisCRM</title>
+    
+    <!-- CSRF Token -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <!-- Processos Module CSS -->
+    <link rel="stylesheet" th:href="@{/css/processos.css}">
+    <!-- Tailwind is used for utility classes, but style.css overrides specific components -->
+    <link rel="stylesheet" th:href="@{/css/tailwind.css}">
+    
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/sidebar :: sidebar(activePage='processos')}"></div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="processos-modulo">
+        
+        <!-- Header -->
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Processos</h1>
+                <p class="page-subtitle">Cadastro e acompanhamento de processos por cliente</p>
+            </div>
+            <button onclick="openModal()" class="btn-new-process">
+                <i class="fas fa-plus"></i>
+                Novo Processo
+            </button>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" 
+                   name="query" 
+                   class="search-input" 
+                   placeholder="Buscar por cliente, número ou tipo..."
+                   hx-get="/processos/search" 
+                   hx-trigger="keyup changed delay:500ms" 
+                   hx-target="#process-list">
+        </div>
+
+        <!-- Process List -->
+        <div id="process-list" th:fragment="list">
+            <div th:each="processo : ${processos}" 
+                 class="process-card" 
+                 th:id="'card-' + ${processo.id}">
+                
+                <!-- Card Content (Clickable) -->
+                <div class="card-content" th:attr="onclick=|toggleTimeline('${processo.id}')|">
+                    
+                    <!-- Icon -->
+                    <div class="card-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+
+                    <!-- Info -->
+                    <div class="card-info">
+                        <div class="card-header-row">
+                            <span class="process-number" th:text="${processo.numeroProcesso}">0012345-67.2024</span>
+                            <span class="process-badge" th:text="${processo.tipo}">Trabalhista</span>
+                        </div>
+                        <div class="card-meta-row">
+                            <i class="far fa-user"></i>
+                            <span th:text="${processo.cliente.nome}">Carlos Alberto Silva</span>
+                            <span class="meta-separator">•</span>
+                            <span th:text="${processo.advogadoResponsavel.nomeCompleto}">Dra. Ana Souza</span>
+                        </div>
+                    </div>
+
+                    <!-- Actions / Progress -->
+                    <div class="card-actions">
+                        <div th:replace="~{fragments/progress-bar :: progressBar(${processo})}">
+                            <!-- Fallback for static rendering -->
+                            <div class="progress-container">
+                                <span class="progress-text" th:text="${processo.progresso} + '%'">17%</span>
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" th:style="'width: ' + ${processo.progresso} + '%'"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right chevron-icon" th:id="'chevron-' + ${processo.id}"></i>
+                    </div>
+                </div>
+
+                <!-- Timeline Container (Initially Hidden) -->
+                <div th:id="'timeline-container-' + ${processo.id}" class="hidden">
+                    <div th:attr="hx-get=@{/processos/{id}/timeline(id=${processo.id})}"
+                         hx-trigger="revealed"
+                         hx-swap="innerHTML">
+                         <!-- Loading State -->
+                         <div class="p-8 text-center text-slate-400">
+                             <i class="fas fa-circle-notch fa-spin mr-2"></i> Carregando linha do tempo...
+                         </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Empty State -->
+            <div th:if="${processos.empty}" class="text-center py-12 bg-white rounded-lg border border-dashed border-slate-300">
+                <i class="fas fa-folder-open text-4xl text-slate-300 mb-3"></i>
+                <p class="text-slate-500">Nenhum processo encontrado.</p>
+            </div>
+        </div>
+
+        <!-- New Process Modal (Moved Inside for Scoping) -->
+        <div id="newProcessModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="font-playfair text-xl font-bold text-[var(--navy-blue)]">Novo Processo</h2>
+                    <button onclick="closeModal()" class="btn-ghost">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form th:action="@{/processos/novo}" method="post">
+                    <div class="modal-body">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Numero Processo -->
+                            <div class="form-group col-span-2">
+                                <label class="form-label">Número do Processo</label>
+                                <input type="text" name="numeroProcesso" class="form-input" required placeholder="0000000-00.0000.0.00.0000">
+                            </div>
+    
+                            <!-- Titulo -->
+                            <div class="form-group col-span-2">
+                                <label class="form-label">Título / Assunto</label>
+                                <input type="text" name="titulo" class="form-input" required placeholder="Ex: Ação de Cobrança">
+                            </div>
+    
+                            <!-- Tipo -->
+                            <div class="form-group">
+                                <label class="form-label">Tipo</label>
+                                <select name="tipo" class="form-select" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="Trabalhista">Trabalhista</option>
+                                    <option value="Cível">Cível</option>
+                                    <option value="Família">Família</option>
+                                    <option value="Tributário">Tributário</option>
+                                    <option value="Previdenciário">Previdenciário</option>
+                                    <option value="Criminal">Criminal</option>
+                                    <option value="Administrativo">Administrativo</option>
+                                </select>
+                            </div>
+    
+                            <!-- Cliente -->
+                            <div class="form-group">
+                                <label class="form-label">Cliente</label>
+                                <select name="cliente.id" class="form-select" required>
+                                    <option value="">Selecione...</option>
+                                    <option th:each="cliente : ${clientes}" 
+                                            th:value="${cliente.id}" 
+                                            th:text="${cliente.nome}">Cliente Nome</option>
+                                </select>
+                            </div>
+    
+                            <!-- Vara -->
+                            <div class="form-group">
+                                <label class="form-label">Vara</label>
+                                <input type="text" name="vara" class="form-input" placeholder="Ex: 1ª Vara Cível">
+                            </div>
+    
+                            <!-- Comarca -->
+                            <div class="form-group">
+                                <label class="form-label">Comarca</label>
+                                <input type="text" name="comarca" class="form-input" placeholder="Ex: São Paulo">
+                            </div>
+    
+                            <!-- Advogado Responsável -->
+                            <div class="form-group col-span-2">
+                                <label class="form-label">Advogado Responsável</label>
+                                <select name="advogadoResponsavel.id" class="form-select" required>
+                                    <option value="">Selecione...</option>
+                                    <option th:each="advogado : ${advogados}" 
+                                            th:value="${advogado.id}" 
+                                            th:text="${advogado.nomeCompleto}">Advogado Nome</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Valor da Causa -->
+                            <div class="form-group col-span-2">
+                                <label class="form-label">Valor da Causa (R$)</label>
+                                <input type="number" step="0.01" name="valorCausa" class="form-input" placeholder="0,00">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="closeModal()" class="btn btn-secondary">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar Processo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    <!-- Checklist Modal (Placeholder) -->
+    <div th:replace="~{fragments/checklist-modal :: modal}"></div>
+
+    </main>
+
+    <!-- Scripts -->
+    <script>
+        document.body.addEventListener('htmx:configRequest', function(evt) {
+            var token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            var header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+            evt.detail.headers[header] = token;
+        });
+
+        function openModal() {
+            document.getElementById('newProcessModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('newProcessModal').classList.remove('show');
+        }
+
+        function openChecklistModal() {
+            document.getElementById('checklistModal').classList.add('show');
+        }
+
+        function closeChecklistModal() {
+            document.getElementById('checklistModal').classList.remove('show');
+        }
+
+        window.onclick = function(event) {
+            var modal = document.getElementById('newProcessModal');
+            var checklistModal = document.getElementById('checklistModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+            if (event.target == checklistModal) {
+                closeChecklistModal();
+            }
+        }
+
+        function toggleTimeline(id) {
+            var container = document.getElementById('timeline-container-' + id);
+            var card = document.getElementById('card-' + id);
+            var chevron = document.getElementById('chevron-' + id);
+            
+            if (container.classList.contains('hidden')) {
+                // Expand
+                container.classList.remove('hidden');
+                card.classList.add('expanded');
+                // Trigger HTMX manually if needed, but 'revealed' trigger on inner div might work if we toggle hidden.
+                // However, 'revealed' relies on intersection observer usually.
+                // Let's manually trigger content load if empty
+                var htmxDiv = container.querySelector('[hx-get]');
+                if (htmxDiv && !htmxDiv.innerHTML.trim().includes('timeline-panel')) {
+                    htmx.process(container); // Ensure htmx knows about new DOM
+                    htmx.trigger(htmxDiv, 'revealed');
+                }
+            } else {
+                // Collapse
+                container.classList.add('hidden');
+                card.classList.remove('expanded');
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<div th:fragment="list" xmlns:th="http://www.thymeleaf.org">
+    <div class="flex justify-between items-center mb-6">
+        <h4 class="text-lg font-bold text-gray-800" th:text="${tituloLista}">Lista de Processos</h4>
+        <a href="/processos" class="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">Ver todos</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(processos)}" class="text-center py-12 text-gray-500">
+        <div class="mb-3">
+            <i class="fas fa-inbox text-4xl text-gray-300"></i>
+        </div>
+        <p>Nenhum processo encontrado nesta categoria.</p>
+    </div>
+
+    <div th:unless="${#lists.isEmpty(processos)}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div th:each="processo : ${processos}" class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all group relative">
+            
+            <!-- Header: Status & Icon -->
+            <div class="flex justify-between items-start mb-3">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm"
+                     th:classappend="${processo.status == 'Concluído' ? 'bg-green-50 text-green-600' : 
+                                      (processo.status == 'Em Andamento' ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-600')}">
+                    <i th:if="${processo.status == 'Concluído'}" class="fas fa-check"></i>
+                    <i th:if="${processo.status == 'Em Andamento'}" class="fas fa-clock"></i>
+                    <i th:if="${processo.status == 'Pendente'}" class="fas fa-exclamation"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full"
+                      th:classappend="${processo.status == 'Concluído' ? 'bg-green-50 text-green-600' : 
+                                       (processo.status == 'Em Andamento' ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-600')}"
+                      th:text="${processo.status}">STATUS</span>
+            </div>
+            
+            <!-- Content -->
+            <div class="mb-3">
+                <h5 class="font-bold text-gray-800 text-sm mb-1 truncate" th:text="${processo.numeroProcesso}">0000000-00.2024.8.26.0000</h5>
+                <div class="flex items-center text-xs text-gray-500 mb-1">
+                    <i class="far fa-user mr-1.5 opacity-70"></i>
+                    <span class="truncate" th:text="${processo.cliente?.nome}">Nome do Cliente</span>
+                </div>
+                <div class="flex items-center text-xs text-gray-500">
+                    <i class="fas fa-gavel mr-1.5 opacity-70"></i>
+                    <span th:text="${processo.tipo}">Cível</span>
+                </div>
+            </div>
+
+            <!-- Footer: Date & Link -->
+            <div class="pt-3 mt-1 border-t border-gray-50 flex justify-between items-center">
+                <span class="text-[11px] text-gray-400 font-medium" th:text="${#temporals.format(processo.dataAbertura, 'dd/MM/yyyy')}">01/01/2024</span>
+                
+                <a th:href="@{/processos(id=${processo.id})}" class="text-blue-600 hover:text-blue-800 text-xs font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
+                    Detalhes <i class="fas fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

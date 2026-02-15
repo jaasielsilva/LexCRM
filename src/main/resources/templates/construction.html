@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Em Construção</title>
+</head>
+<body>
+    <div layout:fragment="content" class="flex flex-col items-center justify-center h-full min-h-[500px]">
+        <div class="bg-gray-100 p-8 rounded-full mb-6">
+            <i class="fas fa-hard-hat text-4xl text-gray-500"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">Página em Construção</h2>
+        <p class="text-gray-500 text-center max-w-md">
+            Esta funcionalidade ainda está sendo desenvolvida. <br>
+            Em breve você terá acesso a este recurso.
+        </p>
+        <a href="/dashboard" class="mt-6 px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors">
+            Voltar ao Dashboard
+        </a>
+    </div>
+</body>
+</html>
