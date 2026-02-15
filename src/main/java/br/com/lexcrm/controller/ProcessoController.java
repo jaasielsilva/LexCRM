@@ -28,6 +28,8 @@ public class ProcessoController {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private DocumentoChecklistRepository documentoChecklistRepository;
+    @Autowired
+    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @GetMapping
     public String index(@RequestParam(required = false) String filtro,
@@ -234,7 +236,15 @@ public class ProcessoController {
             etapa.setDescricao(etapasPadrao.get(i)[1]);
             etapa.setOrdem(i + 1);
             etapa.setProcesso(processo);
-            etapa.setStatus("Pendente");
+
+            // A primeira etapa (Cadastro do Cliente) já começa "Em Andamento" com a data de
+            // hoje
+            if (i == 0) {
+                etapa.setStatus("Em Andamento");
+                etapa.setData(LocalDate.now());
+            } else {
+                etapa.setStatus("Pendente");
+            }
 
             if ("Documentos Recebidos".equals(etapa.getNome())) {
                 List<String> docs = Arrays.asList(
@@ -291,9 +301,93 @@ public class ProcessoController {
         return "fragments/htmx-response-wrapper";
     }
 
+    @PostMapping("/etapa/{etapaId}/reabrir")
+    public String reabrirEtapa(@PathVariable Long etapaId,
+            @RequestParam String password,
+            jakarta.servlet.http.HttpServletResponse response,
+            Model model) {
+        EtapaProcesso etapa = etapaProcessoRepository.findById(etapaId).orElseThrow();
+        Processo processo = etapa.getProcesso();
+
+        // 1. Obter usuário logado
+        org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder
+                .getContext().getAuthentication();
+        String currentPrincipalName = auth.getName();
+        Usuario admin = usuarioRepository.findByUsername(currentPrincipalName).orElse(null);
+
+        // 2. Validações de Segurança
+        if (admin == null || admin.getRole() != Role.ADMIN) {
+            response.setStatus(jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN);
+            return null;
+        }
+
+        if (!passwordEncoder.matches(password, admin.getPassword())) {
+            response.setStatus(jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED);
+            return null;
+        }
+
+        // 3. Reabrir Etapa
+        etapa.setStatus("Em Andamento");
+        etapa.setData(LocalDate.now());
+        etapa.setDescricao(etapa.getDescricao() + " (Reaberto em " + LocalDate.now() + ")");
+        etapaProcessoRepository.save(etapa);
+
+        // 4. Sincronizar Processo (Garante que volte para Em Andamento e reseta
+        // finalização)
+        processo.setStatus("Em Andamento");
+        // Se o processo estava finalizado, reseta a etapa de finalização
+        processo.getEtapas().stream()
+                .filter(e -> "Processo Finalizado".equalsIgnoreCase(e.getNome()))
+                .filter(e -> "Concluído".equalsIgnoreCase(e.getStatus()))
+                .forEach(e -> {
+                    e.setStatus("Pendente");
+                    e.setData(null);
+                    etapaProcessoRepository.save(e);
+                });
+        processoRepository.save(processo);
+
+        // 5. Preparar Resposta OOB
+        model.addAttribute("processo", processo);
+        model.addAttribute("processoSelecionado", processo);
+        model.addAttribute("temPendenciaMedica", hasPendenciaMedica(processo.getId()));
+        model.addAttribute("today", LocalDate.now());
+        model.addAttribute("hxOobSwap", true);
+        model.addAttribute("timelineOob", true);
+        model.addAttribute("canEnviadoSeg", canEnviadoSeg(processo));
+
+        // Retorna o fragmento específico do modal atual para atualizar o botão de
+        // reabrir para salvar
+        model.addAttribute("etapa", etapa);
+        String fragment = switch (etapa.getNome()) {
+            case "Documentação", "Documentos Recebidos" -> "fragments/checklist-modal :: content";
+            case "Aguardando Assinatura" -> "fragments/assinatura-modal :: content";
+            case "Laudo Médico Recebido" -> "fragments/laudo-modal :: content";
+            case "Enviado para Seguradora" -> "fragments/enviado-seg-modal :: content";
+            default -> "fragments/generic-modal :: content";
+        };
+
+        if (fragment != null) {
+            return fragment;
+        }
+
+        return "fragments/htmx-response-wrapper";
+    }
+
     @PostMapping("/{processoId}/etapa/{etapaId}/toggle")
     public String toggleEtapa(@PathVariable Long processoId, @PathVariable Long etapaId, Model model) {
         EtapaProcesso etapa = etapaProcessoRepository.findById(etapaId).orElseThrow();
+
+        // Se a etapa já estiver concluída, bloqueia o toggle (Segurança/Integridade)
+        if ("Concluído".equalsIgnoreCase(etapa.getStatus())) {
+            Processo processo = processoRepository.findById(processoId).orElseThrow();
+            model.addAttribute("processo", processo);
+            model.addAttribute("processoSelecionado", processo);
+            model.addAttribute("temPendenciaMedica", hasPendenciaMedica(processo.getId()));
+            model.addAttribute("today", LocalDate.now());
+            model.addAttribute("hxOobSwap", true);
+            model.addAttribute("canEnviadoSeg", canEnviadoSeg(processo));
+            return "fragments/htmx-response-wrapper";
+        }
 
         // Cycle Status
         switch (etapa.getStatus()) {
@@ -531,9 +625,15 @@ public class ProcessoController {
         etapaProcessoRepository.save(etapa);
 
         model.addAttribute("etapa", etapa);
-        model.addAttribute("processo", processoRepository.findById(processo.getId()).orElseThrow());
+        Processo p = processoRepository.findById(processo.getId()).orElseThrow();
+        model.addAttribute("processo", p);
+        model.addAttribute("processoSelecionado", p);
+        model.addAttribute("temPendenciaMedica", hasPendenciaMedica(p.getId()));
         model.addAttribute("financeiroPendente", fin);
+        model.addAttribute("today", LocalDate.now());
         model.addAttribute("hxOobSwap", true);
+        model.addAttribute("timelineOob", true);
+        model.addAttribute("canEnviadoSeg", canEnviadoSeg(p));
         return "fragments/laudo-modal :: content";
     }
 
@@ -565,6 +665,9 @@ public class ProcessoController {
         model.addAttribute("today", LocalDate.now());
         model.addAttribute("hxOobSwap", true);
         model.addAttribute("timelineOob", true);
+        model.addAttribute("canEnviadoSeg", canEnviadoSeg(processo));
+        model.addAttribute("etapa", etapa);
+        model.addAttribute("successMessage", "Laudo registrado e pago com sucesso.");
 
         return "fragments/laudo-modal :: content";
     }
@@ -753,6 +856,15 @@ public class ProcessoController {
         model.addAttribute("successMessage", "Recebimento registrado.");
         model.addAttribute("canEnviadoSeg", canEnviadoSeg(processo));
         return "fragments/seg-modal :: content";
+    }
+
+    @GetMapping("/etapa/{etapaId}/generic-modal")
+    public String getGenericModal(@PathVariable Long etapaId, Model model) {
+        EtapaProcesso etapa = etapaProcessoRepository.findById(etapaId).orElseThrow();
+        model.addAttribute("etapa", etapa);
+        model.addAttribute("processo", etapa.getProcesso());
+        model.addAttribute("today", LocalDate.now());
+        return "fragments/generic-modal :: content";
     }
 
     private java.math.BigDecimal parseBRL(String v) {

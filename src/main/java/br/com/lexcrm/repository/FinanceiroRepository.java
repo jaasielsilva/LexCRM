@@ -13,4 +13,8 @@ public interface FinanceiroRepository extends JpaRepository<Financeiro, Long> {
 
     @Query("SELECT COALESCE(SUM(f.valor), 0) FROM Financeiro f WHERE f.status = :status")
     BigDecimal sumValorByStatus(@Param("status") String status);
+
+    @Query("SELECT COALESCE(SUM(f.valor), 0) FROM Financeiro f WHERE f.status = :status AND f.dataVencimento >= :startDate")
+    BigDecimal sumValorByStatusAndDataVencimentoAfter(@Param("status") String status,
+            @Param("startDate") java.time.LocalDate startDate);
 }

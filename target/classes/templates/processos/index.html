@@ -388,6 +388,47 @@
                 card.classList.remove('expanded');
             }
         }
+
+        async function confirmReabrirEtapa(etapaId) {
+            const { value: password } = await Swal.fire({
+                title: 'Reabrir Etapa?',
+                text: 'Somente administradores podem reabrir etapas concluídas. Digite sua senha para confirmar:',
+                input: 'password',
+                inputPlaceholder: 'Sua senha de login',
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar Reabertura',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#1e3a8a',
+                inputAttributes: {
+                    autocapitalize: 'off',
+                    autocorrect: 'off'
+                }
+            });
+
+            if (password) {
+                // Envia via HTMX para o endpoint de reabertura
+                const body = new FormData();
+                body.append('password', password);
+
+                // Usando htmx.ajax para disparar o POST e atualizar o modal
+                htmx.ajax('POST', `/processos/etapa/${etapaId}/reabrir`, {
+                    values: { password: password },
+                    target: '#checklist-modal-body',
+                    swap: 'innerHTML'
+                }).then((detail) => {
+                    const status = detail.xhr.status;
+                    if (status === 200) {
+                        if (window.uiToastSuccess) window.uiToastSuccess('Etapa reaberta com sucesso!');
+                    } else if (status === 401) {
+                        if (window.uiToastError) window.uiToastError('Senha de administrador incorreta.');
+                    } else if (status === 403) {
+                        if (window.uiToastError) window.uiToastError('Você não tem permissão de administrador.');
+                    } else {
+                        if (window.uiToastError) window.uiToastError('Ocorreu um erro ao tentar reabrir.');
+                    }
+                });
+            }
+        }
     </script>
     <script th:inline="javascript">
         /*<![CDATA[*/

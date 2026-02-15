@@ -13,7 +13,7 @@
         <span th:text="${successMessage}">Atualizado com sucesso</span>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" th:if="${etapa.status != 'Concluído'}">
         <!-- OPÇÃO A: GEROU SINISTRO -->
         <div class="p-4 rounded-xl border border-blue-100 bg-blue-50/50 flex flex-col justify-between">
             <div class="flex items-center gap-3 mb-3">
@@ -67,12 +67,28 @@
         </div>
     </div>
 
-    <div class="mt-4 flex justify-end">
-        <button type="button" class="btn-premium-secondary !py-1 !px-3 font-semibold text-xs"
-            onclick="closeChecklistModal()">Fechar</button>
+    <!-- Visualização de Concluído -->
+    <div th:if="${etapa.status == 'Concluído'}" class="bg-green-50 p-4 rounded-xl border border-green-200 mb-4">
+        <div class="flex items-center text-green-800">
+            <i class="fas fa-check-circle mr-2 text-lg"></i>
+            <span class="font-bold">Processo junto à seguradora finalizado.</span>
+        </div>
+        <p class="text-xs text-green-700 mt-1" th:text="${etapa.descricao}"></p>
     </div>
 
-    <script th:if="${etapa.status == 'Concluído'}" th:inline="javascript">
+    <div class="mt-4 flex justify-end gap-2">
+        <button type="button" class="btn-premium-secondary !py-1 !px-3 font-semibold text-xs"
+            onclick="closeChecklistModal()">Fechar</button>
+
+        <!-- Botão Reabrir (Só para Admin se concluído) -->
+        <button sec:authorize="hasRole('ADMIN')" th:if="${etapa.status == 'Concluído'}" type="button"
+            class="btn-premium-secondary !bg-amber-100 !text-amber-700 !border-amber-200 py-1 px-3 text-sm font-semibold"
+            th:attr="onclick=|confirmReabrirEtapa('${etapa.id}')|">
+            <i class="fas fa-lock-open mr-2"></i>Reabrir Etapa (Admin)
+        </button>
+    </div>
+
+    <script th:if="${successMessage != null}" th:inline="javascript">
         if (window.closeChecklistModal) {
             window.closeChecklistModal();
         } else {

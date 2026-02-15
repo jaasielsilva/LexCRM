@@ -9,10 +9,11 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
             String nome,
             String cpfCnpj,
             String email,
-            String telefone
-    );
+            String telefone);
 
     boolean existsByCpfCnpj(String cpfCnpj);
 
     boolean existsByCpfCnpjAndIdNot(String cpfCnpj, Long id);
+
+    List<br.com.lexcrm.model.Cliente> findTop3ByOrderByIdDesc();
 }

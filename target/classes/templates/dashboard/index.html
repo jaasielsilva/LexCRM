@@ -1,26 +1,30 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Indicadores (MTD) - CRM Jurídico</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
 </head>
+
 <body class="bg-light">
 
-    <div th:if="${#authentication?.name != null}"
-         th:attr="data-user-email=${#authentication.name}"
-         style="display: none;"></div>
+    <div th:if="${#authentication?.name != null}" th:attr="data-user-email=${#authentication.name}"
+        style="display: none;"></div>
 
     <div th:replace="~{fragments/sidebar :: sidebar(activePage='dashboard')}"></div>
 
@@ -36,6 +40,17 @@
 
             <div class="p-6 space-y-6">
                 <div class="dashboard-kpi-grid">
+                    <div class="dashboard-card dashboard-card--accent"
+                        onclick="toggleDetails('faturamento_doze_meses', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${faturamentoDozeMeses}">R$ 0,00</div>
+                            <div class="dashboard-card-label">Faturamento 12 Meses</div>
+                        </div>
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+
                     <div class="dashboard-card dashboard-card--success" onclick="toggleDetails('novos_contatos', this)">
                         <div class="dashboard-card-content">
                             <div class="dashboard-card-value">8</div>
@@ -46,7 +61,8 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--success" onclick="toggleDetails('receber_seguradora', this)">
+                    <div class="dashboard-card dashboard-card--success"
+                        onclick="toggleDetails('receber_seguradora', this)">
                         <div class="dashboard-card-content">
                             <div class="dashboard-card-value" th:text="${seguradoraAReceberTotal}">R$ 0,00</div>
                             <div class="dashboard-card-label">A Receber (Seg)</div>
@@ -66,7 +82,8 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--danger" onclick="toggleDetails('pendencias_criticas', this)">
+                    <div class="dashboard-card dashboard-card--danger"
+                        onclick="toggleDetails('pendencias_criticas', this)">
                         <div class="dashboard-card-content">
                             <div class="dashboard-card-value" th:text="${pendenciasCriticasCount}">0</div>
                             <div class="dashboard-card-label">Pendências Críticas</div>
@@ -76,7 +93,8 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--accent" onclick="toggleDetails('processos_ativos', this)">
+                    <div class="dashboard-card dashboard-card--accent"
+                        onclick="toggleDetails('processos_ativos', this)">
                         <div class="dashboard-card-content">
                             <div class="dashboard-card-value" th:text="${processosAtivosCount}">0</div>
                             <div class="dashboard-card-label">Processos Ativos</div>
@@ -86,7 +104,8 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--success" onclick="toggleDetails('processos_arquivados', this)">
+                    <div class="dashboard-card dashboard-card--success"
+                        onclick="toggleDetails('processos_arquivados', this)">
                         <div class="dashboard-card-content">
                             <div class="dashboard-card-value" th:text="${processosArquivadosCount}">0</div>
                             <div class="dashboard-card-label">Arquivados (Deferidos)</div>
@@ -103,9 +122,11 @@
                 </div>
 
                 <div class="dashboard-flow-grid">
-                    <div class="dashboard-card dashboard-card--info" onclick="toggleDetails('etapa_cadastro_cliente', this)">
+                    <div class="dashboard-card dashboard-card--info"
+                        onclick="toggleDetails('etapa_cadastro_cliente', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_cadastro_cliente'] ?: 0}">0</div>
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_cadastro_cliente'] ?: 0}">0
+                            </div>
                             <div class="dashboard-card-label">Cadastro do Cliente</div>
                         </div>
                         <div class="dashboard-card-icon">
@@ -113,9 +134,11 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--warning" onclick="toggleDetails('etapa_documentos_solicitados', this)">
+                    <div class="dashboard-card dashboard-card--warning"
+                        onclick="toggleDetails('etapa_documentos_solicitados', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_documentos_solicitados'] ?: 0}">0</div>
+                            <div class="dashboard-card-value"
+                                th:text="${flowCounts['etapa_documentos_solicitados'] ?: 0}">0</div>
                             <div class="dashboard-card-label">Documentos Solicitados</div>
                         </div>
                         <div class="dashboard-card-icon">
@@ -123,9 +146,11 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--info" onclick="toggleDetails('etapa_documentos_recebidos', this)">
+                    <div class="dashboard-card dashboard-card--info"
+                        onclick="toggleDetails('etapa_documentos_recebidos', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_documentos_recebidos'] ?: 0}">0</div>
+                            <div class="dashboard-card-value"
+                                th:text="${flowCounts['etapa_documentos_recebidos'] ?: 0}">0</div>
                             <div class="dashboard-card-label">Documentos Recebidos</div>
                         </div>
                         <div class="dashboard-card-icon">
@@ -133,9 +158,11 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--info" onclick="toggleDetails('etapa_analise_documental', this)">
+                    <div class="dashboard-card dashboard-card--info"
+                        onclick="toggleDetails('etapa_analise_documental', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_analise_documental'] ?: 0}">0</div>
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_analise_documental'] ?: 0}">0
+                            </div>
                             <div class="dashboard-card-label">Análise Documental</div>
                         </div>
                         <div class="dashboard-card-icon">
@@ -143,9 +170,11 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--danger" onclick="toggleDetails('etapa_pendencia_documental', this)">
+                    <div class="dashboard-card dashboard-card--danger"
+                        onclick="toggleDetails('etapa_pendencia_documental', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_pendencia_documental'] ?: 0}">0</div>
+                            <div class="dashboard-card-value"
+                                th:text="${flowCounts['etapa_pendencia_documental'] ?: 0}">0</div>
                             <div class="dashboard-card-label">Pendência Documental</div>
                         </div>
                         <div class="dashboard-card-icon">
@@ -153,9 +182,11 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--warning" onclick="toggleDetails('etapa_aguardando_assinatura', this)">
+                    <div class="dashboard-card dashboard-card--warning"
+                        onclick="toggleDetails('etapa_aguardando_assinatura', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_aguardando_assinatura'] ?: 0}">0</div>
+                            <div class="dashboard-card-value"
+                                th:text="${flowCounts['etapa_aguardando_assinatura'] ?: 0}">0</div>
                             <div class="dashboard-card-label">Aguardando Assinatura</div>
                         </div>
                         <div class="dashboard-card-icon">
@@ -163,9 +194,11 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--accent" onclick="toggleDetails('etapa_pericia_medica', this)">
+                    <div class="dashboard-card dashboard-card--accent"
+                        onclick="toggleDetails('etapa_pericia_medica', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_pericia_medica'] ?: 0}">0</div>
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_pericia_medica'] ?: 0}">0
+                            </div>
                             <div class="dashboard-card-label">Perícia Médica</div>
                         </div>
                         <div class="dashboard-card-icon">
@@ -173,9 +206,11 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--warning" onclick="toggleDetails('etapa_laudo_recebido', this)">
+                    <div class="dashboard-card dashboard-card--warning"
+                        onclick="toggleDetails('etapa_laudo_recebido', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_laudo_recebido'] ?: 0}">0</div>
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_laudo_recebido'] ?: 0}">0
+                            </div>
                             <div class="dashboard-card-label">Laudo Médico Recebido</div>
                         </div>
                         <div class="dashboard-card-icon">
@@ -183,9 +218,11 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--info" onclick="toggleDetails('etapa_enviado_seguradora', this)">
+                    <div class="dashboard-card dashboard-card--info"
+                        onclick="toggleDetails('etapa_enviado_seguradora', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_enviado_seguradora'] ?: 0}">0</div>
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_enviado_seguradora'] ?: 0}">0
+                            </div>
                             <div class="dashboard-card-label">Enviado para Seguradora</div>
                         </div>
                         <div class="dashboard-card-icon">
@@ -193,9 +230,11 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--info" onclick="toggleDetails('etapa_analise_seguradora', this)">
+                    <div class="dashboard-card dashboard-card--info"
+                        onclick="toggleDetails('etapa_analise_seguradora', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_analise_seguradora'] ?: 0}">0</div>
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_analise_seguradora'] ?: 0}">0
+                            </div>
                             <div class="dashboard-card-label">Em Análise (Seg)</div>
                         </div>
                         <div class="dashboard-card-icon">
@@ -203,9 +242,11 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--danger" onclick="toggleDetails('etapa_pendencia_seguradora', this)">
+                    <div class="dashboard-card dashboard-card--danger"
+                        onclick="toggleDetails('etapa_pendencia_seguradora', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_pendencia_seguradora'] ?: 0}">0</div>
+                            <div class="dashboard-card-value"
+                                th:text="${flowCounts['etapa_pendencia_seguradora'] ?: 0}">0</div>
                             <div class="dashboard-card-label">Pendência (Seg)</div>
                         </div>
                         <div class="dashboard-card-icon">
@@ -213,9 +254,11 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--success" onclick="toggleDetails('etapa_sinistro_gerado', this)">
+                    <div class="dashboard-card dashboard-card--success"
+                        onclick="toggleDetails('etapa_sinistro_gerado', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_sinistro_gerado'] ?: 0}">0</div>
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_sinistro_gerado'] ?: 0}">0
+                            </div>
                             <div class="dashboard-card-label">Sinistro Gerado</div>
                         </div>
                         <div class="dashboard-card-icon">
@@ -223,9 +266,11 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--success" onclick="toggleDetails('etapa_processo_finalizado', this)">
+                    <div class="dashboard-card dashboard-card--success"
+                        onclick="toggleDetails('etapa_processo_finalizado', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_processo_finalizado'] ?: 0}">0</div>
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_processo_finalizado'] ?: 0}">
+                                0</div>
                             <div class="dashboard-card-label">Processo Finalizado</div>
                         </div>
                         <div class="dashboard-card-icon">
@@ -255,14 +300,22 @@
 
     <script>
         var dashboardDetailsConfig = {
+            faturamento_doze_meses: {
+                statusType: 'good',
+                statusLabel: 'faturamento',
+                description: 'Volume total de faturamento recebido nos últimos 12 meses renováveis.',
+                trend: 'Visão estratégica do fluxo de caixa histórico.',
+                nextStep: 'Analisar sazonalidade e projeções de crescimento.'
+            },
             novos_contatos: {
                 statusType: 'good',
                 statusLabel: 'bom',
-                description: 'Resumo dos novos contatos cadastrados neste período e seu impacto no funil comercial.',
-                trend: 'Volume saudável de contatos entrando no topo do funil.',
+                description: 'Resumo dos últimos clientes cadastrados recentemente no sistema.',
+                trend: 'Visão histórica dos 3 clientes mais recentes.',
                 nextStep: 'Classificar e qualificar os novos contatos para oportunidades.',
                 link: '/clientes',
-                linkLabel: 'Ver clientes'
+                linkLabel: 'Ver clientes',
+                preview: '/dashboard/preview?filtro=novos_contatos'
             },
             pagar_medico: {
                 statusType: 'risk',
@@ -510,9 +563,9 @@
                     previewElement.classList.remove('d-none');
                     previewElement.innerHTML = '<div class=\"dashboard-preview-loading\">Carregando...</div>';
                     fetch(config.preview, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-                        .then(function(r) { return r.text(); })
-                        .then(function(html) { previewElement.innerHTML = html; })
-                        .catch(function() {
+                        .then(function (r) { return r.text(); })
+                        .then(function (html) { previewElement.innerHTML = html; })
+                        .catch(function () {
                             previewElement.innerHTML = '';
                             previewElement.classList.add('d-none');
                         });
@@ -531,6 +584,9 @@
             panel.classList.remove('hidden');
         }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 </body>
+
 </html>

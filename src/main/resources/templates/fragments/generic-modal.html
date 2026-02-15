@@ -1,0 +1,67 @@
+<div th:fragment="content" class="generic-modal-container p-1">
+    <div class="modal-header-premium mb-6">
+        <h3 class="text-xl font-playfair font-bold text-[var(--navy-blue)]">
+            <i class="fas fa-info-circle mr-2 text-[var(--gold)]"></i>
+            <span th:text="${etapa.nome}">Nome da Etapa</span>
+        </h3>
+        <p class="text-sm text-gray-500" th:text="${etapa.descricao}">Descrição da etapa...</p>
+    </div>
+
+    <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 mb-6">
+        <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl shadow-sm"
+                th:classappend="${etapa.status == 'Concluído' ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}">
+                <i th:if="${etapa.status == 'Concluído'}" class="fas fa-check-circle"></i>
+                <i th:if="${etapa.status != 'Concluído'}" class="fas fa-clock"></i>
+            </div>
+            <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-0.5">Status
+                    Atual</span>
+                <span class="text-lg font-bold"
+                    th:classappend="${etapa.status == 'Concluído' ? 'text-green-700' : 'text-amber-700'}"
+                    th:text="${etapa.status}">Concluído</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200/50">
+            <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-1">Data da
+                    Ação</span>
+                <span class="text-sm font-semibold text-gray-700"
+                    th:text="${etapa.data != null ? #temporals.format(etapa.data, 'dd/MM/yyyy') : '-'}">01/01/2024</span>
+            </div>
+            <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-1">Responsável</span>
+                <span class="text-sm font-semibold text-gray-700"
+                    th:text="${etapa.processo.advogadoResponsavel?.nomeCompleto}">Administrador</span>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${etapa.status == 'Concluído'}" class="bg-blue-50/50 p-4 rounded-xl border border-blue-100 mb-6">
+        <div class="flex items-start gap-3">
+            <i class="fas fa-shield-alt text-blue-600 mt-1"></i>
+            <p class="text-xs text-blue-800 leading-relaxed">
+                Esta etapa foi finalizada e está <strong>protegida contra alterações acidentais</strong>.
+                Somente um administrador pode reabri-la mediante confirmação de senha.
+            </p>
+        </div>
+    </div>
+
+    <div class="flex justify-end gap-3">
+        <button type="button" class="btn-premium-secondary !py-2 !px-5" onclick="closeChecklistModal()">Fechar</button>
+
+        <!-- Botão Reabrir (Só para Admin se concluído) -->
+        <button sec:authorize="hasRole('ADMIN')" th:if="${etapa.status == 'Concluído'}" type="button"
+            class="btn-premium-secondary !bg-amber-100 !text-amber-700 !border-amber-200 !py-2 !px-5 font-bold shadow-sm hover:shadow-md transition-all"
+            th:attr="onclick=|confirmReabrirEtapa('${etapa.id}')|">
+            <i class="fas fa-lock-open mr-2"></i>Reabrir Etapa (Admin)
+        </button>
+    </div>
+
+    <!-- OOB Updates for Timeline -->
+    <div th:if="${hxOobSwap}">
+        <div th:replace="~{fragments/timeline-view :: timeline}"></div>
+        <div th:replace="~{fragments/progress-bar :: progressBar(${processo})}"></div>
+    </div>
+</div>

@@ -22,7 +22,7 @@
     </div>
 
     <!-- Form Dados Pessoais -->
-    <form id="form-perfil-info" th:attr="hx-post=@{/perfil/salvar}" hx-swap="none" class="space-y-4">
+    <form id="form-perfil-info" th:attr="hx-post=@{/perfil/salvar}" class="space-y-4">
         <div class="form-group-premium">
             <label class="form-label-premium">Nome Completo</label>
             <div class="form-control-wrapper">
@@ -45,7 +45,7 @@
     </form>
 
     <!-- Form Alterar Senha (Oculto Inicialmente) -->
-    <form id="form-perfil-senha" th:attr="hx-post=@{/perfil/senha}" hx-swap="none" class="space-y-4 hidden">
+    <form id="form-perfil-senha" th:attr="hx-post=@{/perfil/senha}" class="space-y-4 hidden">
         <div class="form-group-premium">
             <label class="form-label-premium">Senha Atual</label>
             <div class="form-control-wrapper">

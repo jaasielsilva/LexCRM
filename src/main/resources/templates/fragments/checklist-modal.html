@@ -46,10 +46,19 @@
 
     <div class="mt-4 flex justify-end gap-2">
         <button type="button" class="btn btn-secondary" onclick="closeChecklistModal()">Fechar</button>
-        <button type="button" class="btn-premium-primary py-2 px-4 text-sm"
+
+        <!-- Botão Salvar (Só se não concluído) -->
+        <button th:if="${etapa.status != 'Concluído'}" type="button" class="btn-premium-primary py-2 px-4 text-sm"
             th:attr="hx-post=@{/processos/etapa/{eid}/checklist/save(eid=${etapa.id})}" hx-swap="innerHTML"
             hx-target="#checklist-modal-body">
             Confirmar Recebimento
+        </button>
+
+        <!-- Botão Reabrir (Só para Admin se concluído) -->
+        <button sec:authorize="hasRole('ADMIN')" th:if="${etapa.status == 'Concluído'}" type="button"
+            class="btn-premium-secondary !bg-amber-100 !text-amber-700 !border-amber-200 py-2 px-4 text-sm"
+            th:attr="onclick=|confirmReabrirEtapa('${etapa.id}')|">
+            <i class="fas fa-lock-open mr-2"></i>Reabrir Etapa (Admin)
         </button>
     </div>
 
@@ -59,11 +68,11 @@
         <div th:replace="~{fragments/progress-bar :: progressBar(${processo})}"></div>
     </div>
 
-    <!-- Script para fechar modal e avisar sucesso se concluído -->
-    <script th:if="${etapa.status == 'Concluído'}" th:inline="javascript">
+    <!-- Script para fechar modal e avisar sucesso se concluir (Via POST) -->
+    <script th:if="${successMessage != null}" th:inline="javascript">
         closeChecklistModal();
         if (window.uiToastSuccess) {
-            window.uiToastSuccess('Documentação recebida e etapa concluída!');
+            window.uiToastSuccess(/*[[${successMessage}]]*/ 'Sucesso!');
         }
     </script>
 </div>

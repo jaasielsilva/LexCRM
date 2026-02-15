@@ -96,6 +96,12 @@
                                     padding: '0',
                                     customClass: {
                                         popup: 'modal-content-premium'
+                                    },
+                                    didOpen: () => {
+                                        const container = document.querySelector('.swal2-html-container');
+                                        if (container && window.htmx) {
+                                            htmx.process(container);
+                                        }
                                     }
                                 });
                             });

@@ -24,11 +24,14 @@
                 th:classappend="${etapa.status == 'Concluído' ? 'status-concluido' : (etapa.status == 'Em Andamento' ? 'status-em-andamento' : 'status-pendente')} + 
                                  (${etapa.status == 'Concluído' || etapa.status == 'Em Andamento' ? ' line-active' : ''})">
 
-                <!-- Indicator Circle (Clickable) -->
+                <!-- Indicator Circle (Clickable unless Concluído, then opens Info Modal) -->
                 <div class="step-circle"
                     th:if="${!(etapa.nome == 'Documentação' or etapa.nome == 'Documentos Recebidos' or etapa.nome == 'Aguardando Assinatura' or etapa.nome == 'Laudo Médico Recebido' or etapa.nome == 'Sinistro Gerado' or etapa.nome == 'Enviado para Seguradora')}"
-                    th:attr="hx-post=@{/processos/{pid}/etapa/{eid}/toggle(pid=${processoSelecionado.id}, eid=${etapa.id})}"
-                    hx-target="closest .timeline-panel" hx-swap="outerHTML">
+                    th:attr="hx-post=${etapa.status != 'Concluído'} ? @{/processos/{pid}/etapa/{eid}/toggle(pid=${processoSelecionado.id}, eid=${etapa.id})} : null, 
+                             hx-get=${etapa.status == 'Concluído'} ? @{/processos/etapa/{eid}/generic-modal(eid=${etapa.id})} : null,
+                             hx-target=${etapa.status == 'Concluído'} ? '#checklist-modal-body' : 'closest .timeline-panel',
+                             hx-swap=${etapa.status == 'Concluído'} ? 'innerHTML' : 'outerHTML'"
+                    th:styleappend="${etapa.status == 'Concluído'} ? ';cursor:pointer;opacity:0.9;' : ''">
                     <i th:if="${etapa.status == 'Concluído'}" class="fas fa-check"></i>
                     <i th:if="${etapa.status == 'Em Andamento'}" class="fas fa-clock"></i>
                     <i th:if="${etapa.status == 'Pendente'}" class="fas fa-exclamation"></i>
@@ -80,11 +83,14 @@
                     <i th:if="${etapa.status == 'Pendente'}" class="fas fa-exclamation"></i>
                 </div>
 
-                <!-- Card (Also Clickable for better UX) -->
+                <!-- Card (Also Clickable for better UX, unless Concluído, then opens Info Modal) -->
                 <div class="step-card"
                     th:if="${!(etapa.nome == 'Documentação' or etapa.nome == 'Documentos Recebidos' or etapa.nome == 'Aguardando Assinatura' or etapa.nome == 'Laudo Médico Recebido' or etapa.nome == 'Sinistro Gerado' or etapa.nome == 'Enviado para Seguradora')}"
-                    th:attr="hx-post=@{/processos/{pid}/etapa/{eid}/toggle(pid=${processoSelecionado.id}, eid=${etapa.id})}"
-                    hx-target="closest .timeline-panel" hx-swap="outerHTML" style="cursor: pointer;">
+                    th:attr="hx-post=${etapa.status != 'Concluído'} ? @{/processos/{pid}/etapa/{eid}/toggle(pid=${processoSelecionado.id}, eid=${etapa.id})} : null, 
+                             hx-get=${etapa.status == 'Concluído'} ? @{/processos/etapa/{eid}/generic-modal(eid=${etapa.id})} : null,
+                             hx-target=${etapa.status == 'Concluído'} ? '#checklist-modal-body' : 'closest .timeline-panel',
+                             hx-swap=${etapa.status == 'Concluído'} ? 'innerHTML' : 'outerHTML'"
+                    style="cursor: pointer;">
 
                     <!-- Status Label -->
                     <div class="step-status-text">

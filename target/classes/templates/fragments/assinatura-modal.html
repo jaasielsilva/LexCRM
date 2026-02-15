@@ -16,7 +16,7 @@
                 <strong>Enviado ao cliente. Aguardando retorno.</strong><br>
                 Enviou para o cliente a documentação para assinatura?
             </p>
-            <div class="mt-2">
+            <div class="mt-2" th:if="${etapa.status != 'Concluído'}">
                 <button type="button" class="btn btn-warning text-xs"
                     th:attr="hx-post=@{/processos/etapa/{eid}/assinatura/enviar(eid=${etapa.id})}"
                     hx-target="closest .assinatura-modal-container" hx-swap="outerHTML">
@@ -27,7 +27,7 @@
 
         <div class="p-3 bg-green-50 border border-green-200 rounded">
             <p class="text-sm text-green-800">Já recebeu a documentação assinada? Marque como concluído.</p>
-            <div class="mt-2 flex items-center gap-2">
+            <div class="mt-2 flex items-center gap-2" th:if="${etapa.status != 'Concluído'}">
                 <button type="button" class="btn btn-success"
                     th:attr="hx-post=@{/processos/etapa/{eid}/assinatura/anexar(eid=${etapa.id})}"
                     hx-target="closest .assinatura-modal-container" hx-swap="outerHTML">
@@ -38,8 +38,14 @@
         </div>
     </div>
 
-    <div class="mt-4 flex justify-end">
+    <div class="mt-4 flex justify-end gap-2">
         <button type="button" class="btn btn-secondary" onclick="closeChecklistModal()">Fechar</button>
+        <!-- Botão Reabrir (Só para Admin se concluído) -->
+        <button sec:authorize="hasRole('ADMIN')" th:if="${etapa.status == 'Concluído'}" type="button"
+            class="btn-premium-secondary !bg-amber-100 !text-amber-700 !border-amber-200 py-1 px-3 text-sm"
+            th:attr="onclick=|confirmReabrirEtapa('${etapa.id}')|">
+            <i class="fas fa-lock-open mr-2"></i>Reabrir Etapa (Admin)
+        </button>
     </div>
 
     <div th:if="${hxOobSwap}">
