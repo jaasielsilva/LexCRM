@@ -127,19 +127,14 @@
                 <form th:action="@{/processos/novo}" method="post">
                     <div class="modal-body">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Numero Processo -->
                             <div class="form-group col-span-2">
                                 <label class="form-label">Número do Processo</label>
                                 <input type="text" name="numeroProcesso" class="form-input" required placeholder="0000000-00.0000.0.00.0000">
                             </div>
-    
-                            <!-- Titulo -->
                             <div class="form-group col-span-2">
                                 <label class="form-label">Título / Assunto</label>
                                 <input type="text" name="titulo" class="form-input" required placeholder="Ex: Ação de Cobrança">
                             </div>
-    
-                            <!-- Tipo -->
                             <div class="form-group">
                                 <label class="form-label">Tipo</label>
                                 <select name="tipo" class="form-select" required>
@@ -153,8 +148,6 @@
                                     <option value="Administrativo">Administrativo</option>
                                 </select>
                             </div>
-    
-                            <!-- Cliente -->
                             <div class="form-group">
                                 <label class="form-label">Cliente</label>
                                 <select name="cliente.id" class="form-select" required>
@@ -164,20 +157,14 @@
                                             th:text="${cliente.nome}">Cliente Nome</option>
                                 </select>
                             </div>
-    
-                            <!-- Vara -->
                             <div class="form-group">
                                 <label class="form-label">Vara</label>
                                 <input type="text" name="vara" class="form-input" placeholder="Ex: 1ª Vara Cível">
                             </div>
-    
-                            <!-- Comarca -->
                             <div class="form-group">
                                 <label class="form-label">Comarca</label>
                                 <input type="text" name="comarca" class="form-input" placeholder="Ex: São Paulo">
                             </div>
-    
-                            <!-- Advogado Responsável -->
                             <div class="form-group col-span-2">
                                 <label class="form-label">Advogado Responsável</label>
                                 <select name="advogadoResponsavel.id" class="form-select" required>
@@ -187,11 +174,9 @@
                                             th:text="${advogado.nomeCompleto}">Advogado Nome</option>
                                 </select>
                             </div>
-                            
-                            <!-- Valor da Causa -->
                             <div class="form-group col-span-2">
-                                <label class="form-label">Valor da Causa (R$)</label>
-                                <input type="number" step="0.01" name="valorCausa" class="form-input" placeholder="0,00">
+                                <label class="form-label">Valor da Causa</label>
+                                <input type="text" name="valorCausa" class="form-input" placeholder="R$ 0,00">
                             </div>
                         </div>
                     </div>
@@ -216,31 +201,92 @@
             evt.detail.headers[header] = token;
         });
 
+        document.body.addEventListener('htmx:afterSwap', function(evt) {
+            if (!evt.detail || !evt.detail.target || evt.detail.target.id !== 'checklist-modal-body') {
+                return;
+            }
+            Swal.fire({
+                title: 'Checklist',
+                html: evt.detail.target.innerHTML,
+                showConfirmButton: false,
+                showCancelButton: false,
+                width: 860
+            });
+            setTimeout(function(){
+                var htmlContainer = document.querySelector('.swal2-container .swal2-html-container');
+                if (htmlContainer && window.htmx && typeof htmx.process === 'function') {
+                    htmx.process(htmlContainer);
+                }
+            }, 0);
+        });
+
         function openModal() {
-            document.getElementById('newProcessModal').classList.add('show');
+            var modalContent = document.querySelector('#newProcessModal .modal-content');
+            if (!modalContent) {
+                return;
+            }
+            var clone = modalContent.cloneNode(true);
+            Swal.fire({
+                html: clone,
+                showConfirmButton: false,
+                showCancelButton: false,
+                width: 860,
+                padding: 0
+            }).then(function(){});
+            setTimeout(function(){
+                var container = document.querySelector('.swal2-container .modal-content');
+                if (!container) return;
+                var form = container.querySelector('form');
+                var num = container.querySelector('input[name="numeroProcesso"]');
+                var val = container.querySelector('input[name="valorCausa"]');
+                if (num && window.uiMaskProcessNumberInput) window.uiMaskProcessNumberInput(num);
+                if (val && window.uiMaskMoneyInput) window.uiMaskMoneyInput(val);
+                if (form) {
+                    form.addEventListener('submit', function(e){
+                        var errors = [];
+                        var titulo = form.querySelector('input[name="titulo"]').value.trim();
+                        var tipo = form.querySelector('select[name="tipo"]').value.trim();
+                        var clienteSel = form.querySelector('select[name="cliente.id"]').value.trim();
+                        var advSel = form.querySelector('select[name="advogadoResponsavel.id"]').value.trim();
+                        var numVal = num ? num.value.trim() : '';
+                        var valVal = val ? val.value.trim() : '';
+                        if (!numVal) errors.push('Informe o número do processo.');
+                        if (!titulo) errors.push('Informe o título/assunto.');
+                        if (!tipo) errors.push('Selecione o tipo.');
+                        if (!clienteSel) errors.push('Selecione o cliente.');
+                        if (!advSel) errors.push('Selecione o advogado responsável.');
+                        if (errors.length) {
+                            e.preventDefault();
+                            Swal.fire({icon:'warning', title:'Dados incompletos', html:'<ul style=\"text-align:left;padding-left:18px;margin:0;\">'+errors.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul>'});
+                            return;
+                        }
+                        if (val) {
+                            var cleaned = valVal.replace(/\./g, '').replace(',', '.').replace(/[^\d.]/g, '');
+                            if (cleaned) val.value = cleaned;
+                        }
+                    });
+                }
+            }, 0);
         }
 
         function closeModal() {
-            document.getElementById('newProcessModal').classList.remove('show');
+            Swal.close();
         }
 
         function openChecklistModal() {
-            document.getElementById('checklistModal').classList.add('show');
+            var checklistBody = document.getElementById('checklist-modal-body');
+            var html = checklistBody ? checklistBody.innerHTML : '';
+            Swal.fire({
+                title: 'Checklist',
+                html: html || '<div class="py-3 text-muted">Carregando...</div>',
+                showConfirmButton: false,
+                showCancelButton: false,
+                width: 860
+            });
         }
 
         function closeChecklistModal() {
-            document.getElementById('checklistModal').classList.remove('show');
-        }
-
-        window.onclick = function(event) {
-            var modal = document.getElementById('newProcessModal');
-            var checklistModal = document.getElementById('checklistModal');
-            if (event.target == modal) {
-                closeModal();
-            }
-            if (event.target == checklistModal) {
-                closeChecklistModal();
-            }
+            Swal.close();
         }
 
         function toggleTimeline(id) {

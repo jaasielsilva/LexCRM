@@ -2,6 +2,17 @@ package br.com.lexcrm.repository;
 
 import br.com.lexcrm.model.Cliente;
 import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
+    List<Cliente> findTop50ByNomeContainingIgnoreCaseOrCpfCnpjContainingIgnoreCaseOrEmailContainingIgnoreCaseOrTelefoneContainingIgnoreCase(
+            String nome,
+            String cpfCnpj,
+            String email,
+            String telefone
+    );
+
+    boolean existsByCpfCnpj(String cpfCnpj);
+
+    boolean existsByCpfCnpjAndIdNot(String cpfCnpj, Long id);
 }

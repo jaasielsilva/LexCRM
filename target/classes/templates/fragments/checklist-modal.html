@@ -46,6 +46,17 @@
         </span>
     </div>
     
+    <div class="mt-4 flex justify-end gap-2">
+        <button type="button" class="btn btn-secondary" onclick="closeChecklistModal()">Fechar</button>
+        <button type="button"
+                class="btn btn-primary"
+                th:attr="hx-post=@{/processos/etapa/{eid}/checklist/save(eid=${etapa.id})}"
+                hx-target="closest .checklist-container"
+                hx-swap="outerHTML">
+            Salvar
+        </button>
+    </div>
+    
     <!-- OOB Updates for Timeline & Progress Bar -->
     <div th:if="${hxOobSwap}">
         <div th:replace="~{fragments/timeline-view :: timeline}" hx-swap-oob="true"></div>

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class PageController {
 
     @GetMapping({
-        "/clientes", 
         "/documentacoes", 
         "/agenda", 
         "/financeiro", 

@@ -20,6 +20,8 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+                .requestMatchers("/favicon.ico").permitAll()
+                .requestMatchers("/error", "/error/**").permitAll()
                 .requestMatchers("/login", "/register").permitAll()
                 .anyRequest().authenticated()
             )

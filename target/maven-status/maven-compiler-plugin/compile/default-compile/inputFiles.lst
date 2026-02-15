@@ -2,6 +2,7 @@ D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\config\DataSeeder.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\config\SecurityConfig.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\config\ThymeleafConfig.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\controller\AuthController.java
+D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\controller\ClienteController.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\controller\DashboardController.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\controller\FinanceiroController.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\controller\PageController.java

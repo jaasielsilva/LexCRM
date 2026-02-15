@@ -53,3 +53,46 @@
         </div>
     </div>
 </div>
+
+<div th:fragment="table" xmlns:th="http://www.thymeleaf.org">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h4 class="h6 fw-bold mb-0" th:text="${tituloLista}">Itens relacionados</h4>
+        <a th:href="${linkVerTodos}" class="small text-decoration-none">Ver todos</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(processos)}" class="text-center text-muted py-4">
+        Nenhum item encontrado.
+    </div>
+
+    <div th:unless="${#lists.isEmpty(processos)}" class="table-responsive">
+        <table class="table table-sm align-middle mb-0">
+            <thead>
+                <tr class="text-uppercase small text-muted">
+                    <th>Nº Processo</th>
+                    <th>Cliente</th>
+                    <th>Tipo</th>
+                    <th>Status</th>
+                    <th>Responsável</th>
+                    <th class="text-end">Valor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="processo : ${processos}">
+                    <td class="small" th:text="${processo.numeroProcesso}">0000000-00.2024.8.26.0000</td>
+                    <td class="small" th:text="${processo.cliente?.nome}">Cliente</td>
+                    <td class="small">
+                        <span class="badge bg-light text-dark border" th:text="${processo.tipo}">Tipo</span>
+                    </td>
+                    <td class="small">
+                        <span class="badge"
+                              th:with="finalizado=${processo.etapas.?[nome == 'Processo Finalizado' and status == 'Concluído']}, emand=${processo.etapas.?[status == 'Em Andamento']}, showStatus=${!#lists.isEmpty(finalizado) ? 'Concluído' : (!#lists.isEmpty(emand) ? 'Em Andamento' : (processo.status != null ? processo.status : 'Pendente'))}"
+                              th:classappend="${showStatus == 'Concluído' ? ' bg-success' : (showStatus == 'Em Andamento' ? ' bg-warning text-dark' : ' bg-danger')}"
+                              th:text="${showStatus}">STATUS</span>
+                    </td>
+                    <td class="small" th:text="${processo.advogadoResponsavel?.nomeCompleto}">Responsável</td>
+                    <td class="small text-end fw-semibold" th:text="${processo.valorCausa != null ? #numbers.formatCurrency(processo.valorCausa) : '-'}">-</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

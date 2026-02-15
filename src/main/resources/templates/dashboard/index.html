@@ -31,135 +31,504 @@
                     <h1 class="font-playfair text-lg font-bold text-navy-blue">Dashboard Executivo</h1>
                     <p class="text-xs text-slate-500">Clique nos cards para ver os detalhes abaixo.</p>
                 </div>
-                <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
-                    <span class="inline-flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> bom
-                    </span>
-                    <span class="inline-flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-amber-500"></span> atenção
-                    </span>
-                    <span class="inline-flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-rose-500"></span> risco
-                    </span>
-                </div>
+                <div></div>
             </div>
 
             <div class="p-6 space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    <div class="flex items-center justify-between rounded-xl px-4 py-3 cursor-pointer transition shadow-sm bg-sky-50 border border-sky-100 hover:bg-sky-100"
-                         onclick="toggleDetails('novos_contatos')">
-                        <div>
-                            <h3 class="text-xl font-extrabold text-sky-900">8</h3>
-                            <p class="text-xs font-medium text-slate-600">Novos Contatos</p>
+                <div class="dashboard-kpi-grid">
+                    <div class="dashboard-card dashboard-card--success" onclick="toggleDetails('novos_contatos', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value">8</div>
+                            <div class="dashboard-card-label">Novos Contatos</div>
                         </div>
-                        <div class="text-sky-500 text-2xl">
+                        <div class="dashboard-card-icon">
                             <i class="fas fa-comments"></i>
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between rounded-xl px-4 py-3 cursor-pointer transition shadow-sm bg-rose-50 border border-rose-100 hover:bg-rose-100"
-                         onclick="toggleDetails('pagar_medico')">
-                        <div>
-                            <h3 class="text-xl font-extrabold text-rose-800" th:text="${medicosAPagarTotal}">R$ 0,00</h3>
-                            <p class="text-xs font-medium text-slate-600">A Pagar (Médicos)</p>
+                    <div class="dashboard-card dashboard-card--success" onclick="toggleDetails('receber_seguradora', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${seguradoraAReceberTotal}">R$ 0,00</div>
+                            <div class="dashboard-card-label">A Receber (Seg)</div>
                         </div>
-                        <div class="text-rose-500 text-2xl">
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card dashboard-card--success" onclick="toggleDetails('pagar_medico', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${medicosAPagarTotal}">R$ 0,00</div>
+                            <div class="dashboard-card-label">A Pagar (Médicos)</div>
+                        </div>
+                        <div class="dashboard-card-icon">
                             <i class="fas fa-user-md"></i>
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between rounded-xl px-4 py-3 cursor-pointer transition shadow-sm bg-amber-50 border border-amber-100 hover:bg-amber-100"
-                         onclick="toggleDetails('aguardando_laudo')">
-                        <div>
-                            <h3 class="text-xl font-extrabold text-amber-800">5</h3>
-                            <p class="text-xs font-medium text-slate-600">Aguardando Laudo</p>
+                    <div class="dashboard-card dashboard-card--danger" onclick="toggleDetails('pendencias_criticas', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${pendenciasCriticasCount}">0</div>
+                            <div class="dashboard-card-label">Pendências Críticas</div>
                         </div>
-                        <div class="text-amber-500 text-2xl">
-                            <i class="fas fa-file-medical-alt"></i>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-between rounded-xl px-4 py-3 cursor-pointer transition shadow-sm bg-rose-50 border border-rose-100 hover:bg-rose-100"
-                         onclick="toggleDetails('pendencias_docs')">
-                        <div>
-                            <h3 class="text-xl font-extrabold text-rose-800" th:text="${pendenciasDocsCount}">42</h3>
-                            <p class="text-xs font-medium text-slate-600">Pendências (Docs)</p>
-                        </div>
-                        <div class="text-rose-500 text-2xl">
-                            <i class="fas fa-file-contract"></i>
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-triangle-exclamation"></i>
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between rounded-xl px-4 py-3 cursor-pointer transition shadow-sm bg-orange-50 border border-orange-100 hover:bg-orange-100"
-                         onclick="toggleDetails('contratos_pendentes')">
-                        <div>
-                            <h3 class="text-xl font-extrabold text-orange-800" th:text="${contratosPendentesCount}">0</h3>
-                            <p class="text-xs font-medium text-slate-600">Contratos a Assinar</p>
+                    <div class="dashboard-card dashboard-card--accent" onclick="toggleDetails('processos_ativos', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${processosAtivosCount}">0</div>
+                            <div class="dashboard-card-label">Processos Ativos</div>
                         </div>
-                        <div class="text-orange-500 text-2xl">
-                            <i class="fas fa-file-signature"></i>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-between rounded-xl px-4 py-3 cursor-pointer transition shadow-sm bg-emerald-50 border border-emerald-100 hover:bg-emerald-100"
-                         onclick="toggleDetails('receber_seguradora')">
-                        <div>
-                            <h3 class="text-xl font-extrabold text-emerald-800">R$ 450k</h3>
-                            <p class="text-xs font-medium text-slate-600">A Receber (Seg)</p>
-                        </div>
-                        <div class="text-emerald-500 text-2xl">
-                            <i class="fas fa-hand-holding-usd"></i>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-between rounded-xl px-4 py-3 cursor-pointer transition shadow-sm bg-sky-50 border border-sky-100 hover:bg-sky-100"
-                         onclick="toggleDetails('processos_ativos')">
-                        <div>
-                            <h3 class="text-xl font-extrabold text-sky-900" th:text="${processosAtivosCount}">1.240</h3>
-                            <p class="text-xs font-medium text-slate-600">Processos Ativos</p>
-                        </div>
-                        <div class="text-sky-500 text-2xl">
+                        <div class="dashboard-card-icon">
                             <i class="fas fa-folder-open"></i>
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between rounded-xl px-4 py-3 cursor-pointer transition shadow-sm bg-slate-100 border border-slate-200 hover:bg-slate-200"
-                         onclick="toggleDetails('contencioso_civil')">
-                        <div>
-                            <h3 class="text-xl font-extrabold text-slate-800">85</h3>
-                            <p class="text-xs font-medium text-slate-600">Contencioso / Civil</p>
+                    <div class="dashboard-card dashboard-card--success" onclick="toggleDetails('processos_arquivados', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${processosArquivadosCount}">0</div>
+                            <div class="dashboard-card-label">Arquivados (Deferidos)</div>
                         </div>
-                        <div class="text-slate-500 text-2xl">
-                            <i class="fas fa-balance-scale"></i>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-between rounded-xl px-4 py-3 cursor-pointer transition shadow-sm bg-emerald-50 border border-emerald-100 hover:bg-emerald-100"
-                         onclick="toggleDetails('processos_arquivados')">
-                        <div>
-                            <h3 class="text-xl font-extrabold text-emerald-800" th:text="${processosArquivadosCount}">0</h3>
-                            <p class="text-xs font-medium text-slate-600">Arquivados (Deferidos)</p>
-                        </div>
-                        <div class="text-emerald-500 text-2xl">
+                        <div class="dashboard-card-icon">
                             <i class="fas fa-check-circle"></i>
                         </div>
                     </div>
                 </div>
+
+                <div class="dashboard-flow-header">
+                    <div class="dashboard-flow-title">Fluxo do Processo</div>
+                    <div class="dashboard-flow-subtitle">Clique em uma etapa para filtrar e ver os itens abaixo.</div>
+                </div>
+
+                <div class="dashboard-flow-grid">
+                    <div class="dashboard-card dashboard-card--info" onclick="toggleDetails('etapa_cadastro_cliente', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_cadastro_cliente'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Cadastro do Cliente</div>
+                        </div>
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card dashboard-card--warning" onclick="toggleDetails('etapa_documentos_solicitados', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_documentos_solicitados'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Documentos Solicitados</div>
+                        </div>
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card dashboard-card--info" onclick="toggleDetails('etapa_documentos_recebidos', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_documentos_recebidos'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Documentos Recebidos</div>
+                        </div>
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-file-arrow-up"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card dashboard-card--info" onclick="toggleDetails('etapa_analise_documental', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_analise_documental'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Análise Documental</div>
+                        </div>
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-magnifying-glass"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card dashboard-card--danger" onclick="toggleDetails('etapa_pendencia_documental', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_pendencia_documental'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Pendência Documental</div>
+                        </div>
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-triangle-exclamation"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card dashboard-card--warning" onclick="toggleDetails('etapa_aguardando_assinatura', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_aguardando_assinatura'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Aguardando Assinatura</div>
+                        </div>
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-file-signature"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card dashboard-card--accent" onclick="toggleDetails('etapa_pericia_medica', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_pericia_medica'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Perícia Médica</div>
+                        </div>
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card dashboard-card--warning" onclick="toggleDetails('etapa_laudo_recebido', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_laudo_recebido'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Laudo Médico Recebido</div>
+                        </div>
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-file-medical"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card dashboard-card--info" onclick="toggleDetails('etapa_enviado_seguradora', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_enviado_seguradora'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Enviado para Seguradora</div>
+                        </div>
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-paper-plane"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card dashboard-card--info" onclick="toggleDetails('etapa_analise_seguradora', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_analise_seguradora'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Em Análise (Seg)</div>
+                        </div>
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-hourglass-half"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card dashboard-card--danger" onclick="toggleDetails('etapa_pendencia_seguradora', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_pendencia_seguradora'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Pendência (Seg)</div>
+                        </div>
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-shield-halved"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card dashboard-card--success" onclick="toggleDetails('etapa_sinistro_gerado', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_sinistro_gerado'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Sinistro Gerado</div>
+                        </div>
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card dashboard-card--success" onclick="toggleDetails('etapa_processo_finalizado', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_processo_finalizado'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Processo Finalizado</div>
+                        </div>
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-flag-checkered"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="card-detail-panel" class="mt-6 hidden">
+                    <div class="dashboard-detail-panel">
+                        <div class="dashboard-detail-header">
+                            <div>
+                                <h2 id="detail-title" class="dashboard-detail-title"></h2>
+                            </div>
+                            <div id="detail-value" class="dashboard-detail-value-amount"></div>
+                        </div>
+                        <div id="detail-action" class="mt-2 d-none">
+                            <a id="detail-link" href="#" class="dashboard-detail-link">Ver todos</a>
+                        </div>
+                        <div id="detail-preview" class="dashboard-detail-preview d-none"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </main>
 
     <script>
-        function toggleDetails(sectionId) {
-            var element = document.getElementById('details-' + sectionId);
-            if (!element) {
+        var dashboardDetailsConfig = {
+            novos_contatos: {
+                statusType: 'good',
+                statusLabel: 'bom',
+                description: 'Resumo dos novos contatos cadastrados neste período e seu impacto no funil comercial.',
+                trend: 'Volume saudável de contatos entrando no topo do funil.',
+                nextStep: 'Classificar e qualificar os novos contatos para oportunidades.',
+                link: '/clientes',
+                linkLabel: 'Ver clientes'
+            },
+            pagar_medico: {
+                statusType: 'risk',
+                statusLabel: 'risco',
+                description: 'Montante de pagamentos pendentes a médicos, afetando diretamente a relação com parceiros.',
+                trend: 'Acompanhar de perto os vencimentos mais próximos.',
+                nextStep: 'Priorizar liquidação de valores críticos e alinhar com financeiro.',
+                link: '/processos?filtro=pagar_medico',
+                linkLabel: 'Ver processos com médicos a pagar',
+                preview: '/dashboard/preview?filtro=pagar_medico'
+            },
+            pendencias_criticas: {
+                statusType: 'risk',
+                statusLabel: 'pendência',
+                link: '/processos?filtro=pendencias_criticas',
+                linkLabel: 'Ver pendências críticas',
+                preview: '/dashboard/preview?filtro=pendencias_criticas'
+            },
+            receber_seguradora: {
+                statusType: 'good',
+                statusLabel: 'bom',
+                description: 'Valores previstos a receber de seguradoras relacionados a processos em curso.',
+                trend: 'Boa perspectiva de entrada de caixa nos próximos períodos.',
+                nextStep: 'Conferir processos próximos de liquidação e confirmar dados bancários.',
+                link: '/processos?filtro=seguradora',
+                linkLabel: 'Ver processos na seguradora',
+                preview: '/dashboard/preview?filtro=seguradora'
+            },
+            processos_ativos: {
+                statusType: 'neutral',
+                statusLabel: 'carteira',
+                description: 'Visão geral do volume de processos atualmente ativos na carteira.',
+                trend: 'Ajuda a dimensionar carga de trabalho da equipe.',
+                nextStep: 'Acompanhar distribuição entre times e evitar gargalos.',
+                link: '/processos?filtro=ativos',
+                linkLabel: 'Ver processos ativos',
+                preview: '/dashboard/preview?filtro=ativos'
+            },
+            processos_arquivados: {
+                statusType: 'good',
+                statusLabel: 'bom',
+                description: 'Processos arquivados com decisão favorável ou encerramento controlado.',
+                trend: 'Mostra a eficiência da condução das demandas até o fechamento.',
+                nextStep: 'Registrar aprendizados e atualizar indicadores internos de sucesso.',
+                link: '/processos?filtro=arquivados',
+                linkLabel: 'Ver arquivados',
+                preview: '/dashboard/preview?filtro=arquivados'
+            },
+
+            etapa_cadastro_cliente: {
+                statusType: 'neutral',
+                statusLabel: 'etapa',
+                description: 'Entrada do processo no fluxo: cadastro confirmado e pronto para iniciar documentação.',
+                trend: 'Quanto maior, maior a demanda inicial de atendimento.',
+                nextStep: 'Confirmar dados e iniciar solicitação de documentos.',
+                link: '/processos?filtro=etapa_cadastro_cliente',
+                linkLabel: 'Ver processos nesta etapa',
+                preview: '/dashboard/preview?filtro=etapa_cadastro_cliente'
+            },
+            etapa_documentos_solicitados: {
+                statusType: 'warning',
+                statusLabel: 'etapa',
+                description: 'Checklist de documentos enviado ao cliente.',
+                trend: 'Acompanhar tempo de retorno e reduzir atrasos.',
+                nextStep: 'Reforçar lembretes e orientar o envio correto.',
+                link: '/processos?filtro=etapa_documentos_solicitados',
+                linkLabel: 'Ver processos nesta etapa',
+                preview: '/dashboard/preview?filtro=etapa_documentos_solicitados'
+            },
+            etapa_documentos_recebidos: {
+                statusType: 'neutral',
+                statusLabel: 'etapa',
+                description: 'Documentos recebidos e prontos para conferência.',
+                trend: 'Gargalo comum se análise não for rápida.',
+                nextStep: 'Iniciar análise documental e validar consistência.',
+                link: '/processos?filtro=etapa_documentos_recebidos',
+                linkLabel: 'Ver processos nesta etapa',
+                preview: '/dashboard/preview?filtro=etapa_documentos_recebidos'
+            },
+            etapa_analise_documental: {
+                statusType: 'neutral',
+                statusLabel: 'etapa',
+                description: 'Análise dos documentos para identificar pendências e preparar próximas ações.',
+                trend: 'Impacta diretamente o tempo total do caso.',
+                nextStep: 'Concluir análise e seguir para pendência/assinatura.',
+                link: '/processos?filtro=etapa_analise_documental',
+                linkLabel: 'Ver processos nesta etapa',
+                preview: '/dashboard/preview?filtro=etapa_analise_documental'
+            },
+            etapa_pendencia_documental: {
+                statusType: 'risk',
+                statusLabel: 'etapa',
+                description: 'Existem documentos pendentes que travam o andamento.',
+                trend: 'Atenção: tende a aumentar se não houver follow-up.',
+                nextStep: 'Contatar cliente e regularizar pendências.',
+                link: '/processos?filtro=etapa_pendencia_documental',
+                linkLabel: 'Ver processos nesta etapa',
+                preview: '/dashboard/preview?filtro=etapa_pendencia_documental'
+            },
+            etapa_aguardando_assinatura: {
+                statusType: 'warning',
+                statusLabel: 'etapa',
+                description: 'Cliente precisa assinar documentos para seguir no fluxo.',
+                trend: 'Indicador de fricção na etapa de formalização.',
+                nextStep: 'Enviar lembrete e facilitar assinatura.',
+                link: '/processos?filtro=etapa_aguardando_assinatura',
+                linkLabel: 'Ver processos nesta etapa',
+                preview: '/dashboard/preview?filtro=etapa_aguardando_assinatura'
+            },
+            etapa_pericia_medica: {
+                statusType: 'warning',
+                statusLabel: 'etapa',
+                description: 'Documentos enviados ao médico e perícia em andamento.',
+                trend: 'Controlar prazos e evitar re-trabalho.',
+                nextStep: 'Acompanhar agendamento e preparar recepção do laudo.',
+                link: '/processos?filtro=etapa_pericia_medica',
+                linkLabel: 'Ver processos nesta etapa',
+                preview: '/dashboard/preview?filtro=etapa_pericia_medica'
+            },
+            etapa_laudo_recebido: {
+                statusType: 'warning',
+                statusLabel: 'etapa',
+                description: 'Laudo médico aguardado/recebido para avançar com seguradora.',
+                trend: 'Afeta diretamente o tempo de ciclo.',
+                nextStep: 'Validar laudo e enviar para seguradora.',
+                link: '/processos?filtro=etapa_laudo_recebido',
+                linkLabel: 'Ver processos nesta etapa',
+                preview: '/dashboard/preview?filtro=etapa_laudo_recebido'
+            },
+            etapa_enviado_seguradora: {
+                statusType: 'neutral',
+                statusLabel: 'etapa',
+                description: 'Processo enviado para seguradora.',
+                trend: 'Monitorar confirmação de recebimento.',
+                nextStep: 'Confirmar protocolo e iniciar acompanhamento.',
+                link: '/processos?filtro=etapa_enviado_seguradora',
+                linkLabel: 'Ver processos nesta etapa',
+                preview: '/dashboard/preview?filtro=etapa_enviado_seguradora'
+            },
+            etapa_analise_seguradora: {
+                statusType: 'neutral',
+                statusLabel: 'etapa',
+                description: 'Seguradora analisando o caso.',
+                trend: 'Tempo de resposta depende do SLA.',
+                nextStep: 'Acompanhar prazo e registrar atualizações.',
+                link: '/processos?filtro=etapa_analise_seguradora',
+                linkLabel: 'Ver processos nesta etapa',
+                preview: '/dashboard/preview?filtro=etapa_analise_seguradora'
+            },
+            etapa_pendencia_seguradora: {
+                statusType: 'risk',
+                statusLabel: 'etapa',
+                description: 'Seguradora solicitou correção ou complementação.',
+                trend: 'Atenção: costuma travar o fluxo se não for resolvido rápido.',
+                nextStep: 'Corrigir pendência e reenviar documentação.',
+                link: '/processos?filtro=etapa_pendencia_seguradora',
+                linkLabel: 'Ver processos nesta etapa',
+                preview: '/dashboard/preview?filtro=etapa_pendencia_seguradora'
+            },
+            etapa_sinistro_gerado: {
+                statusType: 'good',
+                statusLabel: 'etapa',
+                description: 'Sinistro registrado e pronto para finalização.',
+                trend: 'Boa proximidade de conclusão.',
+                nextStep: 'Conferir dados finais e preparar encerramento.',
+                link: '/processos?filtro=etapa_sinistro_gerado',
+                linkLabel: 'Ver processos nesta etapa',
+                preview: '/dashboard/preview?filtro=etapa_sinistro_gerado'
+            },
+            etapa_processo_finalizado: {
+                statusType: 'good',
+                statusLabel: 'etapa',
+                description: 'Processo concluído no fluxo.',
+                trend: 'Indicador de produtividade e entrega.',
+                nextStep: 'Registrar fechamento e arquivar corretamente.',
+                link: '/processos?filtro=etapa_processo_finalizado',
+                linkLabel: 'Ver processos nesta etapa',
+                preview: '/dashboard/preview?filtro=etapa_processo_finalizado'
+            }
+        };
+
+        var activeDashboardCardKey = null;
+
+        function toggleDetails(key, cardElement) {
+            var panel = document.getElementById('card-detail-panel');
+            if (!panel || !cardElement) {
                 return;
             }
-            if (element.classList.contains('hidden')) {
-                element.classList.remove('hidden');
-            } else {
-                element.classList.add('hidden');
+
+            var isSameCard = activeDashboardCardKey === key && !panel.classList.contains('hidden');
+            if (isSameCard) {
+                activeDashboardCardKey = null;
+                panel.classList.add('hidden');
+                var previewToClear = document.getElementById('detail-preview');
+                if (previewToClear) {
+                    previewToClear.innerHTML = '';
+                    previewToClear.classList.add('d-none');
+                }
+                var actionToHide = document.getElementById('detail-action');
+                if (actionToHide) {
+                    actionToHide.classList.add('d-none');
+                }
+                var cardsToReset = document.querySelectorAll('.dashboard-card');
+                for (var c = 0; c < cardsToReset.length; c++) {
+                    cardsToReset[c].classList.remove('dashboard-card-active');
+                }
+                return;
             }
+
+            activeDashboardCardKey = key;
+
+            var titleElement = cardElement.querySelector('.dashboard-card-label');
+            var valueElement = cardElement.querySelector('.dashboard-card-value');
+            var title = titleElement ? titleElement.textContent.trim() : '';
+            var value = valueElement ? valueElement.textContent.trim() : '';
+            var config = dashboardDetailsConfig[key] || {};
+
+            var titleTarget = document.getElementById('detail-title');
+            var valueTarget = document.getElementById('detail-value');
+
+            if (titleTarget) {
+                titleTarget.textContent = title;
+            }
+            if (valueTarget) {
+                valueTarget.textContent = value;
+            }
+
+            var linkElement = document.getElementById('detail-link');
+            var actionElement = document.getElementById('detail-action');
+            if (linkElement && actionElement) {
+                if (config.link && !config.preview) {
+                    linkElement.href = config.link;
+                    linkElement.textContent = config.linkLabel || 'Ver todos';
+                    actionElement.classList.remove('d-none');
+                } else {
+                    linkElement.href = '#';
+                    linkElement.textContent = 'Ver todos';
+                    actionElement.classList.add('d-none');
+                }
+            }
+
+            var previewElement = document.getElementById('detail-preview');
+            if (previewElement) {
+                if (config.preview) {
+                    previewElement.classList.remove('d-none');
+                    previewElement.innerHTML = '<div class=\"dashboard-preview-loading\">Carregando...</div>';
+                    fetch(config.preview, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                        .then(function(r) { return r.text(); })
+                        .then(function(html) { previewElement.innerHTML = html; })
+                        .catch(function() {
+                            previewElement.innerHTML = '';
+                            previewElement.classList.add('d-none');
+                        });
+                } else {
+                    previewElement.innerHTML = '';
+                    previewElement.classList.add('d-none');
+                }
+            }
+
+            var cards = document.querySelectorAll('.dashboard-card');
+            for (var i = 0; i < cards.length; i++) {
+                cards[i].classList.remove('dashboard-card-active');
+            }
+            cardElement.classList.add('dashboard-card-active');
+
+            panel.classList.remove('hidden');
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

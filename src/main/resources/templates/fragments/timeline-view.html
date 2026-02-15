@@ -1,4 +1,4 @@
-<div th:fragment="timeline" class="timeline-panel">
+<div th:fragment="timeline" class="timeline-panel" th:id="'timeline-panel-' + ${processoSelecionado.id}">
     <!-- Header -->
     <div class="timeline-header">
         <div>
@@ -25,7 +25,7 @@
                 
                 <!-- Indicator Circle (Clickable) -->
                 <div class="step-circle"
-                     th:if="${etapa.nome != 'Documentação'}"
+                     th:if="${!(etapa.nome == 'Documentação' or etapa.nome == 'Documentos Solicitados' or etapa.nome == 'Laudo Médico Recebido')}"
                      th:attr="hx-post=@{/processos/{pid}/etapa/{eid}/toggle(pid=${processoSelecionado.id}, eid=${etapa.id})}"
                      hx-target="closest .timeline-panel"
                      hx-swap="outerHTML">
@@ -36,11 +36,21 @@
                 
                 <!-- Special Circle for 'Documentação' -->
                 <div class="step-circle"
-                     th:if="${etapa.nome == 'Documentação'}"
+                     th:if="${etapa.nome == 'Documentação' or etapa.nome == 'Documentos Solicitados'}"
                      th:attr="hx-get=@{/processos/etapa/{eid}/checklist(eid=${etapa.id})}"
                      hx-target="#checklist-modal-body"
-                     hx-swap="innerHTML"
-                     onclick="openChecklistModal()">
+                     hx-swap="innerHTML">
+                    <i th:if="${etapa.status == 'Concluído'}" class="fas fa-check"></i>
+                    <i th:if="${etapa.status == 'Em Andamento'}" class="fas fa-clock"></i>
+                    <i th:if="${etapa.status == 'Pendente'}" class="fas fa-exclamation"></i>
+                </div>
+
+                <!-- Special Circle for 'Laudo Médico Recebido' -->
+                <div class="step-circle"
+                     th:if="${etapa.nome == 'Laudo Médico Recebido'}"
+                     th:attr="hx-get=@{/processos/etapa/{eid}/laudo(eid=${etapa.id})}"
+                     hx-target="#checklist-modal-body"
+                     hx-swap="innerHTML">
                     <i th:if="${etapa.status == 'Concluído'}" class="fas fa-check"></i>
                     <i th:if="${etapa.status == 'Em Andamento'}" class="fas fa-clock"></i>
                     <i th:if="${etapa.status == 'Pendente'}" class="fas fa-exclamation"></i>
@@ -48,7 +58,7 @@
 
                 <!-- Card (Also Clickable for better UX) -->
                 <div class="step-card"
-                     th:if="${etapa.nome != 'Documentação'}"
+                     th:if="${!(etapa.nome == 'Documentação' or etapa.nome == 'Documentos Solicitados' or etapa.nome == 'Laudo Médico Recebido')}"
                      th:attr="hx-post=@{/processos/{pid}/etapa/{eid}/toggle(pid=${processoSelecionado.id}, eid=${etapa.id})}"
                      hx-target="closest .timeline-panel"
                      hx-swap="outerHTML"
@@ -71,15 +81,19 @@
                     <!-- Date -->
                     <div class="step-date-text" th:if="${etapa.data != null}" th:text="${#temporals.format(etapa.data, 'dd/MM/yyyy')}">10/01/2024</div>
                     <div class="step-date-text" th:if="${etapa.data == null}">-</div>
+                    
+                    <!-- Medical Payment Badge -->
+                    <div th:if="${etapa.nome == 'Laudo Médico Recebido' and temPendenciaMedica}" class="mt-2">
+                        <span class="badge bg-danger">Pagamento pendente</span>
+                    </div>
                 </div>
 
                 <!-- Special Card for 'Documentação' -->
                 <div class="step-card"
-                     th:if="${etapa.nome == 'Documentação'}"
+                     th:if="${etapa.nome == 'Documentação' or etapa.nome == 'Documentos Solicitados'}"
                      th:attr="hx-get=@{/processos/etapa/{eid}/checklist(eid=${etapa.id})}"
                      hx-target="#checklist-modal-body"
                      hx-swap="innerHTML"
-                     onclick="openChecklistModal()"
                      style="cursor: pointer;">
                     
                     <!-- Status Label -->
@@ -99,6 +113,34 @@
                     <!-- Date -->
                     <div class="step-date-text" th:if="${etapa.data != null}" th:text="${#temporals.format(etapa.data, 'dd/MM/yyyy')}">10/01/2024</div>
                     <div class="step-date-text" th:if="${etapa.data == null}">-</div>
+                    
+                    <!-- Medical Payment Badge -->
+                    <div th:if="${etapa.nome == 'Laudo Médico Recebido' and temPendenciaMedica}" class="mt-2">
+                        <span class="badge bg-danger">Pagamento pendente</span>
+                    </div>
+                </div>
+
+                <!-- Special Card for 'Laudo Médico Recebido' -->
+                <div class="step-card"
+                     th:if="${etapa.nome == 'Laudo Médico Recebido'}"
+                     th:attr="hx-get=@{/processos/etapa/{eid}/laudo(eid=${etapa.id})}"
+                     hx-target="#checklist-modal-body"
+                     hx-swap="innerHTML"
+                     style="cursor: pointer;">
+                    
+                    <div class="step-status-text">
+                        <i th:if="${etapa.status == 'Concluído'}" class="fas fa-check"></i>
+                        <i th:if="${etapa.status == 'Em Andamento'}" class="far fa-clock"></i>
+                        <i th:if="${etapa.status == 'Pendente'}" class="fas fa-exclamation-circle"></i>
+                        <span th:text="${etapa.status}">STATUS</span>
+                    </div>
+                    <div class="step-title-text" th:text="${etapa.nome}">Laudo Médico Recebido</div>
+                    <div class="step-desc-text" th:text="${etapa.descricao}">Descrição da etapa...</div>
+                    <div class="step-date-text" th:if="${etapa.data != null}" th:text="${#temporals.format(etapa.data, 'dd/MM/yyyy')}">10/01/2024</div>
+                    <div class="step-date-text" th:if="${etapa.data == null}">-</div>
+                    <div th:if="${temPendenciaMedica}" class="mt-2">
+                        <span class="badge bg-danger">Pagamento pendente</span>
+                    </div>
                 </div>
             </div>
         </div>
