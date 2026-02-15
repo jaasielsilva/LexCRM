@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="sidebar(activePage)" class="sidebar" id="app-sidebar">
+    <!-- Sidebar CSS Isolated -->
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+
+    <div class="sidebar-header">
+        <div class="brand-icon">
+            <i class="fas fa-briefcase"></i>
+        </div>
+        <div class="brand-text">
+            <h1>Juris<span>CRM</span></h1>
+            <p class="brand-subtitle">Gestão Jurídica</p>
+        </div>
+    </div>
+
+    <div class="sidebar-menu">
+        <div class="menu-category">Principal</div>
+        <a href="/dashboard" class="nav-link" th:classappend="${activePage == 'dashboard'} ? 'active'">
+            <i class="fas fa-th-large"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="/clientes" class="nav-link" th:classappend="${activePage == 'clientes'} ? 'active'">
+            <i class="fas fa-users"></i>
+            <span>Clientes</span>
+        </a>
+        <a href="/processos" class="nav-link" th:classappend="${activePage == 'processos'} ? 'active'">
+            <i class="fas fa-balance-scale"></i>
+            <span>Processos</span>
+        </a>
+        <a href="/documentacoes" class="nav-link" th:classappend="${activePage == 'documentacoes'} ? 'active'">
+            <i class="fas fa-folder"></i>
+            <span>Documentações</span>
+        </a>
+
+        <div class="menu-category">Gestão</div>
+        <a href="/agenda" class="nav-link" th:classappend="${activePage == 'agenda'} ? 'active'">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Agenda</span>
+        </a>
+        <a href="/financeiro" class="nav-link" th:classappend="${activePage == 'financeiro'} ? 'active'">
+            <i class="fas fa-dollar-sign"></i>
+            <span>Financeiro</span>
+        </a>
+        <a href="/relatorios" class="nav-link" th:classappend="${activePage == 'relatorios'} ? 'active'">
+            <i class="fas fa-file-alt"></i>
+            <span>Relatórios</span>
+        </a>
+
+        <div class="menu-category">Sistema</div>
+        <a href="/configuracoes" class="nav-link" th:classappend="${activePage == 'configuracoes'} ? 'active'">
+            <i class="fas fa-cog"></i>
+            <span>Configurações</span>
+        </a>
+    </div>
+
+    <div class="sidebar-footer">
+        <div class="user-avatar">
+            <span th:text="${#authentication?.name != null && #authentication.name.length() >= 2 ? #authentication.name.substring(0,2).toUpperCase() : 'US'}">US</span>
+        </div>
+        <div class="user-info">
+            <p class="user-name" th:text="${#authentication?.name ?: 'Visitante'}">Usuário</p>
+            <p class="user-role" th:text="${#authentication?.authorities ?: 'Convidado'}">Role</p>
+        </div>
+        <form th:action="@{/logout}" method="post" style="margin: 0;">
+             <button type="submit" title="Sair" style="background:none; border:none; color: #64748b; cursor: pointer; padding: 5px;">
+                 <i class="fas fa-sign-out-alt"></i>
+             </button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

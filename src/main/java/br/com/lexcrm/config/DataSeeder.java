@@ -7,7 +7,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import br.com.lexcrm.model.Financeiro;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,177 +18,308 @@ public class DataSeeder implements CommandLineRunner {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
     @Autowired
     private ClienteRepository clienteRepository;
+
     @Autowired
     private ProcessoRepository processoRepository;
+
     @Autowired
     private FinanceiroRepository financeiroRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
+
+        // cria dados apenas se não existir nada
         if (usuarioRepository.count() == 0) {
+
+            System.out.println("Criando dados iniciais...");
+
             seedData();
+
+            System.out.println("Dados iniciais criados com sucesso!");
         }
-        
-        // Ensure financial data exists even if users exist
+
+        // garante financeiro
         if (financeiroRepository.count() == 0 && processoRepository.count() > 0) {
-             Processo p1 = processoRepository.findAll().get(0);
-             createFinanceiro("Honorários Iniciais", new BigDecimal("5000.00"), "Pago", p1);
-             createFinanceiro("Custas Processuais", new BigDecimal("1200.50"), "Pago", p1);
-             createFinanceiro("Honorários Finais", new BigDecimal("15000.00"), "Pendente", p1);
-             createFinanceiro("Diligência", new BigDecimal("350.00"), "Pendente", p1);
+
+            Processo processo = processoRepository.findAll().get(0);
+
+            createFinanceiro("Honorários Iniciais",
+                    new BigDecimal("5000.00"),
+                    "Pago",
+                    processo);
+
+            createFinanceiro("Honorários Finais",
+                    new BigDecimal("15000.00"),
+                    "Pendente",
+                    processo);
         }
     }
 
     private void seedData() {
-        // --- Create Lawyers (Users) ---
-        List<Usuario> advogados = new ArrayList<>();
-        
-        Usuario admin = createUsuario("admin", "Administrador do Sistema");
-        advogados.add(admin);
-        
-        advogados.add(createUsuario("adv1", "Dr. Carlos Mendes"));
-        advogados.add(createUsuario("adv2", "Dra. Ana Paula Souza"));
-        advogados.add(createUsuario("adv3", "Dr. Roberto Campos"));
 
-        // --- Create Clients ---
-        List<Cliente> clientes = new ArrayList<>();
-        clientes.add(createCliente("Hospital Santa Clara", "12.345.678/0001-99", "contato@santaclara.com.br"));
-        clientes.add(createCliente("Indústrias Metalúrgicas S.A.", "98.765.432/0001-10", "juridico@metalurgica.com"));
-        clientes.add(createCliente("João da Silva", "111.222.333-44", "joao.silva@email.com"));
-        clientes.add(createCliente("Maria Oliveira", "555.666.777-88", "maria.oliveira@email.com"));
-        clientes.add(createCliente("Construtora Viver Bem", "44.555.666/0001-22", "sac@viverbem.com.br"));
-        clientes.add(createCliente("Pedro Santos", "999.888.777-66", "pedro.santos@email.com"));
+        // USUÁRIOS
 
-        // --- Create Processes ---
-        
-        // Process 1: Initial Stage
-        createProcesso(
-            "0001234-89.2024.8.26.0100", 
-            "Ação de Cobrança Indevida", 
-            "Cível", 
-            "1ª Vara Cível",
-            "São Paulo - Capital",
-            clientes.get(0), 
-            advogados.get(1), 
-            new BigDecimal("150000.00"),
-            1 // First stage completed
+        Usuario admin = createUsuario(
+                "admin",
+                "Administrador do Sistema"
         );
 
-        // Process 2: Mid Stage
-        createProcesso(
-            "0005678-12.2024.8.26.0100", 
-            "Reclamação Trabalhista - Horas Extras", 
-            "Trabalhista", 
-            "5ª Vara do Trabalho",
-            "Osasco - SP",
-            clientes.get(2), 
-            advogados.get(2), 
-            new BigDecimal("80000.00"),
-            6 // Halfway
+        Usuario advogado = createUsuario(
+                "advogado",
+                "Dr. João Advogado"
         );
 
-        // Process 3: Advanced Stage
-        createProcesso(
-            "5009876-33.2023.4.03.6100", 
-            "Execução Fiscal - IPTU", 
-            "Tributário", 
-            "Vara de Execuções Fiscais",
-            "Campinas - SP",
-            clientes.get(4), 
-            advogados.get(3), 
-            new BigDecimal("500000.00"),
-            10 // Almost done
+        // CLIENTE
+
+        Cliente cliente = createCliente(
+                "Jaasiel Miranda da Silva",
+                "123.456.789-00",
+                "jaasiel@email.com"
         );
 
-        System.out.println("Dados iniciais carregados com sucesso!");
-        // --- Create Financial Records ---
-        if (processoRepository.count() > 0) {
-            Processo p1 = processoRepository.findAll().get(0);
-            createFinanceiro("Honorários Iniciais", new BigDecimal("5000.00"), "Pago", p1);
-            createFinanceiro("Custas Processuais", new BigDecimal("1200.50"), "Pago", p1);
-            createFinanceiro("Honorários Finais", new BigDecimal("15000.00"), "Pendente", p1);
-            createFinanceiro("Diligência", new BigDecimal("350.00"), "Pendente", p1);
-        }
-    }
+        // PROCESSO
 
-    private void createFinanceiro(String descricao, BigDecimal valor, String status, Processo processo) {
-        Financeiro f = new Financeiro();
-        f.setDescricao(descricao);
-        f.setValor(valor);
-        f.setStatus(status);
-        f.setDataVencimento(LocalDate.now().plusDays(10));
-        f.setProcesso(processo);
-        f.setTenantId("T001");
-        financeiroRepository.save(f);
+        createProcesso(
+
+                "765767",
+                "Seguro de Vida - Sinistro",
+                "Seguro",
+                "Seguradora XPTO",
+                "São Paulo - SP",
+
+                cliente,
+                advogado,
+
+                new BigDecimal("50000"),
+
+                3 // etapas já concluídas
+        );
     }
 
     private Usuario createUsuario(String username, String nome) {
+
         Usuario u = new Usuario();
+
         u.setUsername(username);
-        u.setPassword(passwordEncoder.encode("password")); // Default password
+
+        u.setPassword(
+                passwordEncoder.encode("123456")
+        );
+
         u.setRole(Role.ADMIN);
+
         u.setNomeCompleto(nome);
+
         u.setTenantId("T001");
+
         return usuarioRepository.save(u);
     }
 
-    private Cliente createCliente(String nome, String doc, String email) {
+    private Cliente createCliente(String nome,
+                                  String documento,
+                                  String email) {
+
         Cliente c = new Cliente();
+
         c.setNome(nome);
-        c.setCpfCnpj(doc);
+
+        c.setCpfCnpj(documento);
+
         c.setEmail(email);
+
         c.setTenantId("T001");
+
         return clienteRepository.save(c);
     }
 
-    private void createProcesso(
-            String numero, String titulo, String tipo, String vara, String comarca,
-            Cliente cliente, Usuario advogado, BigDecimal valor, int completedStages) {
-        
-        Processo p = new Processo();
-        p.setNumeroProcesso(numero);
-        p.setTitulo(titulo);
-        p.setStatus("Em Andamento");
-        p.setTipo(tipo);
-        p.setVara(vara);
-        p.setComarca(comarca);
-        p.setCliente(cliente);
-        p.setAdvogadoResponsavel(advogado);
-        p.setDataAbertura(LocalDate.now().minusMonths(completedStages));
-        p.setValorCausa(valor);
-        p.setTenantId("T001");
+    private void createFinanceiro(String descricao,
+                                  BigDecimal valor,
+                                  String status,
+                                  Processo processo) {
 
-        // Create Stages
-        List<String> stageNames = Arrays.asList(
-            "Consulta Inicial", "Documentação", "Petição Inicial", "Citação", 
-            "Contestação", "Audiência", "Perícia", "Alegações Finais", 
-            "Sentença", "Recurso", "Trânsito em Julgado", "Execução"
+        Financeiro f = new Financeiro();
+
+        f.setDescricao(descricao);
+
+        f.setValor(valor);
+
+        f.setStatus(status);
+
+        f.setDataVencimento(
+                LocalDate.now().plusDays(10)
         );
 
-        for (int i = 0; i < stageNames.size(); i++) {
+        f.setProcesso(processo);
+
+        f.setTenantId("T001");
+
+        financeiroRepository.save(f);
+    }
+
+    private void createProcesso(
+
+            String numero,
+            String titulo,
+            String tipo,
+            String seguradora,
+            String cidade,
+
+            Cliente cliente,
+            Usuario advogado,
+
+            BigDecimal valor,
+
+            int etapasConcluidas
+    ) {
+
+        Processo p = new Processo();
+
+        p.setNumeroProcesso(numero);
+
+        p.setTitulo(titulo);
+
+        p.setStatus("EM_ANDAMENTO");
+
+        p.setTipo(tipo);
+
+        p.setVara(seguradora);
+
+        p.setComarca(cidade);
+
+        p.setCliente(cliente);
+
+        p.setAdvogadoResponsavel(advogado);
+
+        p.setValorCausa(valor);
+
+        p.setDataAbertura(LocalDate.now());
+
+        p.setTenantId("T001");
+
+        // IMPORTANTE
+        p.setEtapas(new ArrayList<>());
+
+        List<String> etapas = Arrays.asList(
+
+                "Cadastro do Cliente",
+
+                "Documentos Solicitados",
+
+                "Documentos Recebidos",
+
+                "Análise Documental",
+
+                "Pendência Documental",
+
+                "Aguardando Assinatura",
+
+                "Perícia Médica",
+
+                "Laudo Médico Recebido",
+
+                "Enviado para Seguradora",
+
+                "Em Análise pela Seguradora",
+
+                "Pendência com Seguradora",
+
+                "Sinistro Gerado",
+
+                "Processo Finalizado"
+        );
+
+        for (int i = 0; i < etapas.size(); i++) {
+
             EtapaProcesso etapa = new EtapaProcesso();
-            etapa.setNome(stageNames.get(i));
-            etapa.setDescricao("Etapa padrão do fluxo processual");
+
+            String nome = etapas.get(i);
+
+            etapa.setNome(nome);
+
+            etapa.setDescricao(
+                    getDescricaoEtapa(nome)
+            );
+
             etapa.setOrdem(i + 1);
+
             etapa.setProcesso(p);
-            
-            if (i < completedStages) {
-                etapa.setStatus("Concluído");
-                etapa.setData(LocalDate.now().minusWeeks(stageNames.size() - i));
-            } else if (i == completedStages) {
-                etapa.setStatus("Em Andamento");
+
+            if (i < etapasConcluidas) {
+
+                etapa.setStatus("CONCLUIDO");
+
+                etapa.setData(
+                        LocalDate.now().minusDays(10 - i)
+                );
+
+            } else if (i == etapasConcluidas) {
+
+                etapa.setStatus("EM_ANDAMENTO");
+
                 etapa.setData(LocalDate.now());
+
             } else {
-                etapa.setStatus("Pendente");
+
+                etapa.setStatus("PENDENTE");
             }
-            
+
             p.getEtapas().add(etapa);
         }
 
         processoRepository.save(p);
+    }
+
+    private String getDescricaoEtapa(String etapa) {
+
+        switch (etapa) {
+
+            case "Cadastro do Cliente":
+                return "Cliente cadastrado no sistema";
+
+            case "Documentos Solicitados":
+                return "Lista de documentos enviada ao cliente";
+
+            case "Documentos Recebidos":
+                return "Cliente enviou os documentos";
+
+            case "Análise Documental":
+                return "Análise dos documentos";
+
+            case "Pendência Documental":
+                return "Existem documentos pendentes";
+
+            case "Aguardando Assinatura":
+                return "Cliente precisa assinar documentos";
+
+            case "Perícia Médica":
+                return "Documentos enviados ao médico";
+
+            case "Laudo Médico Recebido":
+                return "Laudo médico recebido";
+
+            case "Enviado para Seguradora":
+                return "Processo enviado à seguradora";
+
+            case "Em Análise pela Seguradora":
+                return "Seguradora analisando";
+
+            case "Pendência com Seguradora":
+                return "Seguradora solicitou correção";
+
+            case "Sinistro Gerado":
+                return "Sinistro registrado";
+
+            case "Processo Finalizado":
+                return "Processo concluído";
+
+            default:
+                return "";
+        }
     }
 }

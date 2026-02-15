@@ -1,0 +1,72 @@
+<!-- Checklist Modal Content -->
+<div th:fragment="content" class="checklist-container">
+    <div class="checklist-header mb-4">
+        <h3 class="text-lg font-bold text-[var(--navy-blue)]">
+            <i class="fas fa-tasks mr-2 text-[var(--gold)]"></i>
+            Lista de Documentos
+        </h3>
+        <p class="text-sm text-gray-500">Marque os documentos recebidos para concluir a etapa.</p>
+    </div>
+
+    <ul class="space-y-3">
+        <li th:each="doc : ${etapa.checklist}" 
+            class="flex items-start gap-3 p-3 rounded-lg border transition-all duration-200"
+            th:classappend="${doc.entregue} ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200 hover:border-[var(--gold)]'">
+            
+            <div class="pt-1">
+                <input type="checkbox" 
+                       th:checked="${doc.entregue}"
+                       class="w-5 h-5 text-[var(--navy-blue)] rounded border-gray-300 focus:ring-[var(--gold)] cursor-pointer"
+                       th:attr="hx-post=@{/processos/{pid}/etapa/{eid}/checklist/{did}/toggle(pid=${etapa.processo.id}, eid=${etapa.id}, did=${doc.id})}"
+                       hx-swap="outerHTML"
+                       hx-target="closest .checklist-container">
+            </div>
+            
+            <div class="flex-1">
+                <span class="text-sm font-medium" 
+                      th:classappend="${doc.entregue} ? 'text-green-800 line-through opacity-70' : 'text-gray-800'"
+                      th:text="${doc.nome}">
+                    RG ou CNH
+                </span>
+            </div>
+            
+            <div th:if="${doc.entregue}">
+                <i class="fas fa-check text-green-600 text-sm"></i>
+            </div>
+        </li>
+    </ul>
+
+    <!-- Status Footer -->
+    <div class="mt-6 pt-4 border-t border-gray-100 flex justify-between items-center">
+        <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Status da Etapa</span>
+        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase"
+              th:classappend="${etapa.status == 'Concluído'} ? 'bg-green-100 text-green-700' : (${etapa.status == 'Em Andamento'} ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700')"
+              th:text="${etapa.status}">
+            Pendente
+        </span>
+    </div>
+    
+    <!-- OOB Updates for Timeline & Progress Bar -->
+    <div th:if="${hxOobSwap}">
+        <div th:replace="~{fragments/timeline-view :: timeline}" hx-swap-oob="true"></div>
+        <div th:replace="~{fragments/progress-bar :: progressBar(${processo})}" hx-swap-oob="true"></div>
+    </div>
+</div>
+
+<!-- Modal Wrapper (Initial Load) -->
+<div th:fragment="modal" id="checklistModal" class="modal">
+    <div class="modal-content max-w-lg">
+        <div class="modal-header">
+            <h2 class="font-playfair text-xl font-bold text-[var(--navy-blue)]">Documentação</h2>
+            <button onclick="closeChecklistModal()" class="btn-ghost">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body" id="checklist-modal-body">
+            <!-- Content will be loaded here -->
+            <div class="text-center py-8">
+                <i class="fas fa-circle-notch fa-spin text-2xl text-gray-300"></i>
+            </div>
+        </div>
+    </div>
+</div>

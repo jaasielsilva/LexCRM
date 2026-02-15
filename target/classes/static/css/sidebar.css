@@ -1,0 +1,193 @@
+/* Sidebar Isolated Styles */
+#app-sidebar {
+    --navy-blue: #1a2744;
+    --navy-blue-dark: #0f172a;
+    --navy-blue-light: #2a3b5e;
+    --gold: #b8860b;
+    --gray-text: #94a3b8;
+    --gray-hover: #e2e8f0;
+    --white: #ffffff;
+    
+    font-family: 'Inter', sans-serif;
+    background-color: var(--navy-blue-dark);
+    color: var(--white);
+    
+    /* Layout */
+    width: 280px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    z-index: 50;
+    overflow-y: auto;
+    
+    /* Scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: var(--navy-blue-light) var(--navy-blue-dark);
+}
+
+#app-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+#app-sidebar::-webkit-scrollbar-track {
+    background: var(--navy-blue-dark);
+}
+
+#app-sidebar::-webkit-scrollbar-thumb {
+    background-color: var(--navy-blue-light);
+    border-radius: 3px;
+}
+
+/* Header */
+#app-sidebar .sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 40px;
+    padding-left: 8px;
+}
+
+#app-sidebar .brand-icon {
+    width: 40px;
+    height: 40px;
+    background-color: var(--gold);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: var(--white);
+    flex-shrink: 0;
+}
+
+#app-sidebar .brand-text h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--white);
+    margin: 0;
+    line-height: 1;
+}
+
+#app-sidebar .brand-text h1 span {
+    color: var(--gold);
+}
+
+#app-sidebar .brand-subtitle {
+    font-size: 0.75rem;
+    color: var(--gray-text);
+    margin: 4px 0 0 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Menu */
+#app-sidebar .sidebar-menu {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#app-sidebar .menu-category {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--gray-text);
+    text-transform: uppercase;
+    margin: 24px 0 8px 12px;
+    letter-spacing: 0.05em;
+}
+
+#app-sidebar .menu-category:first-child {
+    margin-top: 0;
+}
+
+#app-sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: var(--gray-text);
+    text-decoration: none;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+#app-sidebar .nav-link:hover {
+    background-color: rgba(255,255,255,0.05);
+    color: var(--white);
+}
+
+#app-sidebar .nav-link.active {
+    background-color: var(--navy-blue-light);
+    color: var(--white);
+    border-left: 4px solid var(--gold);
+    padding-left: 12px; /* Compensate for border */
+}
+
+#app-sidebar .nav-link i {
+    width: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+/* Footer */
+#app-sidebar .sidebar-footer {
+    margin-top: auto;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#app-sidebar .user-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: var(--navy-blue-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--white);
+    font-size: 0.9rem;
+}
+
+#app-sidebar .user-info {
+    flex: 1;
+    overflow: hidden;
+}
+
+#app-sidebar .user-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--white);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#app-sidebar .user-role {
+    font-size: 0.75rem;
+    color: var(--gray-text);
+    margin: 0;
+}
+
+/* Adjust main content to account for sidebar width */
+/* This part is tricky as it affects global layout, but we can scope it to sibling selector if possible,
+   or just assume the main layout handles it. Since we are isolating sidebar, let's just style the sidebar itself.
+   The main content usually has margin-left: 280px; 
+   If that was missing, it's a global layout issue.
+   I will add a global rule here scoped to body? No, that breaks isolation.
+   I'll assume the main layout (or style.css) handles the margin. 
+   If not, I might need to add it to style.css or a global layout file.
+   Let's check style.css again later.
+*/

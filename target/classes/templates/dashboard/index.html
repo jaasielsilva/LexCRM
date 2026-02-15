@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indicadores (MTD) - CRM Jurídico</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/tailwind.css}">
+</head>
+<body class="bg-light">
+
+    <div th:if="${#authentication?.name != null}"
+         th:attr="data-user-email=${#authentication.name}"
+         style="display: none;"></div>
+
+    <div th:replace="~{fragments/sidebar :: sidebar(activePage='dashboard')}"></div>
+
+    <main class="main-content" style="margin-left: 280px; padding: 32px; max-width: 1600px; margin: 0 auto 0 280px;">
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                <div>
+                    <h1 class="font-playfair text-lg font-bold text-navy-blue">Dashboard Executivo</h1>
+                    <p class="text-xs text-slate-500">Clique nos cards para ver os detalhes abaixo.</p>
+                </div>
+                <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
+                    <span class="inline-flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> bom
+                    </span>
+                    <span class="inline-flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-amber-500"></span> atenção
+                    </span>
+                    <span class="inline-flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-rose-500"></span> risco
+                    </span>
+                </div>
+            </div>
+
+            <div class="p-6 space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    <div class="flex items-center justify-between rounded-xl px-4 py-3 cursor-pointer transition shadow-sm bg-sky-50 border border-sky-100 hover:bg-sky-100"
+                         onclick="toggleDetails('novos_contatos')">
+                        <div>
+                            <h3 class="text-xl font-extrabold text-sky-900">8</h3>
+                            <p class="text-xs font-medium text-slate-600">Novos Contatos</p>
+                        </div>
+                        <div class="text-sky-500 text-2xl">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between rounded-xl px-4 py-3 cursor-pointer transition shadow-sm bg-rose-50 border border-rose-100 hover:bg-rose-100"
+                         onclick="toggleDetails('pagar_medico')">
+                        <div>
+                            <h3 class="text-xl font-extrabold text-rose-800" th:text="${medicosAPagarTotal}">R$ 0,00</h3>
+                            <p class="text-xs font-medium text-slate-600">A Pagar (Médicos)</p>
+                        </div>
+                        <div class="text-rose-500 text-2xl">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between rounded-xl px-4 py-3 cursor-pointer transition shadow-sm bg-amber-50 border border-amber-100 hover:bg-amber-100"
+                         onclick="toggleDetails('aguardando_laudo')">
+                        <div>
+                            <h3 class="text-xl font-extrabold text-amber-800">5</h3>
+                            <p class="text-xs font-medium text-slate-600">Aguardando Laudo</p>
+                        </div>
+                        <div class="text-amber-500 text-2xl">
+                            <i class="fas fa-file-medical-alt"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between rounded-xl px-4 py-3 cursor-pointer transition shadow-sm bg-rose-50 border border-rose-100 hover:bg-rose-100"
+                         onclick="toggleDetails('pendencias_docs')">
+                        <div>
+                            <h3 class="text-xl font-extrabold text-rose-800" th:text="${pendenciasDocsCount}">42</h3>
+                            <p class="text-xs font-medium text-slate-600">Pendências (Docs)</p>
+                        </div>
+                        <div class="text-rose-500 text-2xl">
+                            <i class="fas fa-file-contract"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between rounded-xl px-4 py-3 cursor-pointer transition shadow-sm bg-orange-50 border border-orange-100 hover:bg-orange-100"
+                         onclick="toggleDetails('contratos_pendentes')">
+                        <div>
+                            <h3 class="text-xl font-extrabold text-orange-800" th:text="${contratosPendentesCount}">0</h3>
+                            <p class="text-xs font-medium text-slate-600">Contratos a Assinar</p>
+                        </div>
+                        <div class="text-orange-500 text-2xl">
+                            <i class="fas fa-file-signature"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between rounded-xl px-4 py-3 cursor-pointer transition shadow-sm bg-emerald-50 border border-emerald-100 hover:bg-emerald-100"
+                         onclick="toggleDetails('receber_seguradora')">
+                        <div>
+                            <h3 class="text-xl font-extrabold text-emerald-800">R$ 450k</h3>
+                            <p class="text-xs font-medium text-slate-600">A Receber (Seg)</p>
+                        </div>
+                        <div class="text-emerald-500 text-2xl">
+                            <i class="fas fa-hand-holding-usd"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between rounded-xl px-4 py-3 cursor-pointer transition shadow-sm bg-sky-50 border border-sky-100 hover:bg-sky-100"
+                         onclick="toggleDetails('processos_ativos')">
+                        <div>
+                            <h3 class="text-xl font-extrabold text-sky-900" th:text="${processosAtivosCount}">1.240</h3>
+                            <p class="text-xs font-medium text-slate-600">Processos Ativos</p>
+                        </div>
+                        <div class="text-sky-500 text-2xl">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between rounded-xl px-4 py-3 cursor-pointer transition shadow-sm bg-slate-100 border border-slate-200 hover:bg-slate-200"
+                         onclick="toggleDetails('contencioso_civil')">
+                        <div>
+                            <h3 class="text-xl font-extrabold text-slate-800">85</h3>
+                            <p class="text-xs font-medium text-slate-600">Contencioso / Civil</p>
+                        </div>
+                        <div class="text-slate-500 text-2xl">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between rounded-xl px-4 py-3 cursor-pointer transition shadow-sm bg-emerald-50 border border-emerald-100 hover:bg-emerald-100"
+                         onclick="toggleDetails('processos_arquivados')">
+                        <div>
+                            <h3 class="text-xl font-extrabold text-emerald-800" th:text="${processosArquivadosCount}">0</h3>
+                            <p class="text-xs font-medium text-slate-600">Arquivados (Deferidos)</p>
+                        </div>
+                        <div class="text-emerald-500 text-2xl">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+    </main>
+
+    <script>
+        function toggleDetails(sectionId) {
+            var element = document.getElementById('details-' + sectionId);
+            if (!element) {
+                return;
+            }
+            if (element.classList.contains('hidden')) {
+                element.classList.remove('hidden');
+            } else {
+                element.classList.add('hidden');
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
