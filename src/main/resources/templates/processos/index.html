@@ -411,13 +411,11 @@
                     swap: 'innerHTML'
                 }).then((detail) => {
                     const status = detail.xhr.status;
-                    if (status === 200) {
-                        if (window.uiToastSuccess) window.uiToastSuccess('Etapa reaberta com sucesso!');
-                    } else if (status === 401) {
+                    if (status === 401) {
                         if (window.uiToastError) window.uiToastError('Senha de administrador incorreta.');
                     } else if (status === 403) {
                         if (window.uiToastError) window.uiToastError('Você não tem permissão de administrador.');
-                    } else {
+                    } else if (status !== 200) {
                         if (window.uiToastError) window.uiToastError('Ocorreu um erro ao tentar reabrir.');
                     }
                 });

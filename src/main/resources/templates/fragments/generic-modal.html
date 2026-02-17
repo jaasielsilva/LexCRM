@@ -64,4 +64,16 @@
         <div th:replace="~{fragments/timeline-view :: timeline}"></div>
         <div th:replace="~{fragments/progress-bar :: progressBar(${processo})}"></div>
     </div>
+
+    <!-- Script para feedback e fechamento -->
+    <script th:if="${successMessage != null}" th:inline="javascript">
+        if (window.closeChecklistModal) {
+            window.closeChecklistModal();
+        } else {
+            Swal.close();
+        }
+        if (window.uiToastSuccess) {
+            window.uiToastSuccess(/*[[${successMessage}]]*/ 'Sucesso!');
+        }
+    </script>
 </div>

@@ -94,6 +94,9 @@
         } else {
             Swal.close();
         }
+        if (window.uiToastSuccess) {
+            window.uiToastSuccess(/*[[${successMessage}]]*/ 'Sucesso!');
+        }
     </script>
 
     <div th:if="${hxOobSwap}">

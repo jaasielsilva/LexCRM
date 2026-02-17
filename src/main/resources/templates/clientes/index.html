@@ -54,7 +54,7 @@
                     <table class="table table-sm align-middle mb-0">
                         <thead>
                             <tr class="text-uppercase small text-muted">
-                                <th>Cliente</th>
+                                <th class="text-center">Cliente</th>
                                 <th>CPF/CNPJ</th>
                                 <th>E-mail</th>
                                 <th>Telefone</th>
@@ -66,10 +66,20 @@
                                 <td colspan="5" class="text-center text-muted py-4">Nenhum cliente cadastrado.</td>
                             </tr>
                             <tr th:each="c : ${clientes}">
-                                <td class="fw-semibold" th:text="${c.nome}">Nome</td>
+                                <td class="fw-semibold text-center" th:text="${c.nome}">Nome</td>
                                 <td class="small cpfcnpj-cell" th:text="${c.cpfCnpj}">000</td>
                                 <td class="small" th:text="${c.email}">email</td>
-                                <td class="small phone-cell" th:text="${c.telefone}">telefone</td>
+                                <td class="small">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="phone-cell" th:text="${c.telefone}">telefone</span>
+                                        <a th:if="${c.telefone != null and !c.telefone.isEmpty()}"
+                                            th:href="'whatsapp://send?phone=55' + ${c.telefone.replaceAll('\D', '')}"
+                                            target="_blank" class="text-success hover:text-green-700 transition-colors"
+                                            title="Conversar no WhatsApp Desktop">
+                                            <i class="fab fa-whatsapp text-lg"></i>
+                                        </a>
+                                    </div>
+                                </td>
                                 <td class="text-end">
                                     <button type="button" class="btn btn-sm btn-outline-primary"
                                         th:attr="data-id=${c.id},data-nome=${c.nome},data-cpfcnpj=${c.cpfCnpj},data-email=${c.email},data-telefone=${c.telefone}"

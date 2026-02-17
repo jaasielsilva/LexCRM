@@ -182,7 +182,7 @@ public class ProcessoController {
 
     @GetMapping("/pendentes/fragment")
     public String getProcessosPendentesFragment(Model model) {
-        model.addAttribute("processos", processoRepository.findByStatus("Pendente"));
+        model.addAttribute("processos", processoRepository.findByStatus("Em Andamento"));
         return "processos/index :: list";
     }
 
@@ -199,7 +199,7 @@ public class ProcessoController {
     @PostMapping("/novo")
     public String criarProcesso(Processo processo, Model model) {
         // Set defaults
-        processo.setStatus("Pendente");
+        processo.setStatus("Em Andamento");
         processo.setDataAbertura(LocalDate.now());
         processo.setTenantId("T001"); // Fixed for now
 
@@ -358,6 +358,8 @@ public class ProcessoController {
         // Retorna o fragmento específico do modal atual para atualizar o botão de
         // reabrir para salvar
         model.addAttribute("etapa", etapa);
+        model.addAttribute("successMessage", "Etapa reaberta com sucesso!");
+
         String fragment = switch (etapa.getNome()) {
             case "Documentação", "Documentos Recebidos" -> "fragments/checklist-modal :: content";
             case "Aguardando Assinatura" -> "fragments/assinatura-modal :: content";

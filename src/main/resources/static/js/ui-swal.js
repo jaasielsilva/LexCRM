@@ -207,6 +207,10 @@
                 window.uiToastError('Usuário ou senha inválidos.');
             } else if (p.has('logout')) {
                 window.uiToastSuccess('Você saiu com sucesso.');
+            } else if (p.get('login') === 'success') {
+                window.uiToastSuccess('Login realizado com sucesso!');
+                // Limpa o parâmetro da URL para não exibir novamente ao recarregar
+                window.history.replaceState({}, document.title, window.location.pathname);
             }
         } catch (e) {}
     };
