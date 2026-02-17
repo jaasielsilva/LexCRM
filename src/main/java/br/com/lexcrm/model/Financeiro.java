@@ -19,7 +19,7 @@ public class Financeiro {
     private BigDecimal valor;
     private LocalDate dataVencimento;
     private String status; // Pendente, Pago, Atrasado
-    
+
     @ManyToOne
     @JoinColumn(name = "processo_id")
     @ToString.Exclude

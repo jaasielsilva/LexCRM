@@ -5,24 +5,26 @@
     --gold: #b8860b;
     --gold-light: #fffdf5;
     --gold-border: #eab308;
-    
+
     --green-text: #15803d;
     --green-bg: #f0fdf4;
     --green-border: #86efac;
-    
+
     --red-text: #b91c1c;
     --red-bg: #fef2f2;
     --red-border: #fca5a5;
-    
+
     --gray-text: #64748b;
     --gray-bg: #f8fafc;
     --gray-border: #e2e8f0;
-    
+
     font-family: 'Inter', sans-serif;
-    padding: 24px; /* Reduced from 32px */
+    padding: 24px;
+    /* Reduced from 32px */
     max-width: 1600px;
     margin: 0 auto;
-    margin-left: 280px; /* Offset for sidebar width */
+    margin-left: 280px;
+    /* Offset for sidebar width */
 }
 
 /* Utility Class for Toggling */
@@ -39,12 +41,14 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 16px; /* Reduced */
+    margin-bottom: 16px;
+    /* Reduced */
 }
 
 #processos-modulo .page-title {
     font-family: 'Playfair Display', serif;
-    font-size: 1.75rem; /* Reduced from 2rem */
+    font-size: 1.75rem;
+    /* Reduced from 2rem */
     font-weight: 700;
     color: var(--navy-blue);
     margin: 0;
@@ -52,7 +56,8 @@
 }
 
 #processos-modulo .page-subtitle {
-    font-size: 0.85rem; /* Reduced */
+    font-size: 0.85rem;
+    /* Reduced */
     color: var(--gray-text);
     margin-top: 4px;
     font-weight: 400;
@@ -61,10 +66,12 @@
 #processos-modulo .btn-new-process {
     background-color: var(--navy-blue);
     color: white;
-    padding: 6px 14px; /* Reduced */
+    padding: 6px 14px;
+    /* Reduced */
     border-radius: 6px;
     font-weight: 500;
-    font-size: 0.85rem; /* Smaller font */
+    font-size: 0.85rem;
+    /* Smaller font */
     display: flex;
     align-items: center;
     gap: 6px;
@@ -83,20 +90,24 @@
 
 /* Search Bar */
 #processos-modulo .search-container {
-    margin-bottom: 20px; /* Reduced */
+    margin-bottom: 20px;
+    /* Reduced */
     position: relative;
 }
 
 #processos-modulo .search-input {
     width: 100%;
-    padding: 8px 10px 8px 36px; /* Compact padding */
+    padding: 8px 10px 8px 36px;
+    /* Compact padding */
     border: 1px solid var(--gray-border);
     border-radius: 6px;
-    font-size: 0.85rem; /* Smaller font */
+    font-size: 0.85rem;
+    /* Smaller font */
     color: var(--navy-blue);
     background-color: white;
     transition: border-color 0.2s;
-    height: 36px; /* Reduced height */
+    height: 36px;
+    /* Reduced height */
 }
 
 #processos-modulo .search-input:focus {
@@ -110,36 +121,44 @@
     top: 50%;
     transform: translateY(-50%);
     color: #94a3b8;
-    font-size: 0.8rem; /* Smaller icon */
+    font-size: 0.8rem;
+    /* Smaller icon */
 }
 
 /* Process Card */
 #processos-modulo .process-card {
     background: white;
-    border: 1.5px solid transparent; /* Slightly thicker for better border visibility when active */
-    border-radius: 12px; /* Increased radius for more rounded look */
+    border: 1.5px solid transparent;
+    /* Slightly thicker for better border visibility when active */
+    border-radius: 12px;
+    /* Increased radius for more rounded look */
     margin-bottom: 8px;
     transition: all 0.2s;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 #processos-modulo .process-card.expanded {
     border-color: var(--gold);
-    border-width: 2px; /* Thicker gold border */
+    border-width: 2px;
+    /* Thicker gold border */
     box-shadow: 0 4px 12px rgba(184, 134, 11, 0.15);
 }
 
 #processos-modulo .card-content {
-    padding: 12px 16px; /* Significantly reduced padding */
+    padding: 12px 16px;
+    /* Significantly reduced padding */
     display: flex;
     align-items: center;
-    gap: 12px; /* Reduced gap */
+    gap: 12px;
+    /* Reduced gap */
     cursor: pointer;
-    min-height: 60px; /* Force compact height */
+    min-height: 60px;
+    /* Force compact height */
 }
 
 #processos-modulo .card-icon {
-    width: 32px; /* Reduced from 40px */
+    width: 32px;
+    /* Reduced from 40px */
     height: 32px;
     background-color: #f1f5f9;
     border-radius: 6px;
@@ -147,7 +166,8 @@
     align-items: center;
     justify-content: center;
     color: #475569;
-    font-size: 0.85rem; /* Smaller icon */
+    font-size: 0.85rem;
+    /* Smaller icon */
     flex-shrink: 0;
 }
 
@@ -156,7 +176,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 2px; /* Tight vertical spacing */
+    gap: 2px;
+    /* Tight vertical spacing */
 }
 
 #processos-modulo .card-header-row {
@@ -167,7 +188,8 @@
 }
 
 #processos-modulo .process-number {
-    font-size: 0.95rem; /* Reduced */
+    font-size: 0.95rem;
+    /* Reduced */
     font-weight: 700;
     color: var(--navy-blue);
     line-height: 1.2;
@@ -176,7 +198,8 @@
 #processos-modulo .process-badge {
     background-color: #e2e8f0;
     color: #475569;
-    font-size: 0.6rem; /* Smaller font */
+    font-size: 0.6rem;
+    /* Smaller font */
     padding: 1px 5px;
     border-radius: 4px;
     font-weight: 600;
@@ -188,7 +211,8 @@
     align-items: center;
     gap: 6px;
     color: var(--gray-text);
-    font-size: 0.8rem; /* Smaller font */
+    font-size: 0.8rem;
+    /* Smaller font */
 }
 
 #processos-modulo .meta-separator {
@@ -204,11 +228,13 @@
 
 #processos-modulo .progress-container {
     text-align: right;
-    width: 100px; /* Narrower */
+    width: 100px;
+    /* Narrower */
 }
 
 #processos-modulo .progress-text {
-    font-size: 0.9rem; /* Reduced */
+    font-size: 0.9rem;
+    /* Reduced */
     font-weight: 700;
     color: var(--navy-blue);
     margin-bottom: 2px;
@@ -217,7 +243,8 @@
 
 #processos-modulo .progress-bar-bg {
     width: 100%;
-    height: 4px; /* Very thin bar */
+    height: 4px;
+    /* Very thin bar */
     background-color: #e2e8f0;
     border-radius: 2px;
     overflow: hidden;
@@ -242,7 +269,8 @@
 /* Timeline Container */
 #processos-modulo .timeline-panel {
     border-top: 1px solid var(--gray-border);
-    padding: 20px 16px 16px; /* Reduced padding */
+    padding: 20px 16px 16px;
+    /* Reduced padding */
     background-color: white;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
@@ -258,7 +286,8 @@
 
 #processos-modulo .timeline-title {
     font-family: 'Playfair Display', serif;
-    font-size: 1.1rem; /* Reduced */
+    font-size: 1.1rem;
+    /* Reduced */
     font-weight: 700;
     color: var(--navy-blue);
     margin-bottom: 0;
@@ -302,7 +331,8 @@
 }
 
 #processos-modulo .timeline-step-item {
-    width: 150px; /* Even narrower steps */
+    width: 150px;
+    /* Even narrower steps */
     padding: 0 6px;
     position: relative;
     display: flex;
@@ -314,7 +344,8 @@
 #processos-modulo .timeline-step-item::before {
     content: '';
     position: absolute;
-    top: 13px; /* Adjusted for smaller circle */
+    top: 13px;
+    /* Adjusted for smaller circle */
     left: -50%;
     width: 100%;
     height: 2px;
@@ -328,7 +359,8 @@
 
 /* Indicator Circle */
 #processos-modulo .step-circle {
-    width: 28px; /* Very small circle */
+    width: 28px;
+    /* Very small circle */
     height: 28px;
     border-radius: 50%;
     background: white;
@@ -351,18 +383,20 @@
     background: white;
     border: 1px solid #e2e8f0;
     border-radius: 6px;
-    padding: 10px; /* Reduced padding */
+    padding: 10px;
+    /* Reduced padding */
     width: 100%;
     text-align: left;
     transition: all 0.2s;
-    min-height: 80px; /* Very compact */
+    min-height: 80px;
+    /* Very compact */
     display: flex;
     flex-direction: column;
     cursor: pointer;
 }
 
 #processos-modulo .step-card:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 /* Status Variants */
@@ -416,7 +450,8 @@
 
 /* Step Typography */
 #processos-modulo .step-status-text {
-    font-size: 0.55rem; /* Very small */
+    font-size: 0.55rem;
+    /* Very small */
     font-weight: 700;
     text-transform: uppercase;
     margin-bottom: 4px;
@@ -426,7 +461,8 @@
 }
 
 #processos-modulo .step-title-text {
-    font-size: 0.8rem; /* Small */
+    font-size: 0.8rem;
+    /* Small */
     font-weight: 700;
     color: var(--navy-blue);
     margin-bottom: 2px;
@@ -465,7 +501,7 @@
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     align-items: center;
     justify-content: center;
     opacity: 0;
@@ -482,21 +518,30 @@
     margin: auto;
     padding: 0;
     border: none;
-    width: 500px; /* Smaller width */
+    width: 500px;
+    /* Smaller width */
     max-width: 90%;
     border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     animation: slideDown 0.3s ease-out;
     position: relative;
 }
 
 @keyframes slideDown {
-    from { transform: translateY(-20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 #processos-modulo .modal-header {
-    padding: 12px 16px; /* Reduced padding */
+    padding: 12px 16px;
+    /* Reduced padding */
     border-bottom: 1px solid var(--gray-border);
     display: flex;
     justify-content: space-between;
@@ -509,7 +554,8 @@
 #processos-modulo .modal-header h2 {
     margin: 0;
     color: var(--navy-blue);
-    font-size: 1.1rem; /* Smaller title */
+    font-size: 1.1rem;
+    /* Smaller title */
 }
 
 #processos-modulo .btn-ghost {
@@ -530,12 +576,14 @@
 }
 
 #processos-modulo .modal-body {
-    padding: 16px; /* Reduced padding */
+    padding: 16px;
+    /* Reduced padding */
     background-color: #fff;
 }
 
 #processos-modulo .form-group {
-    margin-bottom: 12px; /* Reduced margin */
+    margin-bottom: 12px;
+    /* Reduced margin */
     display: flex;
     flex-direction: column;
 }
@@ -547,9 +595,10 @@
     margin-bottom: 4px;
 }
 
-#processos-modulo .form-input, 
+#processos-modulo .form-input,
 #processos-modulo .form-select {
-    padding: 6px 8px; /* Smaller input padding */
+    padding: 6px 8px;
+    /* Smaller input padding */
     border: 1px solid var(--gray-border);
     border-radius: 6px;
     font-size: 0.85rem;
@@ -558,7 +607,7 @@
     background-color: #fff;
 }
 
-#processos-modulo .form-input:focus, 
+#processos-modulo .form-input:focus,
 #processos-modulo .form-select:focus {
     outline: none;
     border-color: var(--navy-blue);
@@ -577,7 +626,8 @@
 }
 
 #processos-modulo .btn {
-    padding: 6px 12px; /* Smaller buttons */
+    padding: 6px 12px;
+    /* Smaller buttons */
     border-radius: 6px;
     font-weight: 500;
     cursor: pointer;
@@ -604,5 +654,5 @@
 
 #processos-modulo .btn-primary:hover {
     background-color: var(--navy-blue-light);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
