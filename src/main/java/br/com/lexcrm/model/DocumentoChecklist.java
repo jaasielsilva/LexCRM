@@ -14,6 +14,10 @@ public class DocumentoChecklist {
     private String nome;
     private boolean entregue;
 
+    @OneToOne
+    @JoinColumn(name = "documento_id")
+    private Documento documento;
+
     @ManyToOne
     @JoinColumn(name = "etapa_id")
     private EtapaProcesso etapa;

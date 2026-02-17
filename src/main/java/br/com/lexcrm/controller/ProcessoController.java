@@ -29,6 +29,10 @@ public class ProcessoController {
     @Autowired
     private DocumentoChecklistRepository documentoChecklistRepository;
     @Autowired
+    private br.com.lexcrm.repository.DocumentoRepository documentoRepository;
+    @Autowired
+    private br.com.lexcrm.service.FileStorageService fileStorageService;
+    @Autowired
     private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @GetMapping
@@ -964,5 +968,106 @@ public class ProcessoController {
                 .findFirst().orElse(null);
         return analise != null && "Concluído".equalsIgnoreCase(analise.getStatus())
                 && laudo != null && "Concluído".equalsIgnoreCase(laudo.getStatus());
+    }
+
+    // ==================== DOCUMENT UPLOAD/DOWNLOAD ====================
+
+    @PostMapping("/etapa/{etapaId}/checklist/{checklistId}/upload")
+    public String uploadParaChecklist(@PathVariable Long etapaId,
+            @PathVariable Long checklistId,
+            @RequestParam("arquivo") org.springframework.web.multipart.MultipartFile arquivo,
+            Model model) {
+        try {
+            EtapaProcesso etapa = etapaProcessoRepository.findById(etapaId).orElseThrow();
+            DocumentoChecklist item = documentoChecklistRepository.findById(checklistId).orElseThrow();
+
+            // Salvar arquivo
+            Documento doc = fileStorageService.salvarArquivo(
+                    arquivo, etapa.getProcesso(), etapa, "DOCUMENTO_CLIENTE");
+
+            // Vincular ao checklist e marcar como entregue
+            item.setDocumento(doc);
+            item.setEntregue(true);
+            documentoChecklistRepository.save(item);
+
+            // Verificar se todos os itens foram entregues
+            boolean allCompleted = etapa.getChecklist().stream().allMatch(DocumentoChecklist::isEntregue);
+            if (allCompleted) {
+                etapa.setStatus("Concluído");
+                etapa.setData(LocalDate.now());
+            } else {
+                etapa.setStatus("Em Andamento");
+                if (etapa.getData() == null) {
+                    etapa.setData(LocalDate.now());
+                }
+            }
+            etapaProcessoRepository.save(etapa);
+
+            // Retornar apenas o item atualizado para HTMX
+            model.addAttribute("doc", item);
+            return "fragments/checklist-item :: item";
+        } catch (Exception e) {
+            // Em caso de erro, retornar mensagem de erro
+            model.addAttribute("error", e.getMessage());
+            return "fragments/checklist-item :: error";
+        }
+    }
+
+    @PostMapping("/etapa/{etapaId}/upload")
+    public String uploadDocumentos(@PathVariable Long etapaId,
+            @RequestParam("arquivos") org.springframework.web.multipart.MultipartFile[] arquivos,
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirect) {
+        try {
+            EtapaProcesso etapa = etapaProcessoRepository.findById(etapaId).orElseThrow();
+
+            int count = 0;
+            for (org.springframework.web.multipart.MultipartFile arquivo : arquivos) {
+                if (!arquivo.isEmpty()) {
+                    fileStorageService.salvarArquivo(arquivo, etapa.getProcesso(),
+                            etapa, "DOCUMENTO_CLIENTE");
+                    count++;
+                }
+            }
+
+            redirect.addFlashAttribute("success", count + " documento(s) enviado(s) com sucesso!");
+        } catch (Exception e) {
+            redirect.addFlashAttribute("error", "Erro ao enviar documentos: " + e.getMessage());
+        }
+
+        return "redirect:/processos";
+    }
+
+    @GetMapping("/documento/{id}/download")
+    public org.springframework.http.ResponseEntity<org.springframework.core.io.Resource> downloadDocumento(
+            @PathVariable Long id) {
+        try {
+            br.com.lexcrm.model.Documento doc = documentoRepository.findById(id).orElseThrow();
+
+            // Verificar permissão (mesmo tenant)
+            // TODO: Implementar verificação de tenant
+
+            java.nio.file.Path arquivo = fileStorageService.getArquivoPath(doc);
+            org.springframework.core.io.Resource resource = new org.springframework.core.io.UrlResource(
+                    arquivo.toUri());
+
+            if (!resource.exists() || !resource.isReadable()) {
+                throw new RuntimeException("Arquivo não encontrado");
+            }
+
+            return org.springframework.http.ResponseEntity.ok()
+                    .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"" + doc.getNomeOriginal() + "\"")
+                    .header(org.springframework.http.HttpHeaders.CONTENT_TYPE, doc.getMimeType())
+                    .body(resource);
+        } catch (Exception e) {
+            return org.springframework.http.ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/processo/{processoId}/documentos")
+    @ResponseBody
+    public List<br.com.lexcrm.model.Documento> listarDocumentos(@PathVariable Long processoId) {
+        Processo processo = processoRepository.findById(processoId).orElseThrow();
+        return documentoRepository.findByProcesso(processo);
     }
 }

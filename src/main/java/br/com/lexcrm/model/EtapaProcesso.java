@@ -28,4 +28,7 @@ public class EtapaProcesso {
 
     @OneToMany(mappedBy = "etapa", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private java.util.List<DocumentoChecklist> checklist = new java.util.ArrayList<>();
+
+    @OneToMany(mappedBy = "etapa", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private java.util.List<Documento> documentos = new java.util.ArrayList<>();
 }

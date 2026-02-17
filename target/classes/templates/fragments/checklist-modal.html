@@ -34,28 +34,65 @@
         </button>
     </div>
 
+    <!-- Caso específico: Documentos Recebidos (Upload de Arquivos) -->
+    <div th:if="${etapa.nome == 'Documentos Recebidos'}" class="mb-4">
+        <div class="bg-blue-50 p-3 rounded-lg border border-blue-100 mb-3 text-sm text-blue-800">
+            <i class="fas fa-info-circle mr-1"></i>
+            Anexe os documentos que o cliente enviou. Cada documento será automaticamente marcado ao fazer upload.
+        </div>
+    </div>
+
     <ul class="space-y-3" th:if="${not #lists.isEmpty(etapa.checklist)}">
-        <li th:each="doc : ${etapa.checklist}"
+        <li th:each="doc : ${etapa.checklist}" th:id="'item-' + ${doc.id}"
             class="flex items-start gap-3 p-3 rounded-lg border transition-all duration-200"
             th:classappend="${doc.entregue} ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200 hover:border-[var(--gold)]'">
 
             <div class="pt-1">
-                <input type="checkbox" th:checked="${doc.entregue}"
-                    class="w-5 h-5 text-[var(--navy-blue)] rounded border-gray-300 focus:ring-[var(--gold)] cursor-pointer"
-                    th:attr="hx-post=@{/processos/{pid}/etapa/{eid}/checklist/{did}/toggle(pid=${etapa.processo.id}, eid=${etapa.id}, did=${doc.id})}"
-                    hx-swap="outerHTML" hx-target="closest .checklist-container">
+                <input type="checkbox" th:checked="${doc.entregue}" disabled
+                    class="w-5 h-5 text-[var(--navy-blue)] rounded border-gray-300 cursor-not-allowed">
             </div>
 
             <div class="flex-1">
                 <span class="text-sm font-medium"
-                    th:classappend="${doc.entregue} ? 'text-green-800 line-through opacity-70' : 'text-gray-800'"
+                    th:classappend="${doc.entregue} ? 'text-green-700 line-through' : 'text-gray-800'"
                     th:text="${doc.nome}">
-                    RG ou CNH
+                    Nome do Documento
                 </span>
+
+                <!-- Mostrar arquivo anexado se existir -->
+                <div th:if="${doc.documento != null}" class="mt-2">
+                    <a th:href="@{/processos/documento/{id}/download(id=${doc.documento.id})}"
+                        class="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1">
+                        <i class="fas fa-file-pdf"></i>
+                        <span th:text="${doc.documento.nomeOriginal}">arquivo.pdf</span>
+                        <span class="text-gray-500"
+                            th:text="'(' + ${#numbers.formatDecimal(doc.documento.tamanho / 1024.0, 1, 1)} + ' KB)'">
+                        </span>
+                    </a>
+                </div>
             </div>
 
-            <div th:if="${doc.entregue}">
-                <i class="fas fa-check text-green-600 text-sm"></i>
+            <!-- Botão de Upload (apenas se não tiver documento) -->
+            <div th:if="${!doc.entregue}" class="flex-shrink-0">
+                <form th:action="@{/processos/etapa/{eid}/checklist/{cid}/upload(eid=${etapa.id}, cid=${doc.id})}"
+                    method="post" enctype="multipart/form-data" class="flex items-center gap-2"
+                    th:hx-post="@{/processos/etapa/{eid}/checklist/{cid}/upload(eid=${etapa.id}, cid=${doc.id})}"
+                    th:hx-target="'#item-' + ${doc.id}" hx-swap="outerHTML" hx-encoding="multipart/form-data"
+                    style="display: inline-block;">
+
+                    <input type="file" name="arquivo" accept=".pdf,.jpg,.jpeg,.png,.docx,.xlsx" class="hidden"
+                        th:id="'file-' + ${doc.id}"
+                        onchange="this.closest('form').dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}))">
+
+                    <label th:for="'file-' + ${doc.id}" class="btn btn-sm btn-outline-primary cursor-pointer mb-0"
+                        style="font-size: 0.75rem; padding: 0.25rem 0.75rem;">
+                        <i class="fas fa-upload"></i> Anexar
+                    </label>
+                </form>
+            </div>
+
+            <div th:if="${doc.entregue}" class="flex-shrink-0">
+                <i class="fas fa-check-circle text-green-600 text-lg"></i>
             </div>
         </li>
     </ul>
