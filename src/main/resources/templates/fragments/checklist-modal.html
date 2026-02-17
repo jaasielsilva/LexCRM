@@ -8,7 +8,33 @@
         <p class="text-sm text-gray-500">Marque os documentos recebidos para concluir a etapa.</p>
     </div>
 
-    <ul class="space-y-3">
+    <!-- Caso específico: Documentos Solicitados (Lista Estática para Envio) -->
+    <div th:if="${etapa.nome == 'Documentos Solicitados'}" class="mb-4">
+        <div class="bg-blue-50 p-3 rounded-lg border border-blue-100 mb-3 text-sm text-blue-800">
+            <i class="fas fa-info-circle mr-1"></i>
+            Confira a lista abaixo e clique em enviar para mandar ao cliente.
+        </div>
+        <ul
+            class="space-y-2 text-sm text-gray-700 list-disc list-inside bg-gray-50 p-3 rounded-lg border border-gray-200 mb-4">
+            <li>RG ou CNH</li>
+            <li>Comprovante de residência</li>
+            <li>Carteira de trabalho (Digital/PDF)</li>
+            <li>Últimos 3 holerites antes do diagnóstico</li>
+            <li>Documentos médicos (Laudos, Tomografia, Raio-X, Prontuário)</li>
+            <li>Dados bancários para indenização</li>
+            <li>E-mail para envio de documentação</li>
+            <li>B.O ou C.A.T (caso tenha)</li>
+        </ul>
+
+        <button type="button"
+            th:onclick="sendWhatsAppList([[${etapa.processo.cliente.telefone}]], [[${etapa.processo.cliente.nome}]])"
+            class="btn-premium-primary w-full justify-center gap-2 !bg-[#25D366] !border-[#25D366] hover:!bg-[#128C7E] hover:!border-[#128C7E] text-white font-bold py-2 px-4 rounded-lg shadow-sm transition-all">
+            <i class="fab fa-whatsapp text-lg"></i>
+            Enviar Lista por WhatsApp
+        </button>
+    </div>
+
+    <ul class="space-y-3" th:if="${not #lists.isEmpty(etapa.checklist)}">
         <li th:each="doc : ${etapa.checklist}"
             class="flex items-start gap-3 p-3 rounded-lg border transition-all duration-200"
             th:classappend="${doc.entregue} ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200 hover:border-[var(--gold)]'">
@@ -50,7 +76,8 @@
         <!-- Botão Salvar (Só se não concluído) -->
         <button th:if="${etapa.status != 'Concluído'}" type="button" class="btn-premium-primary py-2 px-4 text-sm"
             th:attr="hx-post=@{/processos/etapa/{eid}/checklist/save(eid=${etapa.id})}" hx-swap="innerHTML"
-            hx-target="#checklist-modal-body">
+            hx-target="#checklist-modal-body"
+            th:text="${etapa.nome == 'Documentos Solicitados' ? 'Concluir (Lista Enviada)' : 'Confirmar Recebimento'}">
             Confirmar Recebimento
         </button>
 
@@ -73,6 +100,30 @@
         closeChecklistModal();
         if (window.uiToastSuccess) {
             window.uiToastSuccess(/*[[${successMessage}]]*/ 'Sucesso!');
+        }
+    </script>
+
+    <script>
+        function sendWhatsAppList(phone, name) {
+            if (!phone) {
+                if (window.uiToastError) uiToastError('Cliente sem telefone cadastrado.');
+                return;
+            }
+
+            var cleanPhone = phone.replace(/\D/g, '');
+            var text = "Olá " + (name || 'Cliente') + ",\n" +
+                "Segue a lista de documentos necessários para o seu processo:\n\n" +
+                "- RG ou CNH\n" +
+                "- Comprovante de residência\n" +
+                "- Carteira de trabalho (Digital/PDF)\n" +
+                "- Últimos 3 holerites antes do diagnóstico\n" +
+                "- Documentos médicos (Laudos, Tomografia, Raio-X, Prontuário)\n" +
+                "- Dados bancários para indenização\n" +
+                "- E-mail para envio de documentação\n" +
+                "- B.O ou C.A.T (caso tenha)";
+
+            var url = "whatsapp://send?phone=55" + cleanPhone + "&text=" + encodeURIComponent(text);
+            window.open(url, '_blank');
         }
     </script>
 </div>

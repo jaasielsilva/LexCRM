@@ -522,7 +522,12 @@ public class ProcessoController {
             etapa.setStatus("Em Andamento");
             etapa.setData(LocalDate.now());
         }
+        aplicarRegrasDeEtapaAoConcluir(etapa);
         etapaProcessoRepository.save(etapa);
+
+        if ("Concluído".equalsIgnoreCase(etapa.getStatus())) {
+            model.addAttribute("successMessage", "Etapa concluída com sucesso!");
+        }
 
         // Removida a sincronização com 'Documentos Recebidos' (etapa oculta no fluxo)
 
@@ -892,6 +897,17 @@ public class ProcessoController {
                 .filter(e -> e.getNome() != null && e.getNome().equalsIgnoreCase(n))
                 .findFirst().orElse(null);
 
+        if (nome.equalsIgnoreCase("documentos solicitados")) {
+            EtapaProcesso docsRec = p.getEtapas().stream()
+                    .filter(e -> "Documentos Recebidos".equalsIgnoreCase(e.getNome()))
+                    .findFirst().orElse(null);
+            if (docsRec != null && !"Concluído".equalsIgnoreCase(docsRec.getStatus())) {
+                docsRec.setStatus("Em Andamento");
+                docsRec.setData(LocalDate.now());
+                etapaProcessoRepository.save(docsRec);
+            }
+        }
+
         if (nome.contains("análise documental") || nome.contains("analise documental")) {
             EtapaProcesso docsSolic = findByName.apply("Documentos Solicitados");
             if (docsSolic == null || !isConcluida.test(docsSolic)) {
@@ -922,6 +938,19 @@ public class ProcessoController {
                 etapa.setData(LocalDate.now());
             }
         }
+    }
+
+    @GetMapping("/pendencias/alerta-global")
+    @ResponseBody
+    public java.util.Map<String, Object> checkPendenciasAlertaGlobal() {
+        LocalDate limite = LocalDate.now().minusDays(1);
+        long count = etapaProcessoRepository.findAll().stream()
+                .filter(e -> "Documentos Recebidos".equalsIgnoreCase(e.getNome())
+                        && "Em Andamento".equalsIgnoreCase(e.getStatus())
+                        && e.getData() != null
+                        && !e.getData().isAfter(limite))
+                .count();
+        return java.util.Map.of("count", count);
     }
 
     private boolean canEnviadoSeg(Processo p) {

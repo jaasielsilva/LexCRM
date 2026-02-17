@@ -8,16 +8,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PageController {
 
+    @GetMapping("/test-alert")
+    public String testAlert() {
+        return "test-alert";
+    }
+
     @GetMapping({
-        "/documentacoes", 
-        "/agenda", 
-        "/financeiro", 
-        "/relatorios", 
-        "/configuracoes"
+            "/documentacoes",
+            "/agenda",
+            "/financeiro",
+            "/relatorios",
+            "/configuracoes"
     })
     public String underConstruction(HttpServletRequest request, Model model) {
         String uri = request.getRequestURI();
-        String activePage = uri.substring(1); 
+        String activePage = uri.substring(1);
         model.addAttribute("activePage", activePage);
         return "construction";
     }

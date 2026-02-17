@@ -26,7 +26,7 @@
 
                 <!-- Indicator Circle (Clickable unless Concluído, then opens Info Modal) -->
                 <div class="step-circle"
-                    th:if="${!(etapa.nome == 'Documentação' or etapa.nome == 'Documentos Recebidos' or etapa.nome == 'Aguardando Assinatura' or etapa.nome == 'Laudo Médico Recebido' or etapa.nome == 'Sinistro Gerado' or etapa.nome == 'Enviado para Seguradora')}"
+                    th:if="${!(etapa.nome == 'Documentação' or etapa.nome == 'Documentos Solicitados' or etapa.nome == 'Documentos Recebidos' or etapa.nome == 'Aguardando Assinatura' or etapa.nome == 'Laudo Médico Recebido' or etapa.nome == 'Sinistro Gerado' or etapa.nome == 'Enviado para Seguradora')}"
                     th:attr="hx-post=${etapa.status != 'Concluído'} ? @{/processos/{pid}/etapa/{eid}/toggle(pid=${processoSelecionado.id}, eid=${etapa.id})} : null, 
                              hx-get=${etapa.status == 'Concluído'} ? @{/processos/etapa/{eid}/generic-modal(eid=${etapa.id})} : null,
                              hx-target=${etapa.status == 'Concluído'} ? '#checklist-modal-body' : 'closest .timeline-panel',
@@ -38,7 +38,8 @@
                 </div>
 
                 <!-- Special Circle for 'Checklist' -->
-                <div class="step-circle" th:if="${etapa.nome == 'Documentação' or etapa.nome == 'Documentos Recebidos'}"
+                <div class="step-circle"
+                    th:if="${etapa.nome == 'Documentação' or etapa.nome == 'Documentos Solicitados' or etapa.nome == 'Documentos Recebidos'}"
                     th:attr="hx-get=@{/processos/etapa/{eid}/checklist(eid=${etapa.id})}"
                     hx-target="#checklist-modal-body" hx-swap="innerHTML">
                     <i th:if="${etapa.status == 'Concluído'}" class="fas fa-check"></i>
@@ -85,7 +86,7 @@
 
                 <!-- Card (Also Clickable for better UX, unless Concluído, then opens Info Modal) -->
                 <div class="step-card"
-                    th:if="${!(etapa.nome == 'Documentação' or etapa.nome == 'Documentos Recebidos' or etapa.nome == 'Aguardando Assinatura' or etapa.nome == 'Laudo Médico Recebido' or etapa.nome == 'Sinistro Gerado' or etapa.nome == 'Enviado para Seguradora')}"
+                    th:if="${!(etapa.nome == 'Documentação' or etapa.nome == 'Documentos Solicitados' or etapa.nome == 'Documentos Recebidos' or etapa.nome == 'Aguardando Assinatura' or etapa.nome == 'Laudo Médico Recebido' or etapa.nome == 'Sinistro Gerado' or etapa.nome == 'Enviado para Seguradora')}"
                     th:attr="hx-post=${etapa.status != 'Concluído'} ? @{/processos/{pid}/etapa/{eid}/toggle(pid=${processoSelecionado.id}, eid=${etapa.id})} : null, 
                              hx-get=${etapa.status == 'Concluído'} ? @{/processos/etapa/{eid}/generic-modal(eid=${etapa.id})} : null,
                              hx-target=${etapa.status == 'Concluído'} ? '#checklist-modal-body' : 'closest .timeline-panel',
@@ -143,7 +144,8 @@
                 </div>
 
                 <!-- Special Card for 'Checklist' -->
-                <div class="step-card" th:if="${etapa.nome == 'Documentação' or etapa.nome == 'Documentos Recebidos'}"
+                <div class="step-card"
+                    th:if="${etapa.nome == 'Documentação' or etapa.nome == 'Documentos Solicitados' or etapa.nome == 'Documentos Recebidos'}"
                     th:attr="hx-get=@{/processos/etapa/{eid}/checklist(eid=${etapa.id})}"
                     hx-target="#checklist-modal-body" hx-swap="innerHTML" style="cursor: pointer;">
 
@@ -168,6 +170,12 @@
                             th:text="${T(java.time.temporal.ChronoUnit).DAYS.between(etapa.data, today)} + 'd'">0d</span>
                     </div>
                     <div class="step-date-text" th:if="${etapa.data == null}">-</div>
+
+                    <!-- Alert for Pending Documents (More than 1 day) -->
+                    <div th:if="${etapa.nome == 'Documentos Recebidos' and (etapa.status == 'Em Andamento' or etapa.status == 'Pendente') and etapa.data != null and T(java.time.temporal.ChronoUnit).DAYS.between(etapa.data, today) >= 1}"
+                        class="pt-2 text-danger small fw-bold">
+                        <i class="fas fa-exclamation-triangle"></i> Pendência de Documentos
+                    </div>
 
                     <!-- Medical Payment Badge -->
                     <div th:if="${etapa.nome == 'Laudo Médico Recebido' and temPendenciaMedica}" class="mt-2">

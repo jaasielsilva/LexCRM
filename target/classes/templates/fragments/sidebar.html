@@ -148,6 +148,23 @@
                     evt.detail.headers[header] = token;
                 }
             });
+
+            // Global Pending Alert Check
+            document.addEventListener('DOMContentLoaded', function () {
+                fetch('/processos/pendencias/alerta-global')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.count && data.count > 0) {
+                            // Using setTimeout to ensure UI is ready and not conflict with other toasts
+                            setTimeout(() => {
+                                if (window.uiToastError) {
+                                    window.uiToastError('Atenção: Existem ' + data.count + ' processos com pendência de documentos há mais de 1 dia.');
+                                }
+                            }, 1000);
+                        }
+                    })
+                    .catch(err => console.error('Error checking alerts:', err));
+            });
         </script>
     </div>
 
