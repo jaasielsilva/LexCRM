@@ -15,6 +15,7 @@ public class Cliente {
     private String cpfCnpj;
     private String email;
     private String telefone;
+    private String indicacao;
 
     // Multi-tenancy
     private String tenantId;

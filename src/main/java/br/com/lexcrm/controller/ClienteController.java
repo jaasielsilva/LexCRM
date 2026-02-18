@@ -72,29 +72,21 @@ public class ClienteController {
         String cpfCnpjRaw = cliente.getCpfCnpj() == null ? "" : cliente.getCpfCnpj().trim();
         String cpfCnpj = somenteDigitos(cpfCnpjRaw);
 
-        if (nome.isEmpty()) {
-            resp.put("ok", false);
-            resp.put("message", "Informe o nome do cliente.");
-            return ResponseEntity.badRequest().body(resp);
-        }
-        if (cpfCnpj.isEmpty()) {
-            resp.put("ok", false);
-            resp.put("message", "Informe o CPF/CNPJ.");
-            return ResponseEntity.badRequest().body(resp);
-        }
-        if (!cpfCnpjValido(cpfCnpj)) {
-            resp.put("ok", false);
-            resp.put("message", "CPF/CNPJ inválido.");
-            return ResponseEntity.badRequest().body(resp);
-        }
-        if (clienteRepository.existsByCpfCnpj(cpfCnpj)) {
-            resp.put("ok", false);
-            resp.put("message", "Já existe um cliente cadastrado com este CPF/CNPJ.");
-            return ResponseEntity.badRequest().body(resp);
+        if (!cpfCnpj.isEmpty()) {
+            if (!cpfCnpjValido(cpfCnpj)) {
+                resp.put("ok", false);
+                resp.put("message", "CPF/CNPJ inválido.");
+                return ResponseEntity.badRequest().body(resp);
+            }
+            if (clienteRepository.existsByCpfCnpj(cpfCnpj)) {
+                resp.put("ok", false);
+                resp.put("message", "Já existe um cliente cadastrado com este CPF/CNPJ.");
+                return ResponseEntity.badRequest().body(resp);
+            }
         }
 
-        cliente.setNome(nome);
-        cliente.setCpfCnpj(cpfCnpj);
+        cliente.setNome(nome.isEmpty() ? null : nome);
+        cliente.setCpfCnpj(cpfCnpj.isEmpty() ? null : cpfCnpj);
         if (cliente.getEmail() != null) {
             String email = cliente.getEmail().trim().toLowerCase();
             if (!email.isEmpty() && !emailValido(email)) {
@@ -112,6 +104,10 @@ public class ClienteController {
                 return ResponseEntity.badRequest().body(resp);
             }
             cliente.setTelefone(tel.isEmpty() ? null : tel);
+        }
+        if (cliente.getIndicacao() != null) {
+            String indicacao = cliente.getIndicacao().trim();
+            cliente.setIndicacao(indicacao.isEmpty() ? null : indicacao);
         }
         cliente.setTenantId("T001");
 
@@ -137,29 +133,21 @@ public class ClienteController {
         String cpfCnpjRaw = payload.getCpfCnpj() == null ? "" : payload.getCpfCnpj().trim();
         String cpfCnpj = somenteDigitos(cpfCnpjRaw);
 
-        if (nome.isEmpty()) {
-            resp.put("ok", false);
-            resp.put("message", "Informe o nome do cliente.");
-            return ResponseEntity.badRequest().body(resp);
-        }
-        if (cpfCnpj.isEmpty()) {
-            resp.put("ok", false);
-            resp.put("message", "Informe o CPF/CNPJ.");
-            return ResponseEntity.badRequest().body(resp);
-        }
-        if (!cpfCnpjValido(cpfCnpj)) {
-            resp.put("ok", false);
-            resp.put("message", "CPF/CNPJ inválido.");
-            return ResponseEntity.badRequest().body(resp);
-        }
-        if (clienteRepository.existsByCpfCnpjAndIdNot(cpfCnpj, id)) {
-            resp.put("ok", false);
-            resp.put("message", "Já existe outro cliente cadastrado com este CPF/CNPJ.");
-            return ResponseEntity.badRequest().body(resp);
+        if (!cpfCnpj.isEmpty()) {
+            if (!cpfCnpjValido(cpfCnpj)) {
+                resp.put("ok", false);
+                resp.put("message", "CPF/CNPJ inválido.");
+                return ResponseEntity.badRequest().body(resp);
+            }
+            if (clienteRepository.existsByCpfCnpjAndIdNot(cpfCnpj, id)) {
+                resp.put("ok", false);
+                resp.put("message", "Já existe outro cliente cadastrado com este CPF/CNPJ.");
+                return ResponseEntity.badRequest().body(resp);
+            }
         }
 
-        cliente.setNome(nome);
-        cliente.setCpfCnpj(cpfCnpj);
+        cliente.setNome(nome.isEmpty() ? null : nome);
+        cliente.setCpfCnpj(cpfCnpj.isEmpty() ? null : cpfCnpj);
         if (payload.getEmail() != null) {
             String email = payload.getEmail().trim().toLowerCase();
             if (!email.isEmpty() && !emailValido(email)) {
@@ -181,6 +169,12 @@ public class ClienteController {
             cliente.setTelefone(tel.isEmpty() ? null : tel);
         } else {
             cliente.setTelefone(null);
+        }
+        if (payload.getIndicacao() != null) {
+            String indicacao = payload.getIndicacao().trim();
+            cliente.setIndicacao(indicacao.isEmpty() ? null : indicacao);
+        } else {
+            cliente.setIndicacao(null);
         }
 
         clienteRepository.save(cliente);

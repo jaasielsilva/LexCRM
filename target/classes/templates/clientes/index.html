@@ -82,7 +82,7 @@
                                 </td>
                                 <td class="text-end">
                                     <button type="button" class="btn btn-sm btn-outline-primary"
-                                        th:attr="data-id=${c.id},data-nome=${c.nome},data-cpfcnpj=${c.cpfCnpj},data-email=${c.email},data-telefone=${c.telefone}"
+                                        th:attr="data-id=${c.id},data-nome=${c.nome},data-cpfcnpj=${c.cpfCnpj},data-email=${c.email},data-telefone=${c.telefone},data-indicacao=${c.indicacao}"
                                         onclick="openClienteModalFromRow(this)">
                                         <i class="fas fa-pen"></i>
                                     </button>
@@ -142,19 +142,23 @@
                 '<form id="cliente-form" class="text-start">' +
                 '  <div class="mb-3">' +
                 '    <label class="form-label">Nome</label>' +
-                '    <input name="nome" class="form-control" value="' + (v.nome || '') + '" required>' +
+                '    <input name="nome" class="form-control" value="' + (v.nome || '') + '">' +
                 '  </div>' +
                 '  <div class="mb-3">' +
                 '    <label class="form-label">CPF/CNPJ</label>' +
-                '    <input name="cpfCnpj" class="form-control" value="' + (v.cpfCnpj || '') + '" required>' +
+                '    <input name="cpfCnpj" class="form-control" value="' + (v.cpfCnpj || '') + '">' +
                 '  </div>' +
                 '  <div class="mb-3">' +
                 '    <label class="form-label">E-mail</label>' +
                 '    <input name="email" type="email" class="form-control" value="' + (v.email || '') + '">' +
                 '  </div>' +
-                '  <div class="mb-0">' +
+                '  <div class="mb-3">' +
                 '    <label class="form-label">Telefone</label>' +
                 '    <input name="telefone" class="form-control" value="' + (v.telefone || '') + '">' +
+                '  </div>' +
+                '  <div class="mb-0">' +
+                '    <label class="form-label">Indicação</label>' +
+                '    <input name="indicacao" class="form-control" value="' + (v.indicacao || '') + '">' +
                 '  </div>' +
                 '</form>';
         }
@@ -170,7 +174,8 @@
                 nome: d.nome,
                 cpfCnpj: d.cpfcnpj,
                 email: d.email,
-                telefone: d.telefone
+                telefone: d.telefone,
+                indicacao: d.indicacao
             });
         }
 
@@ -201,19 +206,10 @@
                 },
                 preConfirm: function () {
                     var container = Swal.getHtmlContainer();
-                    var nome = container.querySelector('input[name="nome"]').value.trim();
                     var cpfCnpj = container.querySelector('input[name="cpfCnpj"]').value.trim();
                     var email = container.querySelector('input[name="email"]').value.trim();
                     var telefone = container.querySelector('input[name="telefone"]').value.trim();
-                    if (!nome) {
-                        Swal.showValidationMessage('Informe o nome do cliente.');
-                        return false;
-                    }
-                    if (!cpfCnpj) {
-                        Swal.showValidationMessage('Informe o CPF/CNPJ.');
-                        return false;
-                    }
-                    if (!isValidCpfCnpj(cpfCnpj)) {
+                    if (cpfCnpj && !isValidCpfCnpj(cpfCnpj)) {
                         Swal.showValidationMessage('CPF/CNPJ inválido.');
                         return false;
                     }

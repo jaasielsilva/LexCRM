@@ -11,6 +11,7 @@ D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\controller\ProcessoController.jav
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\exception\GlobalExceptionHandler.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\LexcrmApplication.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\Cliente.java
+D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\Documento.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\DocumentoChecklist.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\EtapaProcesso.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\Financeiro.java
@@ -19,8 +20,10 @@ D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\Role.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\Usuario.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\repository\ClienteRepository.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\repository\DocumentoChecklistRepository.java
+D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\repository\DocumentoRepository.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\repository\EtapaProcessoRepository.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\repository\FinanceiroRepository.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\repository\ProcessoRepository.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\repository\UsuarioRepository.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\service\CustomUserDetailsService.java
+D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\service\FileStorageService.java
