@@ -165,6 +165,61 @@
                     })
                     .catch(err => console.error('Error checking alerts:', err));
             });
+
+            document.addEventListener('DOMContentLoaded', function () {
+                function updateNotifBadge(count) {
+                    var el = document.getElementById('sidebar-notif-count');
+                    if (!el) return;
+                    if (count && count > 0) {
+                        el.textContent = String(count);
+                        el.style.display = 'inline-flex';
+                    } else {
+                        el.style.display = 'none';
+                    }
+                }
+
+                function toastForNotif(n) {
+                    var msg = (n && (n.mensagem || n.titulo)) ? (n.mensagem || n.titulo) : 'Você tem uma notificação.';
+                    if (n && (n.tipo === 'ERROR' || n.tipo === 'WARNING')) {
+                        if (window.uiToastError) window.uiToastError(msg);
+                    } else {
+                        if (window.uiToastSuccess) window.uiToastSuccess(msg);
+                    }
+                }
+
+                function pollNotificacoes(showToasts) {
+                    fetch('/notificacoes/unread')
+                        .then(r => r.json())
+                        .then(data => {
+                            updateNotifBadge(data && data.count ? data.count : 0);
+                            if (!showToasts) return;
+                            var items = (data && data.items) ? data.items : [];
+                            var last = 0;
+                            try { last = parseInt(localStorage.getItem('lexcrm_notif_last_id') || '0', 10) || 0; } catch (e) { last = 0; }
+                            var newest = last;
+                            for (var i = 0; i < items.length; i++) {
+                                var id = parseInt(items[i].id, 10) || 0;
+                                if (id > newest) newest = id;
+                            }
+                            if (newest > last) {
+                                var shown = 0;
+                                for (var j = items.length - 1; j >= 0; j--) {
+                                    var nid = parseInt(items[j].id, 10) || 0;
+                                    if (nid > last) {
+                                        toastForNotif(items[j]);
+                                        shown++;
+                                        if (shown >= 3) break;
+                                    }
+                                }
+                                try { localStorage.setItem('lexcrm_notif_last_id', String(newest)); } catch (e) { }
+                            }
+                        })
+                        .catch(err => console.error('Error checking notifications:', err));
+                }
+
+                pollNotificacoes(true);
+                setInterval(function () { pollNotificacoes(false); }, 60000);
+            });
         </script>
     </div>
 

@@ -15,7 +15,6 @@ public class PageController {
 
     @GetMapping({
             "/documentacoes",
-            "/agenda",
             "/financeiro",
             "/relatorios",
             "/configuracoes"

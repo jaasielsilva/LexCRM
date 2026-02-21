@@ -82,7 +82,7 @@
 
                     <input type="file" name="arquivo" accept=".pdf,.jpg,.jpeg,.png,.docx,.xlsx" class="hidden"
                         th:id="'file-' + ${doc.id}"
-                        onchange="this.closest('form').dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}))">
+                        onchange="this.form && this.form.requestSubmit ? this.form.requestSubmit() : this.closest('form').dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}))">
 
                     <label th:for="'file-' + ${doc.id}" class="btn btn-sm btn-outline-primary cursor-pointer mb-0"
                         style="font-size: 0.75rem; padding: 0.25rem 0.75rem;">

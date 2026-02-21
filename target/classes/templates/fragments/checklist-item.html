@@ -1,5 +1,5 @@
 <!-- Checklist Item Fragment -->
-<li th:fragment="item" th:object="${doc}"
+<li th:fragment="item" th:object="${doc}" th:id="'item-' + *{id}"
     class="flex items-start gap-3 p-3 rounded-lg border transition-all duration-200"
     th:classappend="*{entregue} ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200 hover:border-[var(--gold)]'">
 
@@ -36,7 +36,7 @@
 
             <input type="file" name="arquivo" accept=".pdf,.jpg,.jpeg,.png,.docx,.xlsx" class="hidden"
                 th:id="'file-' + *{id}"
-                onchange="this.form.dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}))">
+                onchange="this.form && this.form.requestSubmit ? this.form.requestSubmit() : this.form.dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}))">
 
             <label th:for="'file-' + *{id}" class="btn btn-sm btn-outline-primary cursor-pointer mb-0"
                 style="font-size: 0.75rem; padding: 0.25rem 0.75rem;">

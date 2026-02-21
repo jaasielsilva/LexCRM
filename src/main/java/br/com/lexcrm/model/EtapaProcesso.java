@@ -16,6 +16,8 @@ public class EtapaProcesso {
 
     private String nome;
     private String descricao;
+    @Column(length = 4000)
+    private String observacoes;
     private String status; // Pendente, Em Andamento, Concluido
     private Integer ordem;
     private LocalDate data;

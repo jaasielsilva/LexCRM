@@ -59,19 +59,17 @@ public class DashboardController {
 
                 Map<String, Long> flowCounts = new HashMap<>();
                 String[] flowKeys = new String[] {
-                                "etapa_cadastro_cliente",
-                                "etapa_documentos_solicitados",
-                                "etapa_documentos_recebidos",
-                                "etapa_analise_documental",
-                                "etapa_pendencia_documental",
-                                "etapa_aguardando_assinatura",
-                                "etapa_pericia_medica",
-                                "etapa_laudo_recebido",
-                                "etapa_enviado_seguradora",
-                                "etapa_analise_seguradora",
-                                "etapa_pendencia_seguradora",
-                                "etapa_sinistro_gerado",
-                                "etapa_processo_finalizado"
+                                "etapa_contato",
+                                "etapa_solicitacao",
+                                "etapa_analise",
+                                "etapa_contrato",
+                                "etapa_medico",
+                                "etapa_seguradora",
+                                "etapa_conclusao",
+                                "etapa_contador",
+                                "etapa_dizimo",
+                                "etapa_indicacao",
+                                "etapa_nota_fiscal"
                 };
                 for (String k : flowKeys) {
                         flowCounts.put(k, 0L);
@@ -83,9 +81,8 @@ public class DashboardController {
                         }
                 }
 
-                long pendenciasCriticasCount = flowCounts.get("etapa_pendencia_documental")
-                                + flowCounts.get("etapa_pendencia_seguradora")
-                                + flowCounts.get("etapa_documentos_solicitados");
+                long pendenciasCriticasCount = flowCounts.get("etapa_solicitacao")
+                                + flowCounts.get("etapa_seguradora");
 
                 model.addAttribute("medicosAPagarTotal", medicosAPagarTotal);
                 model.addAttribute("seguradoraAReceberTotal", seguradoraAReceberTotal);
@@ -147,26 +144,22 @@ public class DashboardController {
                         case "pendencias_criticas" -> todos.stream()
                                         .filter(p -> {
                                                 String key = currentStageKey(p);
-                                                return "etapa_pendencia_documental".equals(key)
-                                                                || "etapa_pendencia_seguradora".equals(key)
-                                                                || "etapa_documentos_solicitados".equals(key);
+                                                return "etapa_solicitacao".equals(key)
+                                                                || "etapa_seguradora".equals(key);
                                         })
                                         .limit(10)
                                         .toList();
                         case "pendencias_docs" -> todos.stream()
                                         .filter(p -> p.getEtapas() != null && p.getEtapas().stream()
-                                                        .anyMatch(e -> (("Pendência Documental"
-                                                                        .equalsIgnoreCase(e.getNome())
-                                                                        || "Documentos Solicitados"
-                                                                                        .equalsIgnoreCase(e.getNome())
-                                                                        || "Documentação".equalsIgnoreCase(e.getNome()))
+                                                        .anyMatch(e -> (("Solicitação"
+                                                                        .equalsIgnoreCase(e.getNome()))
                                                                         && !"Concluído".equalsIgnoreCase(
                                                                                         e.getStatus()))))
                                         .limit(10)
                                         .toList();
                         case "aguardando_laudo" -> todos.stream()
                                         .filter(p -> p.getEtapas() != null && p.getEtapas().stream()
-                                                        .anyMatch(e -> "Laudo Médico Recebido"
+                                                        .anyMatch(e -> "Médico"
                                                                         .equalsIgnoreCase(e.getNome())
                                                                         && !"Concluído".equalsIgnoreCase(
                                                                                         e.getStatus())))
@@ -174,7 +167,7 @@ public class DashboardController {
                                         .toList();
                         case "aguardando_assinatura" -> todos.stream()
                                         .filter(p -> p.getEtapas() != null && p.getEtapas().stream()
-                                                        .anyMatch(e -> "Aguardando Assinatura"
+                                                        .anyMatch(e -> "Contrato"
                                                                         .equalsIgnoreCase(e.getNome())
                                                                         && !"Concluído".equalsIgnoreCase(
                                                                                         e.getStatus())))
@@ -182,20 +175,15 @@ public class DashboardController {
                                         .toList();
                         case "pericia_medica" -> todos.stream()
                                         .filter(p -> p.getEtapas() != null && p.getEtapas().stream()
-                                                        .anyMatch(e -> ("Perícia Médica".equalsIgnoreCase(e.getNome())
-                                                                        || "Perícia".equalsIgnoreCase(e.getNome()))
+                                                        .anyMatch(e -> ("Médico".equalsIgnoreCase(e.getNome()))
                                                                         && !"Concluído".equalsIgnoreCase(
                                                                                         e.getStatus())))
                                         .limit(10)
                                         .toList();
                         case "seguradora" -> todos.stream()
                                         .filter(p -> p.getEtapas() != null && p.getEtapas().stream()
-                                                        .anyMatch(e -> ("Enviado para Seguradora"
-                                                                        .equalsIgnoreCase(e.getNome())
-                                                                        || "Em Análise pela Seguradora"
-                                                                                        .equalsIgnoreCase(e.getNome())
-                                                                        || "Pendência com Seguradora"
-                                                                                        .equalsIgnoreCase(e.getNome()))
+                                                        .anyMatch(e -> ("Seguradora"
+                                                                        .equalsIgnoreCase(e.getNome()))
                                                                         && !"Concluído".equalsIgnoreCase(
                                                                                         e.getStatus())))
                                         .limit(10)
@@ -207,7 +195,7 @@ public class DashboardController {
                         case "arquivados" -> todos.stream()
                                         .filter(p -> "Concluído".equalsIgnoreCase(p.getStatus())
                                                         || (p.getEtapas() != null && p.getEtapas().stream()
-                                                                        .anyMatch(e -> "Processo Finalizado"
+                                                                        .anyMatch(e -> "Conclusão"
                                                                                         .equalsIgnoreCase(e.getNome())
                                                                                         && "Concluído".equalsIgnoreCase(
                                                                                                         e.getStatus()))))
@@ -217,13 +205,9 @@ public class DashboardController {
                                         .filter(p -> p.getTipo() != null && "Cível".equalsIgnoreCase(p.getTipo()))
                                         .limit(10)
                                         .toList();
-                        case "etapa_cadastro_cliente", "etapa_documentos_solicitados", "etapa_documentos_recebidos",
-                                        "etapa_analise_documental", "etapa_pendencia_documental",
-                                        "etapa_aguardando_assinatura",
-                                        "etapa_pericia_medica", "etapa_laudo_recebido", "etapa_enviado_seguradora",
-                                        "etapa_analise_seguradora", "etapa_pendencia_seguradora",
-                                        "etapa_sinistro_gerado",
-                                        "etapa_processo_finalizado" ->
+                        case "etapa_contato", "etapa_solicitacao", "etapa_analise", "etapa_contrato", "etapa_medico",
+                                        "etapa_seguradora", "etapa_conclusao", "etapa_contador", "etapa_dizimo",
+                                        "etapa_indicacao", "etapa_nota_fiscal" ->
                                 todos.stream()
                                                 .filter(p -> filtroKey.equals(currentStageKey(p)))
                                                 .limit(10)
@@ -270,19 +254,17 @@ public class DashboardController {
                         return null;
                 }
                 return switch (nome.trim().toLowerCase()) {
-                        case "cadastro do cliente" -> "etapa_cadastro_cliente";
-                        case "documentos solicitados", "documentação" -> "etapa_documentos_solicitados";
-                        case "documentos recebidos" -> "etapa_documentos_recebidos";
-                        case "análise documental", "analise documental" -> "etapa_analise_documental";
-                        case "pendência documental", "pendencia documental" -> "etapa_pendencia_documental";
-                        case "aguardando assinatura" -> "etapa_aguardando_assinatura";
-                        case "perícia médica", "pericia medica", "perícia" -> "etapa_pericia_medica";
-                        case "laudo médico recebido", "laudo medico recebido" -> "etapa_laudo_recebido";
-                        case "enviado para seguradora" -> "etapa_enviado_seguradora";
-                        case "em análise pela seguradora", "em analise pela seguradora" -> "etapa_analise_seguradora";
-                        case "pendência com seguradora", "pendencia com seguradora" -> "etapa_pendencia_seguradora";
-                        case "sinistro gerado" -> "etapa_sinistro_gerado";
-                        case "processo finalizado" -> "etapa_processo_finalizado";
+                        case "contato" -> "etapa_contato";
+                        case "solicitação", "solicitacao" -> "etapa_solicitacao";
+                        case "análise", "analise" -> "etapa_analise";
+                        case "contrato" -> "etapa_contrato";
+                        case "médico", "medico" -> "etapa_medico";
+                        case "seguradora" -> "etapa_seguradora";
+                        case "conclusão", "conclusao" -> "etapa_conclusao";
+                        case "contador" -> "etapa_contador";
+                        case "dízimo", "dizimo" -> "etapa_dizimo";
+                        case "indicação", "indicacao" -> "etapa_indicacao";
+                        case "nota fiscal", "nota_fiscal", "notafiscal" -> "etapa_nota_fiscal";
                         default -> null;
                 };
         }
@@ -296,7 +278,7 @@ public class DashboardController {
                                 && processo.getEtapas().stream().anyMatch(e -> e != null
                                                 && e.getNome() != null
                                                 && e.getStatus() != null
-                                                && "processo finalizado".equalsIgnoreCase(e.getNome())
+                                                && "conclusão".equalsIgnoreCase(e.getNome())
                                                 && "concluído".equalsIgnoreCase(e.getStatus()));
                 return statusConcluido || etapaFinalConcluida;
         }

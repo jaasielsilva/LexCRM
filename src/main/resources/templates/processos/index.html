@@ -132,7 +132,7 @@
                                 <label class="form-label-premium">Número do Processo</label>
                                 <div class="form-control-wrapper">
                                     <i class="fas fa-hashtag form-control-icon"></i>
-                                    <input type="text" name="numeroProcesso" class="form-input-premium" required
+                                    <input type="text" name="numeroProcesso" class="form-input-premium"
                                         placeholder="0000000-00.0000.0.00.0000"
                                         th:value="${processoDraft != null} ? ${processoDraft.numeroProcesso} : ''">
                                 </div>
@@ -143,7 +143,7 @@
                                 <label class="form-label-premium">Título / Assunto</label>
                                 <div class="form-control-wrapper">
                                     <i class="fas fa-heading form-control-icon"></i>
-                                    <input type="text" name="titulo" class="form-input-premium" required
+                                    <input type="text" name="titulo" class="form-input-premium"
                                         placeholder="Ex: Ação de Cobrança"
                                         th:value="${processoDraft != null} ? ${processoDraft.titulo} : ''">
                                 </div>
@@ -154,7 +154,7 @@
                                 <label class="form-label-premium">Tipo de Processo</label>
                                 <div class="form-control-wrapper">
                                     <i class="fas fa-balance-scale form-control-icon"></i>
-                                    <select name="tipo" class="form-select-premium" required>
+                                    <select name="tipo" class="form-select-premium">
                                         <option value="">Selecione...</option>
                                         <option value="Trabalhista"
                                             th:selected="${processoDraft != null and processoDraft.tipo == 'Trabalhista'}">
@@ -186,7 +186,7 @@
                                 <label class="form-label-premium">Cliente</label>
                                 <div class="form-control-wrapper">
                                     <i class="fas fa-user-tie form-control-icon"></i>
-                                    <select name="cliente.id" class="form-select-premium" required>
+                                    <select name="cliente.id" class="form-select-premium">
                                         <option value="">Selecione...</option>
                                         <option th:each="cliente : ${clientes}" th:value="${cliente.id}"
                                             th:text="${cliente.nome}"
@@ -223,7 +223,7 @@
                                 <label class="form-label-premium">Advogado Responsável</label>
                                 <div class="form-control-wrapper">
                                     <i class="fas fa-user-shield form-control-icon"></i>
-                                    <select name="advogadoResponsavel.id" class="form-select-premium" required>
+                                    <select name="advogadoResponsavel.id" class="form-select-premium">
                                         <option value="">Selecione...</option>
                                         <option th:each="advogado : ${advogados}" th:value="${advogado.id}"
                                             th:text="${advogado.nomeCompleto}"
@@ -279,15 +279,14 @@
                 padding: '0.5rem',
                 customClass: {
                     popup: 'modal-content-premium'
+                },
+                didOpen: function () {
+                    var htmlContainer = Swal.getHtmlContainer();
+                    if (htmlContainer && window.htmx && typeof htmx.process === 'function') {
+                        htmx.process(htmlContainer);
+                    }
                 }
             });
-
-            setTimeout(function () {
-                var htmlContainer = document.querySelector('.swal2-container .swal2-html-container');
-                if (htmlContainer && window.htmx && typeof htmx.process === 'function') {
-                    htmx.process(htmlContainer);
-                }
-            }, 0);
         });
 
         function openModal() {
@@ -313,23 +312,7 @@
                 if (val && window.uiMaskMoneyInput) window.uiMaskMoneyInput(val);
                 if (form) {
                     form.addEventListener('submit', function (e) {
-                        var errors = [];
-                        var titulo = form.querySelector('input[name="titulo"]').value.trim();
-                        var tipo = form.querySelector('select[name="tipo"]').value.trim();
-                        var clienteSel = form.querySelector('select[name="cliente.id"]').value.trim();
-                        var advSel = form.querySelector('select[name="advogadoResponsavel.id"]').value.trim();
-                        var numVal = num ? num.value.trim() : '';
                         var valVal = val ? val.value.trim() : '';
-                        if (!numVal) errors.push('Informe o número do processo.');
-                        if (!titulo) errors.push('Informe o título/assunto.');
-                        if (!tipo) errors.push('Selecione o tipo.');
-                        if (!clienteSel) errors.push('Selecione o cliente.');
-                        if (!advSel) errors.push('Selecione o advogado responsável.');
-                        if (errors.length) {
-                            e.preventDefault();
-                            Swal.fire({ icon: 'warning', title: 'Dados incompletos', html: '<ul style=\"text-align:left;padding-left:18px;margin:0;\">' + errors.map(function (t) { return '<li>' + t + '</li>'; }).join('') + '</ul>' });
-                            return;
-                        }
                         if (val) {
                             var cleaned = valVal.replace(/\./g, '').replace(',', '.').replace(/[^\d.]/g, '');
                             if (cleaned) val.value = cleaned;

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda - JurisCRM</title>
+
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/tailwind.css}">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css">
+
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/locales-all.global.min.js"></script>
+</head>
+
+<body>
+    <div th:replace="~{fragments/sidebar :: sidebar(activePage='agenda')}"></div>
+
+    <main class="main-content" id="agenda-modulo" style="margin-left: 280px; margin: 0 auto 0 280px;">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Agenda</h1>
+                <p class="page-subtitle">Agendamentos, lembretes e conflitos</p>
+            </div>
+            <button type="button" onclick="openAgendaModal()" class="btn-new-process">
+                <i class="fas fa-plus"></i>
+                Novo Evento
+            </button>
+        </div>
+
+        <div class="d-flex align-items-center gap-3 flex-wrap mb-3">
+            <form id="agenda-filters" class="d-flex align-items-center gap-2 flex-wrap mb-0">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="small text-muted">Data</span>
+                    <input type="date" name="data" class="form-control form-control-sm" th:value="${data}">
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="small text-muted">Responsável</span>
+                    <select name="responsavelId" class="form-select form-select-sm" style="min-width: 220px;">
+                        <option value="">Todos</option>
+                        <option th:each="u : ${usuarios}" th:value="${u.id}" th:text="${u.nomeCompleto}"
+                            th:selected="${responsavelId != null and responsavelId == u.id}">
+                            Usuário
+                        </option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-2">
+            <div id="agenda-calendar"></div>
+        </div>
+    </main>
+
+    <template id="agenda-form-template">
+        <form id="agenda-form" class="text-start">
+            <div class="mb-3">
+                <label class="form-label">Título</label>
+                <input name="titulo" class="form-control" placeholder="Ex: Reunião, Audiência, Perícia">
+            </div>
+            <div class="row g-2">
+                <div class="col-12 col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Início</label>
+                        <input name="inicio" type="datetime-local" class="form-control">
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Fim</label>
+                        <input name="fim" type="datetime-local" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Responsável</label>
+                <select name="responsavel.id" class="form-select">
+                    <option value="">Selecione...</option>
+                    <option th:each="u : ${usuarios}" th:value="${u.id}" th:text="${u.nomeCompleto}">
+                        Usuário
+                    </option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Cliente</label>
+                <select name="cliente.id" class="form-select">
+                    <option value="">Sem cliente</option>
+                    <option th:each="c : ${clientes}" th:value="${c.id}" th:text="${c.nome}">
+                        Cliente
+                    </option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Processo</label>
+                <select name="processo.id" class="form-select">
+                    <option value="">Sem processo</option>
+                    <option th:each="p : ${processos}" th:value="${p.id}"
+                        th:text="${p.numeroProcesso != null ? p.numeroProcesso : ('Processo #' + p.id)}">
+                        Processo
+                    </option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Local</label>
+                <input name="local" class="form-control" placeholder="Ex: Fórum, Escritório, Online">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Descrição</label>
+                <textarea name="descricao" class="form-control" rows="3" placeholder="Observações..."></textarea>
+            </div>
+            <div class="mb-0">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="ATIVO">ATIVO</option>
+                    <option value="CONCLUIDO">CONCLUIDO</option>
+                    <option value="CANCELADO">CANCELADO</option>
+                </select>
+            </div>
+        </form>
+    </template>
+
+    <script>
+        var agendaCalendar = null;
+
+        function csrfHeaders() {
+            var tokenMeta = document.querySelector('meta[name=\"_csrf\"]');
+            var headerMeta = document.querySelector('meta[name=\"_csrf_header\"]');
+            if (!tokenMeta || !headerMeta) {
+                return {};
+            }
+            var headers = {};
+            headers[headerMeta.getAttribute('content')] = tokenMeta.getAttribute('content');
+            return headers;
+        }
+
+        function pad2(n) {
+            return (n < 10 ? '0' : '') + n;
+        }
+
+        function toLocalDateTimeValue(d) {
+            if (!d) return '';
+            var year = d.getFullYear();
+            var month = pad2(d.getMonth() + 1);
+            var day = pad2(d.getDate());
+            var hour = pad2(d.getHours());
+            var min = pad2(d.getMinutes());
+            return year + '-' + month + '-' + day + 'T' + hour + ':' + min;
+        }
+
+        function refreshAgendaList() {
+            if (agendaCalendar && typeof agendaCalendar.refetchEvents === 'function') {
+                agendaCalendar.refetchEvents();
+            }
+        }
+
+        function openAgendaModal() {
+            openAgendaModalInternal(null);
+        }
+
+        function openAgendaModalFromCalendarEvent(fcEvent) {
+            if (!fcEvent) return;
+            var ext = fcEvent.extendedProps || {};
+            openAgendaModalInternal({
+                id: fcEvent.id,
+                titulo: fcEvent.title,
+                inicio: fcEvent.start ? toLocalDateTimeValue(fcEvent.start) : '',
+                fim: fcEvent.end ? toLocalDateTimeValue(fcEvent.end) : '',
+                local: ext.local,
+                descricao: ext.descricao,
+                status: ext.status,
+                responsavelId: ext.responsavelId,
+                clienteId: ext.clienteId,
+                processoId: ext.processoId
+            });
+        }
+
+        function openAgendaModalFromRow(button) {
+            var d = button ? button.dataset : {};
+            openAgendaModalInternal({
+                id: d.id,
+                titulo: d.titulo,
+                inicio: d.inicio,
+                fim: d.fim,
+                local: d.local,
+                descricao: d.descricao,
+                status: d.status,
+                responsavelId: d.responsavelid,
+                clienteId: d.clienteid,
+                processoId: d.processoid
+            });
+        }
+
+        function openAgendaModalInternal(data) {
+            var isEdit = data && data.id;
+            var title = isEdit ? 'Editar Evento' : 'Novo Evento';
+            var url = isEdit ? ('/agenda/' + data.id) : '/agenda';
+            var tpl = document.getElementById('agenda-form-template');
+            var html = tpl ? tpl.innerHTML : '';
+
+            Swal.fire({
+                title: title,
+                html: html,
+                showCancelButton: true,
+                confirmButtonText: 'Salvar',
+                cancelButtonText: 'Cancelar',
+                focusConfirm: false,
+                didOpen: function () {
+                    var c = Swal.getHtmlContainer();
+                    if (!c) return;
+                    var form = c.querySelector('#agenda-form');
+                    if (!form) return;
+                    if (data) {
+                        if (data.titulo != null) form.querySelector('input[name="titulo"]').value = data.titulo;
+                        if (data.inicio != null) form.querySelector('input[name="inicio"]').value = data.inicio;
+                        if (data.fim != null) form.querySelector('input[name="fim"]').value = data.fim;
+                        if (data.local != null) form.querySelector('input[name="local"]').value = data.local;
+                        if (data.descricao != null) form.querySelector('textarea[name="descricao"]').value = data.descricao;
+                        if (data.status != null) form.querySelector('select[name="status"]').value = data.status;
+                        if (data.responsavelId != null) form.querySelector('select[name="responsavel.id"]').value = data.responsavelId;
+                        if (data.clienteId != null) form.querySelector('select[name="cliente.id"]').value = data.clienteId;
+                        if (data.processoId != null) form.querySelector('select[name="processo.id"]').value = data.processoId;
+                    } else {
+                        var filters = document.getElementById('agenda-filters');
+                        var selectedDate = filters ? (filters.querySelector('input[name="data"]').value || '') : '';
+                        if (selectedDate) {
+                            var inicio = form.querySelector('input[name="inicio"]');
+                            if (inicio && !inicio.value) {
+                                inicio.value = selectedDate + 'T09:00';
+                            }
+                        }
+                    }
+                },
+                preConfirm: function () {
+                    var c = Swal.getHtmlContainer();
+                    var inicio = c && c.querySelector('input[name="inicio"]') ? c.querySelector('input[name="inicio"]').value.trim() : '';
+                    if (!inicio) {
+                        Swal.showValidationMessage('Informe a data/hora de início.');
+                        return false;
+                    }
+                    return uiSubmitFromSwal(url, 'POST', '#agenda-form').then(function (resp) {
+                        if (!resp || !resp.ok) {
+                            Swal.showValidationMessage((resp && resp.message) ? resp.message : 'Não foi possível salvar.');
+                            return false;
+                        }
+                        return resp;
+                    });
+                }
+            }).then(function (r) {
+                if (r.isConfirmed) {
+                    uiToastSuccess(r.value && r.value.message ? r.value.message : 'Salvo.');
+                    refreshAgendaList();
+                }
+            });
+        }
+
+        function confirmDeleteAgendaFromRow(button) {
+            var d = button ? button.dataset : {};
+            var id = d.id;
+            var titulo = d.titulo || 'evento';
+            uiConfirmDelete({
+                title: 'Cancelar evento',
+                text: 'Cancelar ' + titulo + '?'
+            }).then(function (confirmed) {
+                if (!confirmed) return;
+                uiFetchForm('/agenda/' + id + '/delete', 'POST', {}).then(function (resp) {
+                    if (resp && resp.ok) {
+                        uiToastSuccess(resp.message || 'Cancelado.');
+                        refreshAgendaList();
+                    } else {
+                        uiToastError(resp && resp.message ? resp.message : 'Não foi possível cancelar.');
+                    }
+                });
+            });
+        }
+
+        function updateFromCalendarChange(info) {
+            var ev = info && info.event ? info.event : null;
+            if (!ev) return;
+            var ext = ev.extendedProps || {};
+            var inicio = ev.start ? toLocalDateTimeValue(ev.start) : '';
+            var fim = ev.end ? toLocalDateTimeValue(ev.end) : '';
+            var data = {
+                titulo: ev.title || '',
+                inicio: inicio,
+                fim: fim,
+                local: ext.local || '',
+                descricao: ext.descricao || '',
+                status: ext.status || 'ATIVO',
+                'responsavel.id': ext.responsavelId || '',
+                'cliente.id': ext.clienteId || '',
+                'processo.id': ext.processoId || ''
+            };
+            fetch('/agenda/' + ev.id, {
+                method: 'POST',
+                headers: Object.assign({
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+                }, csrfHeaders()),
+                body: new URLSearchParams(data).toString()
+            }).then(function (r) {
+                return r.json().catch(function () { return { ok: false, message: 'Resposta inválida.' }; });
+            }).then(function (resp) {
+                if (!resp || !resp.ok) {
+                    if (window.uiToastError) window.uiToastError(resp && resp.message ? resp.message : 'Não foi possível mover.');
+                    if (info && typeof info.revert === 'function') info.revert();
+                    return;
+                }
+                if (window.uiToastSuccess) window.uiToastSuccess(resp.message || 'Atualizado.');
+            }).catch(function () {
+                if (window.uiToastError) window.uiToastError('Não foi possível mover.');
+                if (info && typeof info.revert === 'function') info.revert();
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var el = document.getElementById('agenda-calendar');
+            if (!el || !window.FullCalendar) return;
+
+            var form = document.getElementById('agenda-filters');
+            var dateInput = form ? form.querySelector('input[name="data"]') : null;
+            var respSelect = form ? form.querySelector('select[name="responsavelId"]') : null;
+
+            agendaCalendar = new FullCalendar.Calendar(el, {
+                initialView: 'dayGridMonth',
+                locale: 'pt-br',
+                nowIndicator: true,
+                editable: true,
+                selectable: true,
+                eventStartEditable: true,
+                eventDurationEditable: true,
+                height: 640,
+                fixedWeekCount: false,
+                dayMaxEventRows: 3,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: ''
+                },
+                events: function (fetchInfo, success, failure) {
+                    var respId = respSelect ? (respSelect.value || '') : '';
+                    var url = '/agenda/events?start=' + encodeURIComponent(fetchInfo.startStr) + '&end=' + encodeURIComponent(fetchInfo.endStr) +
+                        '&responsavelId=' + encodeURIComponent(respId);
+                    fetch(url, { headers: Object.assign({ 'X-Requested-With': 'XMLHttpRequest' }, csrfHeaders()) })
+                        .then(function (r) { return r.json(); })
+                        .then(function (data) { success(data || []); })
+                        .catch(function (e) { failure(e); });
+                },
+                dateClick: function (info) {
+                    var when = info && info.date ? info.date : null;
+                    openAgendaModalInternal({
+                        inicio: when ? toLocalDateTimeValue(when) : '',
+                        fim: when ? toLocalDateTimeValue(new Date(when.getTime() + 30 * 60000)) : ''
+                    });
+                },
+                eventClick: function (info) {
+                    if (!info || !info.event) return;
+                    openAgendaModalFromCalendarEvent(info.event);
+                },
+                eventDrop: updateFromCalendarChange,
+                eventResize: updateFromCalendarChange
+            });
+
+            if (dateInput && dateInput.value) {
+                agendaCalendar.gotoDate(dateInput.value);
+            }
+
+            agendaCalendar.render();
+
+            if (dateInput) {
+                dateInput.addEventListener('change', function () {
+                    if (dateInput.value) {
+                        agendaCalendar.gotoDate(dateInput.value);
+                    }
+                    refreshAgendaList();
+                });
+            }
+            if (respSelect) {
+                respSelect.addEventListener('change', function () {
+                    refreshAgendaList();
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
