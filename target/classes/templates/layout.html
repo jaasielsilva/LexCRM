@@ -19,6 +19,11 @@
 </head>
 <body>
 
+    <div id="swal-flash"
+         th:if="${flashSuccessMessage != null or flashErrorMessage != null or flashWarningMessage != null}"
+         th:attr="data-success=${flashSuccessMessage},data-error=${flashErrorMessage},data-warning=${flashWarningMessage}"
+         style="display:none;"></div>
+
     <div th:replace="~{fragments/sidebar :: sidebar(activePage=${activePage})}"></div>
 
     <main class="main-content">

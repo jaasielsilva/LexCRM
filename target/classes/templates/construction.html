@@ -15,6 +15,22 @@
             Esta funcionalidade ainda está sendo desenvolvida. <br>
             Em breve você terá acesso a este recurso.
         </p>
+        <div th:if="${activePage == 'configuracoes'}" class="mt-4" style="max-width: 720px;">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3"><i class="fas fa-user-shield me-2"></i>Sugestões para SEGREGAÇÃO (Admin)</h5>
+                    <ul class="small mb-0">
+                        <li>Usuários e Perfis: Admin, Advogado, Financeiro, Atendimento</li>
+                        <li>Permissões por Módulo: Processos, Clientes, Financeiro, Relatórios</li>
+                        <li>Autorização por Ação: criar, editar, excluir, visualizar, exportar</li>
+                        <li>Bloqueios/Suspensões: controle de acesso em desligamentos</li>
+                        <li>Políticas de Acesso: MFA, expiração de senha, tentativas de login</li>
+                        <li>Auditoria: registro de operações sensíveis por usuário e data</li>
+                        <li>Parâmetros: numeração (TR/OOO por tribunal), sequências por tenant/ano</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
         <a href="/dashboard" class="mt-4 btn btn-dark px-4 py-2">
             Voltar ao Dashboard
         </a>

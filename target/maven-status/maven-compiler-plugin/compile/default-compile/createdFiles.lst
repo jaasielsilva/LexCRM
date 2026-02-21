@@ -4,6 +4,7 @@ br\com\lexcrm\config\DataSeeder.class
 br\com\lexcrm\controller\PerfilController.class
 br\com\lexcrm\model\Cliente.class
 br\com\lexcrm\controller\ProcessoController.class
+br\com\lexcrm\security\AppPermissions$1.class
 br\com\lexcrm\repository\ClienteRepository.class
 br\com\lexcrm\controller\DashboardController.class
 br\com\lexcrm\LexcrmApplication.class

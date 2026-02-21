@@ -48,10 +48,13 @@ public class DashboardController {
                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
                 String seguradoraAReceberTotal = currencyFormat.format(totalSeguradoraReceber);
 
-                java.time.LocalDate dozeMesesAtras = java.time.LocalDate.now().minusMonths(12);
-                BigDecimal totalFaturamentoDozeMeses = financeiroRepository
-                                .sumValorByStatusAndDataVencimentoAfter("Pago", dozeMesesAtras);
-                String faturamentoDozeMeses = currencyFormat.format(totalFaturamentoDozeMeses);
+                java.time.LocalDate inicioAno = java.time.LocalDate.now().with(java.time.temporal.TemporalAdjusters.firstDayOfYear());
+                BigDecimal totalFaturamentoAnoAtual = financeiroRepository
+                                .sumValorByStatusAndDataVencimentoAfter("Pago", inicioAno);
+                String faturamentoDozeMeses = currencyFormat.format(totalFaturamentoAnoAtual);
+
+                java.time.LocalDateTime trintaDiasAtras = java.time.LocalDateTime.now().minusDays(30);
+                long novosContatosCount = clienteRepository.countByCreatedAtAfter(trintaDiasAtras);
 
                 List<br.com.lexcrm.model.Processo> processos = processoRepository.findAllWithDetails();
                 long processosConcluidos = processos.stream().filter(this::isConcluido).count();
@@ -87,6 +90,7 @@ public class DashboardController {
                 model.addAttribute("medicosAPagarTotal", medicosAPagarTotal);
                 model.addAttribute("seguradoraAReceberTotal", seguradoraAReceberTotal);
                 model.addAttribute("faturamentoDozeMeses", faturamentoDozeMeses);
+                model.addAttribute("novosContatosCount", novosContatosCount);
                 model.addAttribute("pendenciasCriticasCount", pendenciasCriticasCount);
                 model.addAttribute("processosAtivosCount", processosAtivos);
                 model.addAttribute("processosArquivadosCount", processosConcluidos);
@@ -125,10 +129,35 @@ public class DashboardController {
         @GetMapping("/dashboard/preview")
         public String preview(@RequestParam(required = false) String filtro, Model model) {
                 String filtroKey = filtro == null ? "" : filtro.trim().toLowerCase();
-                List<br.com.lexcrm.model.Processo> todos = processoRepository.findAllWithDetails();
 
-                List<?> itens = switch (filtroKey) {
-                        case "novos_contatos" -> clienteRepository.findTop3ByOrderByIdDesc();
+                if ("novos_contatos".equals(filtroKey)) {
+                        java.util.List<br.com.lexcrm.model.Cliente> clientes = clienteRepository
+                                        .findTop5ByOrderByIdDesc();
+
+                        model.addAttribute("clientes", clientes);
+
+                        org.springframework.data.domain.Page<br.com.lexcrm.model.Cliente> clientesPage = new org.springframework.data.domain.PageImpl<>(
+                                        clientes,
+                                        org.springframework.data.domain.PageRequest.of(0,
+                                                        clientes.isEmpty() ? 1 : clientes.size()),
+                                        clientes.size());
+
+                        model.addAttribute("clientesPage", clientesPage);
+                        model.addAttribute("currentPage", 0);
+                        model.addAttribute("pageSize", clientes.isEmpty() ? 10 : clientes.size());
+                        long total = clientes.size();
+                        model.addAttribute("totalElements", total);
+                        long fromItem = total == 0 ? 0 : 1;
+                        long toItem = total;
+                        model.addAttribute("fromItem", fromItem);
+                        model.addAttribute("toItem", toItem);
+
+                        return "clientes/index :: list";
+                }
+
+                java.util.List<br.com.lexcrm.model.Processo> todos = processoRepository.findAllWithDetails();
+
+                java.util.List<?> itens = switch (filtroKey) {
                         case "pagar_medico" -> {
                                 var fins = financeiroRepository.findByStatusAndDescricaoContaining("Pendente",
                                                 "Médico");
@@ -180,14 +209,18 @@ public class DashboardController {
                                                                                         e.getStatus())))
                                         .limit(10)
                                         .toList();
-                        case "seguradora" -> todos.stream()
-                                        .filter(p -> p.getEtapas() != null && p.getEtapas().stream()
-                                                        .anyMatch(e -> ("Seguradora"
-                                                                        .equalsIgnoreCase(e.getNome()))
-                                                                        && !"Concluído".equalsIgnoreCase(
-                                                                                        e.getStatus())))
-                                        .limit(10)
-                                        .toList();
+                        case "seguradora" -> {
+                                var finsSeg = financeiroRepository.findByStatusAndDescricaoContaining("Pendente",
+                                                "Seg");
+                                var idsSeg = finsSeg.stream()
+                                                .filter(f -> f.getProcesso() != null && f.getProcesso().getId() != null)
+                                                .map(f -> f.getProcesso().getId())
+                                                .collect(java.util.stream.Collectors.toSet());
+                                yield todos.stream()
+                                                .filter(p -> p.getId() != null && idsSeg.contains(p.getId()))
+                                                .limit(10)
+                                                .toList();
+                        }
                         case "ativos" -> todos.stream()
                                         .filter(p -> !isConcluido(p))
                                         .limit(10)
@@ -221,10 +254,6 @@ public class DashboardController {
                 model.addAttribute("tituloLista", "Itens relacionados");
                 model.addAttribute("linkVerTodos",
                                 filtroKey.isEmpty() ? "/processos" : "/processos?filtro=" + filtroKey);
-
-                if ("novos_contatos".equals(filtroKey)) {
-                        return "fragments/dashboard-list :: tableClientes";
-                }
                 return "fragments/dashboard-list :: table";
         }
 

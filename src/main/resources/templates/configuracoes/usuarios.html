@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Usuários e Perfis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <style>
+        .form-inline .form-control, .form-inline .form-select { min-width: 180px; }
+    </style>
+    </head>
+<body>
+<div layout:fragment="content" class="container py-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h4 mb-1">Usuários e Perfis</h1>
+            <p class="text-muted mb-0">Crie usuários, defina perfis e acesse rapidamente.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="/configuracoes" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Voltar
+            </a>
+            <button class="btn btn-primary" onclick="openNovoUsuarioModal()">
+                <i class="fas fa-user-plus me-2"></i>Novo Usuário
+            </button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0">
+                    <thead>
+                    <tr class="text-uppercase small text-muted">
+                        <th>Nome</th>
+                        <th>Username</th>
+                        <th>Perfil</th>
+                        <th>Tenant</th>
+                        <th>Status</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(usuarios)}">
+                        <td colspan="6" class="text-center text-muted py-4">Nenhum usuário cadastrado.</td>
+                    </tr>
+                    <tr th:each="u : ${usuarios}">
+                        <td th:text="${u.nomeCompleto}">Nome</td>
+                        <td th:text="${u.username}">username</td>
+                        <td>
+                            <span class="badge bg-secondary" th:text="${u.role}">ROLE</span>
+                        </td>
+                        <td th:text="${u.tenantId}">T001</td>
+                        <td>
+                            <span th:if="${u.ativo}" class="badge bg-success">Ativo</span>
+                            <span th:unless="${u.ativo}" class="badge bg-secondary">Bloqueado</span>
+                        </td>
+                        <td class="text-end">
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-primary me-1"
+                                    th:attr="data-id=${u.id},data-nome=${u.nomeCompleto},data-username=${u.username},data-role=${u.role}"
+                                    onclick="openEditarUsuarioModal(this)">
+                                <i class="fas fa-edit me-1"></i>Editar
+                            </button>
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-warning me-1"
+                                    th:attr="data-id=${u.id},data-nome=${u.nomeCompleto},data-ativo=${u.ativo}"
+                                    onclick="toggleAtivoUsuarioFromRow(this)">
+                                <i class="fas fa-user-slash me-1"></i>
+                                <span th:text="${u.ativo} ? 'Bloquear' : 'Desbloquear'">Bloquear</span>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-danger"
+                                    th:attr="data-id=${u.id},data-nome=${u.nomeCompleto}"
+                                    onclick="confirmExcluirUsuario(this)">
+                                <i class="fas fa-trash-alt me-1"></i>Excluir
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.LEX_ROLES = /*[[${roles}]]*/ [];
+        /*]]>*/
+    </script>
+    <script>
+    function getCsrf() {
+        var token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        var header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+        return { header: header, token: token };
+    }
+    function openNovoUsuarioModal() {
+        Swal.fire({
+            title: 'Novo Usuário',
+            html:
+                '<form id="form-novo-usuario" class="text-start">' +
+                '  <div class="mb-3">' +
+                '    <label class="form-label">Nome Completo</label>' +
+                '    <input name="nomeCompleto" class="form-control" placeholder="Nome e sobrenome">' +
+                '  </div>' +
+                '  <div class="mb-3">' +
+                '    <label class="form-label">Username</label>' +
+                '    <input name="username" class="form-control" placeholder="login">' +
+                '  </div>' +
+                '  <div class="mb-3">' +
+                '    <label class="form-label">Senha</label>' +
+                '    <input name="senha" type="password" class="form-control" placeholder="mín. 6 caracteres">' +
+                '  </div>' +
+                '  <div class="mb-0">' +
+                '    <label class="form-label">Perfil</label>' +
+                '    <select name="role" class="form-select" id="role-select">' +
+                '    </select>' +
+                '  </div>' +
+                '</form>',
+            didOpen: function() {
+                var rs = document.getElementById('role-select');
+                var rolesFromServer = (window.LEX_ROLES && Array.isArray(window.LEX_ROLES)) ? window.LEX_ROLES : [];
+                rolesFromServer.forEach(function(r) {
+                    var opt = document.createElement('option');
+                    opt.value = r;
+                    opt.textContent = r;
+                    rs.appendChild(opt);
+                });
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Criar',
+            cancelButtonText: 'Cancelar',
+            preConfirm: function () {
+                var f = document.getElementById('form-novo-usuario');
+                var data = new URLSearchParams(new FormData(f));
+                var csrf = getCsrf();
+                return fetch('/configuracoes/usuarios/criar', {
+                    method: 'POST',
+                    headers: (function(){ var h={}; h[csrf.header]=csrf.token; return h;})(),
+                    body: data
+                }).then(function(resp){ return resp.json(); }).then(function(json){
+                    if (!json.ok) {
+                        Swal.showValidationMessage(json.message || 'Erro ao criar usuário.');
+                        return false;
+                    }
+                    return json;
+                });
+            }
+        }).then(function (result) {
+            if (result.isConfirmed) {
+                Swal.close();
+                var msg = (result.value && result.value.message) ? result.value.message : 'Usuário criado com sucesso.';
+                if (window.uiToastSuccess) {
+                    window.uiToastSuccess(msg);
+                }
+                location.reload();
+            }
+        });
+    }
+
+    function openEditarUsuarioModal(btn) {
+        var id = btn.getAttribute('data-id');
+        var nome = btn.getAttribute('data-nome') || '';
+        var username = btn.getAttribute('data-username') || '';
+        var role = btn.getAttribute('data-role') || '';
+        Swal.fire({
+            title: 'Editar Usuário',
+            html:
+                '<form id="form-editar-usuario" class="text-start">' +
+                '  <div class="mb-3">' +
+                '    <label class="form-label">Nome Completo</label>' +
+                '    <input name="nomeCompleto" class="form-control" value="' + nome.replace(/"/g, '&quot;') + '">' +
+                '  </div>' +
+                '  <div class="mb-3">' +
+                '    <label class="form-label">Username</label>' +
+                '    <input name="username" class="form-control" value="' + username.replace(/"/g, '&quot;') + '">' +
+                '  </div>' +
+                '  <div class="mb-3">' +
+                '    <label class="form-label">Nova Senha</label>' +
+                '    <input name="senha" type="password" class="form-control" placeholder="Deixe em branco para manter">' +
+                '  </div>' +
+                '  <div class="mb-0">' +
+                '    <label class="form-label">Perfil</label>' +
+                '    <select name="role" class="form-select" id="role-edit-select">' +
+                '    </select>' +
+                '  </div>' +
+                '</form>',
+            didOpen: function() {
+                var rs = document.getElementById('role-edit-select');
+                var rolesFromServer = (window.LEX_ROLES && Array.isArray(window.LEX_ROLES)) ? window.LEX_ROLES : [];
+                rolesFromServer.forEach(function(r) {
+                    var opt = document.createElement('option');
+                    opt.value = r;
+                    opt.textContent = r;
+                    if (r === role) {
+                        opt.selected = true;
+                    }
+                    rs.appendChild(opt);
+                });
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Salvar',
+            cancelButtonText: 'Cancelar',
+            preConfirm: function () {
+                var f = document.getElementById('form-editar-usuario');
+                var data = new URLSearchParams(new FormData(f));
+                var csrf = getCsrf();
+                return fetch('/configuracoes/usuarios/' + id + '/editar', {
+                    method: 'POST',
+                    headers: (function(){ var h={}; h[csrf.header]=csrf.token; return h;})(),
+                    body: data
+                }).then(function(resp){ return resp.json(); }).then(function(json){
+                    if (!json.ok) {
+                        Swal.showValidationMessage(json.message || 'Erro ao atualizar usuário.');
+                        return false;
+                    }
+                    return json;
+                });
+            }
+        }).then(function (result) {
+            if (result.isConfirmed) {
+                Swal.close();
+                var msg = (result.value && result.value.message) ? result.value.message : 'Usuário atualizado com sucesso.';
+                if (window.uiToastSuccess) {
+                    window.uiToastSuccess(msg);
+                }
+                location.reload();
+            }
+        });
+    }
+
+    function toggleAtivoUsuarioFromRow(btn) {
+        var id = btn.getAttribute('data-id');
+        var nome = btn.getAttribute('data-nome') || '';
+        var csrf = getCsrf();
+        fetch('/configuracoes/usuarios/' + id + '/toggle-ativo', {
+            method: 'POST',
+            headers: (function(){ var h={}; h[csrf.header]=csrf.token; return h;})()
+        }).then(function(resp){ return resp.json(); }).then(function(json){
+            if (!json.ok) {
+                if (window.uiToastError) window.uiToastError(json.message || 'Não foi possível alterar o status do usuário.');
+                return;
+            }
+            var msg = json.message || (json.ativo ? 'Usuário ativado.' : 'Usuário bloqueado.');
+            if (window.uiToastSuccess) window.uiToastSuccess(msg);
+            location.reload();
+        }).catch(function(){
+            if (window.uiToastError) window.uiToastError('Não foi possível alterar o status do usuário.');
+        });
+    }
+
+    function confirmExcluirUsuario(btn) {
+        var id = btn.getAttribute('data-id');
+        var nome = btn.getAttribute('data-nome') || '';
+        Swal.fire({
+            title: 'Excluir Usuário',
+            text: 'Tem certeza que deseja excluir o usuário "' + nome + '"?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sim, excluir',
+            cancelButtonText: 'Cancelar'
+        }).then(function(result){
+            if (!result.isConfirmed) return;
+            var csrf = getCsrf();
+            fetch('/configuracoes/usuarios/' + id + '/excluir', {
+                method: 'POST',
+                headers: (function(){ var h={}; h[csrf.header]=csrf.token; return h;})()
+            }).then(function(resp){ return resp.json(); }).then(function(json){
+                if (!json.ok) {
+                    if (window.uiToastError) window.uiToastError(json.message || 'Não foi possível excluir o usuário.');
+                    return;
+                }
+                if (window.uiToastSuccess) window.uiToastSuccess(json.message || 'Usuário excluído com sucesso.');
+                location.reload();
+            }).catch(function(){
+                if (window.uiToastError) window.uiToastError('Não foi possível excluir o usuário.');
+            });
+        });
+    }
+    </script>
+</div>
+</body>
+</html>

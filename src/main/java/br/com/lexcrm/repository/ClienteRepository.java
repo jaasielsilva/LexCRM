@@ -16,4 +16,8 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     boolean existsByCpfCnpjAndIdNot(String cpfCnpj, Long id);
 
     List<br.com.lexcrm.model.Cliente> findTop3ByOrderByIdDesc();
+
+    List<br.com.lexcrm.model.Cliente> findTop5ByOrderByIdDesc();
+
+    long countByCreatedAtAfter(java.time.LocalDateTime createdAt);
 }

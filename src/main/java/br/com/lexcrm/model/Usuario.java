@@ -24,4 +24,6 @@ public class Usuario {
     
     // Multi-tenancy
     private String tenantId;
+
+    private boolean ativo = true;
 }

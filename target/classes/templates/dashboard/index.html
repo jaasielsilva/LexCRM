@@ -50,7 +50,7 @@
                         onclick="toggleDetails('faturamento_doze_meses', this)">
                         <div class="dashboard-card-content">
                             <div class="dashboard-card-value" th:text="${faturamentoDozeMeses}">R$ 0,00</div>
-                            <div class="dashboard-card-label">Faturamento 12 Meses</div>
+                            <div class="dashboard-card-label">Faturamento Ano Atual</div>
                         </div>
                         <div class="dashboard-card-icon">
                             <i class="fas fa-chart-line"></i>
@@ -59,8 +59,8 @@
 
                     <div class="dashboard-card dashboard-card--success" onclick="toggleDetails('novos_contatos', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value">8</div>
-                            <div class="dashboard-card-label">Novos Contatos</div>
+                            <div class="dashboard-card-value" th:text="${novosContatosCount}">0</div>
+                            <div class="dashboard-card-label">Novos Contatos (30 dias)</div>
                         </div>
                         <div class="dashboard-card-icon">
                             <i class="fas fa-comments"></i>
@@ -129,23 +129,21 @@
 
                 <div class="dashboard-flow-grid">
                     <div class="dashboard-card dashboard-card--info"
-                        onclick="toggleDetails('etapa_cadastro_cliente', this)">
+                        onclick="toggleDetails('etapa_contato', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_cadastro_cliente'] ?: 0}">0
-                            </div>
-                            <div class="dashboard-card-label">Cadastro do Cliente</div>
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_contato'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Contato</div>
                         </div>
                         <div class="dashboard-card-icon">
-                            <i class="fas fa-user-plus"></i>
+                            <i class="fas fa-phone"></i>
                         </div>
                     </div>
 
                     <div class="dashboard-card dashboard-card--warning"
-                        onclick="toggleDetails('etapa_documentos_solicitados', this)">
+                        onclick="toggleDetails('etapa_solicitacao', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value"
-                                th:text="${flowCounts['etapa_documentos_solicitados'] ?: 0}">0</div>
-                            <div class="dashboard-card-label">Documentos Solicitados</div>
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_solicitacao'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Solicitação</div>
                         </div>
                         <div class="dashboard-card-icon">
                             <i class="fas fa-clipboard-list"></i>
@@ -153,47 +151,21 @@
                     </div>
 
                     <div class="dashboard-card dashboard-card--info"
-                        onclick="toggleDetails('etapa_documentos_recebidos', this)">
+                        onclick="toggleDetails('etapa_analise', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value"
-                                th:text="${flowCounts['etapa_documentos_recebidos'] ?: 0}">0</div>
-                            <div class="dashboard-card-label">Documentos Recebidos</div>
-                        </div>
-                        <div class="dashboard-card-icon">
-                            <i class="fas fa-file-arrow-up"></i>
-                        </div>
-                    </div>
-
-                    <div class="dashboard-card dashboard-card--info"
-                        onclick="toggleDetails('etapa_analise_documental', this)">
-                        <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_analise_documental'] ?: 0}">0
-                            </div>
-                            <div class="dashboard-card-label">Análise Documental</div>
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_analise'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Análise</div>
                         </div>
                         <div class="dashboard-card-icon">
                             <i class="fas fa-magnifying-glass"></i>
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--danger"
-                        onclick="toggleDetails('etapa_pendencia_documental', this)">
-                        <div class="dashboard-card-content">
-                            <div class="dashboard-card-value"
-                                th:text="${flowCounts['etapa_pendencia_documental'] ?: 0}">0</div>
-                            <div class="dashboard-card-label">Pendência Documental</div>
-                        </div>
-                        <div class="dashboard-card-icon">
-                            <i class="fas fa-triangle-exclamation"></i>
-                        </div>
-                    </div>
-
                     <div class="dashboard-card dashboard-card--warning"
-                        onclick="toggleDetails('etapa_aguardando_assinatura', this)">
+                        onclick="toggleDetails('etapa_contrato', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value"
-                                th:text="${flowCounts['etapa_aguardando_assinatura'] ?: 0}">0</div>
-                            <div class="dashboard-card-label">Aguardando Assinatura</div>
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_contrato'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Contrato</div>
                         </div>
                         <div class="dashboard-card-icon">
                             <i class="fas fa-file-signature"></i>
@@ -201,59 +173,21 @@
                     </div>
 
                     <div class="dashboard-card dashboard-card--accent"
-                        onclick="toggleDetails('etapa_pericia_medica', this)">
+                        onclick="toggleDetails('etapa_medico', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_pericia_medica'] ?: 0}">0
-                            </div>
-                            <div class="dashboard-card-label">Perícia Médica</div>
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_medico'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Médico</div>
                         </div>
                         <div class="dashboard-card-icon">
                             <i class="fas fa-stethoscope"></i>
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--warning"
-                        onclick="toggleDetails('etapa_laudo_recebido', this)">
-                        <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_laudo_recebido'] ?: 0}">0
-                            </div>
-                            <div class="dashboard-card-label">Laudo Médico Recebido</div>
-                        </div>
-                        <div class="dashboard-card-icon">
-                            <i class="fas fa-file-medical"></i>
-                        </div>
-                    </div>
-
                     <div class="dashboard-card dashboard-card--info"
-                        onclick="toggleDetails('etapa_enviado_seguradora', this)">
+                        onclick="toggleDetails('etapa_seguradora', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_enviado_seguradora'] ?: 0}">0
-                            </div>
-                            <div class="dashboard-card-label">Enviado para Seguradora</div>
-                        </div>
-                        <div class="dashboard-card-icon">
-                            <i class="fas fa-paper-plane"></i>
-                        </div>
-                    </div>
-
-                    <div class="dashboard-card dashboard-card--info"
-                        onclick="toggleDetails('etapa_analise_seguradora', this)">
-                        <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_analise_seguradora'] ?: 0}">0
-                            </div>
-                            <div class="dashboard-card-label">Em Análise (Seg)</div>
-                        </div>
-                        <div class="dashboard-card-icon">
-                            <i class="fas fa-hourglass-half"></i>
-                        </div>
-                    </div>
-
-                    <div class="dashboard-card dashboard-card--danger"
-                        onclick="toggleDetails('etapa_pendencia_seguradora', this)">
-                        <div class="dashboard-card-content">
-                            <div class="dashboard-card-value"
-                                th:text="${flowCounts['etapa_pendencia_seguradora'] ?: 0}">0</div>
-                            <div class="dashboard-card-label">Pendência (Seg)</div>
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_seguradora'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Seguradora</div>
                         </div>
                         <div class="dashboard-card-icon">
                             <i class="fas fa-shield-halved"></i>
@@ -261,26 +195,57 @@
                     </div>
 
                     <div class="dashboard-card dashboard-card--success"
-                        onclick="toggleDetails('etapa_sinistro_gerado', this)">
+                        onclick="toggleDetails('etapa_conclusao', this)">
                         <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_sinistro_gerado'] ?: 0}">0
-                            </div>
-                            <div class="dashboard-card-label">Sinistro Gerado</div>
-                        </div>
-                        <div class="dashboard-card-icon">
-                            <i class="fas fa-receipt"></i>
-                        </div>
-                    </div>
-
-                    <div class="dashboard-card dashboard-card--success"
-                        onclick="toggleDetails('etapa_processo_finalizado', this)">
-                        <div class="dashboard-card-content">
-                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_processo_finalizado'] ?: 0}">
-                                0</div>
-                            <div class="dashboard-card-label">Processo Finalizado</div>
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_conclusao'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Conclusão</div>
                         </div>
                         <div class="dashboard-card-icon">
                             <i class="fas fa-flag-checkered"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card dashboard-card--neutral"
+                        onclick="toggleDetails('etapa_contador', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_contador'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Contador</div>
+                        </div>
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card dashboard-card--neutral"
+                        onclick="toggleDetails('etapa_dizimo', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_dizimo'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Dízimo</div>
+                        </div>
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-hand-holding-heart"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card dashboard-card--info"
+                        onclick="toggleDetails('etapa_indicacao', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_indicacao'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Indicação</div>
+                        </div>
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card dashboard-card--warning"
+                        onclick="toggleDetails('etapa_nota_fiscal', this)">
+                        <div class="dashboard-card-content">
+                            <div class="dashboard-card-value" th:text="${flowCounts['etapa_nota_fiscal'] ?: 0}">0</div>
+                            <div class="dashboard-card-label">Nota Fiscal</div>
+                        </div>
+                        <div class="dashboard-card-icon">
+                            <i class="fas fa-receipt"></i>
                         </div>
                     </div>
                 </div>
@@ -309,16 +274,16 @@
             faturamento_doze_meses: {
                 statusType: 'good',
                 statusLabel: 'faturamento',
-                description: 'Volume total de faturamento recebido nos últimos 12 meses renováveis.',
-                trend: 'Visão estratégica do fluxo de caixa histórico.',
+                description: 'Faturamento bruto acumulado no ano atual (valores pagos).',
+                trend: 'Visão anual do desempenho de receita.',
                 nextStep: 'Analisar sazonalidade e projeções de crescimento.'
             },
             novos_contatos: {
                 statusType: 'good',
                 statusLabel: 'bom',
-                description: 'Resumo dos últimos clientes cadastrados recentemente no sistema.',
-                trend: 'Visão histórica dos 3 clientes mais recentes.',
-                nextStep: 'Classificar e qualificar os novos contatos para oportunidades.',
+                description: 'Quantidade de novos clientes cadastrados nos últimos 30 dias.',
+                trend: 'Mostra o ritmo recente de entrada de contatos na base.',
+                nextStep: 'Classificar e qualificar esses contatos para oportunidades.',
                 link: '/clientes',
                 linkLabel: 'Ver clientes',
                 preview: '/dashboard/preview?filtro=novos_contatos'
@@ -336,6 +301,9 @@
             pendencias_criticas: {
                 statusType: 'risk',
                 statusLabel: 'pendência',
+                description: 'Processos parados em Solicitação ou Seguradora aguardando avanço.',
+                trend: 'Quanto maior, maior o risco de atraso ou perda de caso.',
+                nextStep: 'Priorizar follow-up com cliente e seguradora para destravar o fluxo.',
                 link: '/processos?filtro=pendencias_criticas',
                 linkLabel: 'Ver pendências críticas',
                 preview: '/dashboard/preview?filtro=pendencias_criticas'
@@ -371,135 +339,115 @@
                 preview: '/dashboard/preview?filtro=arquivados'
             },
 
-            etapa_cadastro_cliente: {
+            etapa_contato: {
                 statusType: 'neutral',
                 statusLabel: 'etapa',
-                description: 'Entrada do processo no fluxo: cadastro confirmado e pronto para iniciar documentação.',
-                trend: 'Quanto maior, maior a demanda inicial de atendimento.',
-                nextStep: 'Confirmar dados e iniciar solicitação de documentos.',
-                link: '/processos?filtro=etapa_cadastro_cliente',
+                description: 'Primeiro contato com o cliente e registro inicial da demanda.',
+                trend: 'Indica entrada de novos casos no funil.',
+                nextStep: 'Registrar interação e direcionar para solicitação.',
+                link: '/processos?filtro=etapa_contato',
                 linkLabel: 'Ver processos nesta etapa',
-                preview: '/dashboard/preview?filtro=etapa_cadastro_cliente'
+                preview: '/dashboard/preview?filtro=etapa_contato'
             },
-            etapa_documentos_solicitados: {
+            etapa_solicitacao: {
                 statusType: 'warning',
                 statusLabel: 'etapa',
-                description: 'Checklist de documentos enviado ao cliente.',
-                trend: 'Acompanhar tempo de retorno e reduzir atrasos.',
-                nextStep: 'Reforçar lembretes e orientar o envio correto.',
-                link: '/processos?filtro=etapa_documentos_solicitados',
+                description: 'Envio e acompanhamento da solicitação de documentos ou informações.',
+                trend: 'Acompanhar tempo de resposta do cliente.',
+                nextStep: 'Confirmar recebimento e seguir para análise.',
+                link: '/processos?filtro=etapa_solicitacao',
                 linkLabel: 'Ver processos nesta etapa',
-                preview: '/dashboard/preview?filtro=etapa_documentos_solicitados'
+                preview: '/dashboard/preview?filtro=etapa_solicitacao'
             },
-            etapa_documentos_recebidos: {
+            etapa_analise: {
                 statusType: 'neutral',
                 statusLabel: 'etapa',
-                description: 'Documentos recebidos e prontos para conferência.',
-                trend: 'Gargalo comum se análise não for rápida.',
-                nextStep: 'Iniciar análise documental e validar consistência.',
-                link: '/processos?filtro=etapa_documentos_recebidos',
-                linkLabel: 'Ver processos nesta etapa',
-                preview: '/dashboard/preview?filtro=etapa_documentos_recebidos'
-            },
-            etapa_analise_documental: {
-                statusType: 'neutral',
-                statusLabel: 'etapa',
-                description: 'Análise dos documentos para identificar pendências e preparar próximas ações.',
+                description: 'Análise das informações e documentos recebidos.',
                 trend: 'Impacta diretamente o tempo total do caso.',
-                nextStep: 'Concluir análise e seguir para pendência/assinatura.',
-                link: '/processos?filtro=etapa_analise_documental',
+                nextStep: 'Validar cenário e preparar minuta de contrato.',
+                link: '/processos?filtro=etapa_analise',
                 linkLabel: 'Ver processos nesta etapa',
-                preview: '/dashboard/preview?filtro=etapa_analise_documental'
+                preview: '/dashboard/preview?filtro=etapa_analise'
             },
-            etapa_pendencia_documental: {
-                statusType: 'risk',
-                statusLabel: 'etapa',
-                description: 'Existem documentos pendentes que travam o andamento.',
-                trend: 'Atenção: tende a aumentar se não houver follow-up.',
-                nextStep: 'Contatar cliente e regularizar pendências.',
-                link: '/processos?filtro=etapa_pendencia_documental',
-                linkLabel: 'Ver processos nesta etapa',
-                preview: '/dashboard/preview?filtro=etapa_pendencia_documental'
-            },
-            etapa_aguardando_assinatura: {
+            etapa_contrato: {
                 statusType: 'warning',
                 statusLabel: 'etapa',
-                description: 'Cliente precisa assinar documentos para seguir no fluxo.',
-                trend: 'Indicador de fricção na etapa de formalização.',
-                nextStep: 'Enviar lembrete e facilitar assinatura.',
-                link: '/processos?filtro=etapa_aguardando_assinatura',
+                description: 'Formalização contratual e coleta de assinaturas.',
+                trend: 'Ponto de fricção se o cliente demora a assinar.',
+                nextStep: 'Garantir assinatura digital e registrar aceite.',
+                link: '/processos?filtro=etapa_contrato',
                 linkLabel: 'Ver processos nesta etapa',
-                preview: '/dashboard/preview?filtro=etapa_aguardando_assinatura'
+                preview: '/dashboard/preview?filtro=etapa_contrato'
             },
-            etapa_pericia_medica: {
+            etapa_medico: {
                 statusType: 'warning',
                 statusLabel: 'etapa',
-                description: 'Documentos enviados ao médico e perícia em andamento.',
-                trend: 'Controlar prazos e evitar re-trabalho.',
-                nextStep: 'Acompanhar agendamento e preparar recepção do laudo.',
-                link: '/processos?filtro=etapa_pericia_medica',
+                description: 'Agendamento e realização de perícia ou laudo médico.',
+                trend: 'Controlar prazos e reagendamentos.',
+                nextStep: 'Receber laudo e registrar resultado.',
+                link: '/processos?filtro=etapa_medico',
                 linkLabel: 'Ver processos nesta etapa',
-                preview: '/dashboard/preview?filtro=etapa_pericia_medica'
+                preview: '/dashboard/preview?filtro=etapa_medico'
             },
-            etapa_laudo_recebido: {
-                statusType: 'warning',
-                statusLabel: 'etapa',
-                description: 'Laudo médico aguardado/recebido para avançar com seguradora.',
-                trend: 'Afeta diretamente o tempo de ciclo.',
-                nextStep: 'Validar laudo e enviar para seguradora.',
-                link: '/processos?filtro=etapa_laudo_recebido',
-                linkLabel: 'Ver processos nesta etapa',
-                preview: '/dashboard/preview?filtro=etapa_laudo_recebido'
-            },
-            etapa_enviado_seguradora: {
+            etapa_seguradora: {
                 statusType: 'neutral',
                 statusLabel: 'etapa',
-                description: 'Processo enviado para seguradora.',
-                trend: 'Monitorar confirmação de recebimento.',
-                nextStep: 'Confirmar protocolo e iniciar acompanhamento.',
-                link: '/processos?filtro=etapa_enviado_seguradora',
+                description: 'Envio e acompanhamento do processo junto à seguradora.',
+                trend: 'Depende fortemente de SLA externo.',
+                nextStep: 'Monitorar retorno e registrar decisões.',
+                link: '/processos?filtro=etapa_seguradora',
                 linkLabel: 'Ver processos nesta etapa',
-                preview: '/dashboard/preview?filtro=etapa_enviado_seguradora'
+                preview: '/dashboard/preview?filtro=etapa_seguradora'
             },
-            etapa_analise_seguradora: {
+            etapa_conclusao: {
+                statusType: 'good',
+                statusLabel: 'etapa',
+                description: 'Conclusão do caso com deferimento ou encerramento controlado.',
+                trend: 'Indicador direto de entrega e produtividade.',
+                nextStep: 'Arquivar processo e consolidar aprendizados.',
+                link: '/processos?filtro=etapa_conclusao',
+                linkLabel: 'Ver processos nesta etapa',
+                preview: '/dashboard/preview?filtro=etapa_conclusao'
+            },
+            etapa_contador: {
                 statusType: 'neutral',
                 statusLabel: 'etapa',
-                description: 'Seguradora analisando o caso.',
-                trend: 'Tempo de resposta depende do SLA.',
-                nextStep: 'Acompanhar prazo e registrar atualizações.',
-                link: '/processos?filtro=etapa_analise_seguradora',
+                description: 'Envio e conciliação de informações com a contabilidade.',
+                trend: 'Garante registros contábeis alinhados ao jurídico.',
+                nextStep: 'Confirmar recebimento e atualizar histórico.',
+                link: '/processos?filtro=etapa_contador',
                 linkLabel: 'Ver processos nesta etapa',
-                preview: '/dashboard/preview?filtro=etapa_analise_seguradora'
+                preview: '/dashboard/preview?filtro=etapa_contador'
             },
-            etapa_pendencia_seguradora: {
-                statusType: 'risk',
+            etapa_dizimo: {
+                statusType: 'neutral',
                 statusLabel: 'etapa',
-                description: 'Seguradora solicitou correção ou complementação.',
-                trend: 'Atenção: costuma travar o fluxo se não for resolvido rápido.',
-                nextStep: 'Corrigir pendência e reenviar documentação.',
-                link: '/processos?filtro=etapa_pendencia_seguradora',
+                description: 'Cálculo e registro de contribuições de dízimo associadas ao caso.',
+                trend: 'Relaciona ganhos jurídicos com compromissos ministeriais.',
+                nextStep: 'Registrar contribuição e atualizar histórico financeiro.',
+                link: '/processos?filtro=etapa_dizimo',
                 linkLabel: 'Ver processos nesta etapa',
-                preview: '/dashboard/preview?filtro=etapa_pendencia_seguradora'
+                preview: '/dashboard/preview?filtro=etapa_dizimo'
             },
-            etapa_sinistro_gerado: {
-                statusType: 'good',
+            etapa_indicacao: {
+                statusType: 'neutral',
                 statusLabel: 'etapa',
-                description: 'Sinistro registrado e pronto para finalização.',
-                trend: 'Boa proximidade de conclusão.',
-                nextStep: 'Conferir dados finais e preparar encerramento.',
-                link: '/processos?filtro=etapa_sinistro_gerado',
+                description: 'Registro e validação de indicações vinculadas a novos clientes.',
+                trend: 'Ajuda a medir geração de casos por relacionamento.',
+                nextStep: 'Validar indicação e vincular ao processo.',
+                link: '/processos?filtro=etapa_indicacao',
                 linkLabel: 'Ver processos nesta etapa',
-                preview: '/dashboard/preview?filtro=etapa_sinistro_gerado'
+                preview: '/dashboard/preview?filtro=etapa_indicacao'
             },
-            etapa_processo_finalizado: {
-                statusType: 'good',
+            etapa_nota_fiscal: {
+                statusType: 'warning',
                 statusLabel: 'etapa',
-                description: 'Processo concluído no fluxo.',
-                trend: 'Indicador de produtividade e entrega.',
-                nextStep: 'Registrar fechamento e arquivar corretamente.',
-                link: '/processos?filtro=etapa_processo_finalizado',
+                description: 'Emissão e controle de notas fiscais ligadas ao processo.',
+                trend: 'Afeta diretamente a visibilidade de faturamento.',
+                nextStep: 'Emitir, anexar e confirmar situação fiscal.',
+                link: '/processos?filtro=etapa_nota_fiscal',
                 linkLabel: 'Ver processos nesta etapa',
-                preview: '/dashboard/preview?filtro=etapa_processo_finalizado'
+                preview: '/dashboard/preview?filtro=etapa_nota_fiscal'
             }
         };
 

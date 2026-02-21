@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <title>Configurações</title>
+</head>
+<body>
+<div layout:fragment="content" class="container py-4">
+    <div sec:authorize="!hasRole('ADMIN')" class="my-4">
+        <div class="alert alert-danger">
+            <i class="fas fa-ban me-2"></i> Acesso restrito aos administradores.
+        </div>
+        <a href="/dashboard" class="btn btn-outline-secondary">Voltar</a>
+    </div>
+    <div sec:authorize="hasRole('ADMIN')">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h4 mb-1">Configurações do Sistema</h1>
+            <p class="text-muted mb-0">Administração, segurança e parâmetros globais</p>
+        </div>
+        <a href="/dashboard" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Voltar
+        </a>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-users-cog text-primary me-2"></i>
+                        <h5 class="card-title mb-0">Usuários e Perfis</h5>
+                    </div>
+                    <p class="text-muted small mb-3">Gerencie contas, perfis (Admin, Advogado, Financeiro, Atendimento) e bloqueios.</p>
+                    <div class="d-flex gap-2">
+                        <a href="/configuracoes/usuarios" class="btn btn-sm btn-primary">Abrir</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-lock text-primary me-2"></i>
+                        <h5 class="card-title mb-0">Permissões</h5>
+                    </div>
+                    <p class="text-muted small mb-3">Defina acesso por módulo (Processos, Clientes, Financeiro, Relatórios) e por ação.</p>
+                    <div class="d-flex gap-2">
+                        <a href="/configuracoes/permissoes" class="btn btn-sm btn-primary">Abrir</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-user-shield text-primary me-2"></i>
+                        <h5 class="card-title mb-0">Políticas de Acesso</h5>
+                    </div>
+                    <p class="text-muted small mb-3">MFA, expiração de senha, tentativas de login e regras de segurança.</p>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="btn btn-sm btn-primary disabled" tabindex="-1" aria-disabled="true">Abrir</a>
+                        <span class="badge bg-warning text-dark align-self-center">Em desenvolvimento</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-clipboard-list text-primary me-2"></i>
+                        <h5 class="card-title mb-0">Auditoria</h5>
+                    </div>
+                    <p class="text-muted small mb-3">Acompanhe operações sensíveis por usuário, data e recurso.</p>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="btn btn-sm btn-primary disabled" tabindex="-1" aria-disabled="true">Abrir</a>
+                        <span class="badge bg-warning text-dark align-self-center">Em desenvolvimento</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-cogs text-primary me-2"></i>
+                        <h5 class="card-title mb-0">Parâmetros do Sistema</h5>
+                    </div>
+                    <p class="text-muted small mb-3">Numeração: TR/OOO por tribunal, sequência por tenant/ano.</p>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="btn btn-sm btn-primary disabled" tabindex="-1" aria-disabled="true">Abrir</a>
+                        <span class="badge bg-warning text-dark align-self-center">Em desenvolvimento</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-user-times text-primary me-2"></i>
+                        <h5 class="card-title mb-0">Bloqueios / Suspensões</h5>
+                    </div>
+                    <p class="text-muted small mb-3">Controle de acesso imediato em desligamentos e afastamentos.</p>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="btn btn-sm btn-primary disabled" tabindex="-1" aria-disabled="true">Abrir</a>
+                        <span class="badge bg-warning text-dark align-self-center">Em desenvolvimento</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 alert alert-warning d-flex align-items-center" role="alert">
+        <i class="fas fa-hard-hat me-2"></i>
+        <div>Alguns módulos avançados ainda estão em evolução. Usuários e Permissões já estão ativos.</div>
+    </div>
+    </div>
+    </div>
+</body>
+</html>

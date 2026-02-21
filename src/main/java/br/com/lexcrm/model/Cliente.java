@@ -1,5 +1,6 @@
 package br.com.lexcrm.model;
 
+import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,6 +17,7 @@ public class Cliente {
     private String email;
     private String telefone;
     private String indicacao;
+    private LocalDateTime createdAt;
 
     // Multi-tenancy
     private String tenantId;

@@ -181,8 +181,9 @@ public class ProcessoController {
                 && processo.getEtapas().stream().anyMatch(e -> e != null
                         && e.getNome() != null
                         && e.getStatus() != null
-                        && "processo finalizado".equalsIgnoreCase(e.getNome())
-                        && "concluído".equalsIgnoreCase(e.getStatus()));
+                        && ("Conclusão".equalsIgnoreCase(e.getNome())
+                                || "Processo Finalizado".equalsIgnoreCase(e.getNome()))
+                        && "Concluído".equalsIgnoreCase(e.getStatus()));
         return statusConcluido || etapaFinalConcluida;
     }
 
@@ -208,6 +209,8 @@ public class ProcessoController {
         processo.setStatus("Em Andamento");
         processo.setDataAbertura(LocalDate.now());
         processo.setTenantId("T001"); // Fixed for now
+        // Sempre (re)gerar número do processo com base em tenant/ano/vara/comarca
+        processo.setNumeroProcesso(gerarNumeroProcessoUnico(processo));
 
         // Unique check for process number per tenant
         if (processo.getNumeroProcesso() != null
@@ -419,7 +422,9 @@ public class ProcessoController {
         boolean finalizado = processo.getEtapas() != null && processo.getEtapas().stream()
                 .anyMatch(e -> e != null
                         && e.getNome() != null
-                        && "Processo Finalizado".equalsIgnoreCase(e.getNome())
+                        && e.getStatus() != null
+                        && ("Conclusão".equalsIgnoreCase(e.getNome())
+                                || "Processo Finalizado".equalsIgnoreCase(e.getNome()))
                         && "Concluído".equalsIgnoreCase(e.getStatus()));
         if (finalizado) {
             processo.setStatus("Concluído");
@@ -439,6 +444,118 @@ public class ProcessoController {
         model.addAttribute("canEnviadoSeg", canEnviadoSeg(processo));
 
         return "fragments/htmx-response-wrapper";
+    }
+
+    @GetMapping("/novo/numero")
+    @ResponseBody
+    public String novoNumero(@RequestParam(required = false) Long clienteId,
+            @RequestParam(required = false) String comarca,
+            @RequestParam(required = false) String vara) {
+        Processo p = new Processo();
+        p.setTenantId("T001");
+        p.setComarca(comarca);
+        p.setVara(vara);
+        return gerarNumeroProcessoUnico(p);
+    }
+
+    private String gerarNumeroProcessoUnico(Processo processo) {
+        // Número CNJ: NNNNNNN-DD.AAAA.J.TR.OOOO
+        // Sequência por tenant+ano; TR e OOOO derivados de comarca/vara quando possível
+        String tenantId = processo.getTenantId() != null ? processo.getTenantId() : "T001";
+        int ano = java.time.LocalDate.now().getYear();
+        String j = "0";
+        String tr = deriveTRFromComarca(processo.getComarca());
+        String oooo = deriveOOOFromVara(processo.getVara());
+
+        for (int attempt = 0; attempt < 50; attempt++) {
+            int nextSeq = nextSequenceForTenantYear(tenantId, ano);
+            String seq = String.format("%07d", nextSeq);
+            String base = seq + ano + j + tr + oooo; // 18 dígitos
+            String dv = calcularDV_CNJ(base);
+            String formatted = seq + "-" + dv + "." + ano + "." + j + "." + tr + "." + oooo;
+            boolean exists = processoRepository.existsByNumeroProcessoAndTenantId(formatted, tenantId);
+            if (!exists) {
+                return formatted;
+            }
+        }
+        // Fallback
+        String seq = String.format("%07d", (int) (Math.random() * 9_999_999) + 1);
+        String base = seq + ano + j + tr + oooo;
+        String dv = calcularDV_CNJ(base);
+        return seq + "-" + dv + "." + ano + "." + j + "." + tr + "." + oooo;
+    }
+
+    private int nextSequenceForTenantYear(String tenantId, int ano) {
+        int max = 0;
+        for (br.com.lexcrm.model.Processo p : processoRepository.findAll()) {
+            try {
+                if (p.getTenantId() == null || !tenantId.equals(p.getTenantId()))
+                    continue;
+                String num = p.getNumeroProcesso();
+                if (num == null)
+                    continue;
+                // busca ".AAAA." no número
+                String marker = "." + ano + ".";
+                if (!num.contains(marker))
+                    continue;
+                int dash = num.indexOf('-');
+                if (dash <= 0)
+                    continue;
+                String seqStr = num.substring(0, dash).replaceAll("\\D", "");
+                if (seqStr.length() == 0)
+                    continue;
+                int s = Integer.parseInt(seqStr);
+                if (s > max)
+                    max = s;
+            } catch (Exception ignored) {
+            }
+        }
+        return max + 1;
+    }
+
+    private String deriveTRFromComarca(String comarca) {
+        if (comarca == null)
+            return "50";
+        String c = comarca.trim().toLowerCase();
+        if (c.contains("são paulo") || c.contains("sao paulo"))
+            return "26"; // TJSP
+        if (c.contains("rio de janeiro"))
+            return "19"; // TJRJ
+        if (c.contains("minas") || c.contains("belo horizonte"))
+            return "13"; // TJMG
+        if (c.contains("bahia") || c.contains("salvador"))
+            return "05"; // TJBA
+        return "50"; // genérico
+    }
+
+    private String deriveOOOFromVara(String vara) {
+        if (vara == null || vara.isBlank())
+            return "0001";
+        String digits = vara.replaceAll("\\D", "");
+        if (digits.isEmpty())
+            return "0001";
+        int num = 1;
+        try {
+            num = Integer.parseInt(digits);
+        } catch (Exception ignored) {
+        }
+        if (num <= 0)
+            num = 1;
+        return String.format("%04d", num % 10000);
+    }
+
+    private String calcularDV_CNJ(String base) {
+        // DV = 98 - ((base * 100) mod 97)
+        // Implementado como (base + "00") mod 97
+        try {
+            java.math.BigInteger num = new java.math.BigInteger(base + "00");
+            int mod = num.mod(java.math.BigInteger.valueOf(97)).intValue();
+            int dv = 98 - mod;
+            if (dv <= 0) dv += 97;
+            return String.format("%02d", dv % 100);
+        } catch (Exception e) {
+            return "00";
+        }
     }
 
     @PostMapping("/{processoId}/etapa/{etapaId}/checklist/{docId}/toggle")

@@ -23,6 +23,9 @@ public class PageController {
         String uri = request.getRequestURI();
         String activePage = uri.substring(1);
         model.addAttribute("activePage", activePage);
+        if ("configuracoes".equalsIgnoreCase(activePage)) {
+            return "configuracoes/index";
+        }
         return "construction";
     }
 }

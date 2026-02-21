@@ -64,9 +64,6 @@
             </div>
             <div class="user-info">
                 <p class="user-name" th:text="${#authentication?.name ?: 'Visitante'}">Usuário</p>
-                <p class="user-role"
-                    th:text="${#authentication?.authorities != null ? #authentication.authorities[0].toString().replace('ROLE_', '').replace('[', '').replace(']', '') : 'Convidado'}">
-                    Role</p>
             </div>
             <form th:action="@{/logout}" method="post" style="margin: 0;" onclick="event.stopPropagation()">
                 <button type="submit" title="Sair"

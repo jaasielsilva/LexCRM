@@ -132,7 +132,8 @@
                                 <label class="form-label-premium">Número do Processo</label>
                                 <div class="form-control-wrapper">
                                     <i class="fas fa-hashtag form-control-icon"></i>
-                                    <input type="text" name="numeroProcesso" class="form-input-premium"
+                                    <input type="text" name="numeroProcesso" class="form-input-premium" readonly
+                                        title="Gerado automaticamente pelo sistema"
                                         placeholder="0000000-00.0000.0.00.0000"
                                         th:value="${processoDraft != null} ? ${processoDraft.numeroProcesso} : ''">
                                 </div>
@@ -310,6 +311,29 @@
                 var val = container.querySelector('input[name="valorCausa"]');
                 if (num && window.uiMaskProcessNumberInput) window.uiMaskProcessNumberInput(num);
                 if (val && window.uiMaskMoneyInput) window.uiMaskMoneyInput(val);
+                // Auto-preencher número do processo
+                if (num && !num.value.trim()) {
+                    try {
+                        var comarca = container.querySelector('input[name=\"comarca\"]');
+                        var vara = container.querySelector('input[name=\"vara\"]');
+                        var qs = [];
+                        if (comarca && comarca.value) qs.push('comarca=' + encodeURIComponent(comarca.value));
+                        if (vara && vara.value) qs.push('vara=' + encodeURIComponent(vara.value));
+                        var url = '/processos/novo/numero' + (qs.length ? ('?' + qs.join('&')) : '');
+                        fetch(url)
+                            .then(function (r) { return r.ok ? r.text() : ''; })
+                            .then(function (t) {
+                                if (t && num) {
+                                    num.value = t;
+                                    if (window.uiMaskProcessNumberInput) window.uiMaskProcessNumberInput(num);
+                                    // Dispara input para reformatar caso necessário
+                                    var evt = new Event('input', { bubbles: true });
+                                    num.dispatchEvent(evt);
+                                }
+                            })
+                            .catch(function () { /* silencioso */ });
+                    } catch (e) { /* silencioso */ }
+                }
                 if (form) {
                     form.addEventListener('submit', function (e) {
                         var valVal = val ? val.value.trim() : '';

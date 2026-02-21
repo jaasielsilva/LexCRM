@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.security.access.prepost.PreAuthorize;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ public class ClienteController {
     private ClienteRepository clienteRepository;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('CLIENTES_VIEW')")
     public String index(@RequestParam(defaultValue = "0") int page,
                         @RequestParam(defaultValue = "10") int size,
                         Model model) {
@@ -50,6 +52,7 @@ public class ClienteController {
     }
 
     @GetMapping("/search")
+    @PreAuthorize("hasAuthority('CLIENTES_VIEW')")
     public String search(@RequestParam(required = false) String query, Model model) {
         model.addAttribute("activePage", "clientes");
         if (query == null || query.trim().isEmpty()) {
@@ -65,6 +68,7 @@ public class ClienteController {
 
     @PostMapping
     @ResponseBody
+    @PreAuthorize("hasAuthority('CLIENTES_CREATE')")
     public ResponseEntity<Map<String, Object>> create(Cliente cliente) {
         Map<String, Object> resp = new HashMap<>();
 
@@ -110,6 +114,7 @@ public class ClienteController {
             cliente.setIndicacao(indicacao.isEmpty() ? null : indicacao);
         }
         cliente.setTenantId("T001");
+        cliente.setCreatedAt(LocalDateTime.now());
 
         clienteRepository.save(cliente);
 
@@ -120,6 +125,7 @@ public class ClienteController {
 
     @PostMapping("/{id}")
     @ResponseBody
+    @PreAuthorize("hasAuthority('CLIENTES_EDIT')")
     public ResponseEntity<Map<String, Object>> update(@PathVariable Long id, Cliente payload) {
         Map<String, Object> resp = new HashMap<>();
         Cliente cliente = clienteRepository.findById(id).orElse(null);
@@ -186,6 +192,7 @@ public class ClienteController {
 
     @PostMapping("/{id}/delete")
     @ResponseBody
+    @PreAuthorize("hasAuthority('CLIENTES_DELETE')")
     public ResponseEntity<Map<String, Object>> delete(@PathVariable Long id) {
         Map<String, Object> resp = new HashMap<>();
         try {

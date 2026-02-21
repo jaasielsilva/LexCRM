@@ -9,7 +9,9 @@ D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\controller\FinanceiroController.j
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\controller\NotificacaoController.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\controller\PageController.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\controller\PerfilController.java
+D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\controller\PermissoesAdminController.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\controller\ProcessoController.java
+D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\controller\UsuariosAdminController.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\exception\GlobalExceptionHandler.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\LexcrmApplication.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\AgendaEvento.java
@@ -22,6 +24,7 @@ D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\Notificacao.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\NotificacaoTipo.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\Processo.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\Role.java
+D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\RolePermission.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\Usuario.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\repository\AgendaEventoRepository.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\repository\ClienteRepository.java
@@ -31,10 +34,13 @@ D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\repository\EtapaProcessoRepositor
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\repository\FinanceiroRepository.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\repository\NotificacaoRepository.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\repository\ProcessoRepository.java
+D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\repository\RolePermissionRepository.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\repository\UsuarioRepository.java
+D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\security\AppPermissions.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\service\AgendaConflictException.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\service\AgendaLembreteScheduler.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\service\AgendaService.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\service\CustomUserDetailsService.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\service\FileStorageService.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\service\NotificacaoService.java
+D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\service\PermissionService.java

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -35,7 +35,7 @@
                 <h1 class="page-title">Clientes</h1>
                 <p class="page-subtitle">Cadastro e gestão de clientes do CRM</p>
             </div>
-            <button type="button" onclick="openClienteModal()" class="btn-new-process">
+            <button type="button" onclick="openClienteModal()" class="btn-new-process" sec:authorize="hasAuthority('CLIENTES_CREATE')">
                 <i class="fas fa-plus"></i>
                 Novo Cliente
             </button>
@@ -81,7 +81,7 @@
                                     </div>
                                 </td>
                                 <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-outline-primary"
+                                    <button type="button" class="btn btn-sm btn-outline-primary" sec:authorize="hasAuthority('CLIENTES_EDIT')"
                                         th:attr="data-id=${c.id},data-nome=${c.nome},data-cpfcnpj=${c.cpfCnpj},data-email=${c.email},data-telefone=${c.telefone},data-indicacao=${c.indicacao}"
                                         onclick="openClienteModalFromRow(this)">
                                         <i class="fas fa-pen"></i>
@@ -90,7 +90,7 @@
                                         th:href="@{'/processos'(clienteId=${c.id})}" title="Ver processos do cliente">
                                         <i class="fas fa-folder-open"></i>
                                     </a>
-                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                    <button type="button" class="btn btn-sm btn-outline-danger" sec:authorize="hasAuthority('CLIENTES_DELETE')"
                                         th:attr="data-id=${c.id},data-nome=${c.nome}"
                                         onclick="confirmDeleteClienteFromRow(this)">
                                         <i class="fas fa-trash"></i>
