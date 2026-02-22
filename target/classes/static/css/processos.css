@@ -387,11 +387,15 @@
     width: 100%;
     text-align: left;
     transition: all 0.2s;
-    height: 150px;
-    min-height: 150px;
+    height: 170px;
+    min-height: 170px;
     display: flex;
     flex-direction: column;
     cursor: pointer;
+}
+
+#processos-modulo .step-card .fab.fa-whatsapp {
+    font-size: 0.8rem;
 }
 
 #processos-modulo .step-card:hover {

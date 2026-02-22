@@ -201,7 +201,6 @@
                     uiToastSuccess('Importação concluída. ' + msg);
                     if (b.errors && b.errors.length) {
                         var totalErros = b.errors.length;
-                        var relatorio = 'Erros (limitado ao retorno):\n' + b.errors.join('\n');
                         Swal.fire({
                             icon: 'info',
                             title: 'Importação com avisos',
@@ -211,20 +210,64 @@
                             cancelButtonText: 'Fechar'
                         }).then(function (res) {
                             if (res.isConfirmed) {
-                                try {
-                                    var blob = new Blob([relatorio], { type: 'text/plain;charset=utf-8' });
-                                    var url = URL.createObjectURL(blob);
-                                    var a = document.createElement('a');
-                                    a.href = url;
-                                    a.download = 'erros-importacao-clientes.txt';
-                                    document.body.appendChild(a);
-                                    a.click();
-                                    URL.revokeObjectURL(url);
-                                    a.remove();
-                                } catch (e) {
-                                    // fallback: mostrar pequena prévia de 5 linhas
-                                    var preview = b.errors.slice(0, 5).join('\\n');
-                                    Swal.fire({ icon: 'info', title: 'Prévia de avisos', html: '<pre style=\"white-space: pre-wrap; text-align:left;\">' + preview + '</pre>' });
+                                var baixarPdf = function () {
+                                    try {
+                                        var jsPDF = window.jspdf && window.jspdf.jsPDF ? window.jspdf.jsPDF : null;
+                                        if (!jsPDF) {
+                                            throw new Error('jsPDF não disponível');
+                                        }
+                                        var doc = new jsPDF();
+                                        var y = 15;
+                                        doc.setFontSize(14);
+                                        doc.text('Relatório de avisos da importação de clientes', 10, y);
+                                        y += 10;
+                                        doc.setFontSize(11);
+                                        var resumo = 'Total de avisos: ' + totalErros;
+                                        doc.text(resumo, 10, y);
+                                        y += 10;
+                                        b.errors.forEach(function (line, idx) {
+                                            var texto = (idx + 1) + '. ' + String(line || '');
+                                            var splitted = doc.splitTextToSize(texto, 180);
+                                            splitted.forEach(function (t) {
+                                                if (y > 280) {
+                                                    doc.addPage();
+                                                    y = 15;
+                                                }
+                                                doc.text(t, 10, y);
+                                                y += 6;
+                                            });
+                                        });
+                                        doc.save('erros-importacao-clientes.pdf');
+                                    } catch (e) {
+                                        var relatorioTxt = 'Erros (limitado ao retorno):\n' + b.errors.join('\n');
+                                        try {
+                                            var blob = new Blob([relatorioTxt], { type: 'text/plain;charset=utf-8' });
+                                            var url = URL.createObjectURL(blob);
+                                            var a = document.createElement('a');
+                                            a.href = url;
+                                            a.download = 'erros-importacao-clientes.txt';
+                                            document.body.appendChild(a);
+                                            a.click();
+                                            URL.revokeObjectURL(url);
+                                            a.remove();
+                                        } catch (e2) {
+                                            var preview = b.errors.slice(0, 5).join('\\n');
+                                            Swal.fire({ icon: 'info', title: 'Prévia de avisos', html: '<pre style=\"white-space: pre-wrap; text-align:left;\">' + preview + '</pre>' });
+                                        }
+                                    }
+                                };
+                                if (!(window.jspdf && window.jspdf.jsPDF)) {
+                                    var script = document.createElement('script');
+                                    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+                                    script.onload = function () {
+                                        baixarPdf();
+                                    };
+                                    script.onerror = function () {
+                                        baixarPdf();
+                                    };
+                                    document.head.appendChild(script);
+                                } else {
+                                    baixarPdf();
                                 }
                             }
                         });

@@ -110,19 +110,11 @@
     <div class="mt-4 flex justify-end gap-2">
         <button type="button" class="btn btn-secondary" onclick="closeChecklistModal()">Fechar</button>
 
-        <!-- Botão Salvar (Só se não concluído) -->
-        <button th:if="${etapa.status != 'Concluído'}" type="button" class="btn-premium-primary py-2 px-4 text-sm"
+        <button type="button" class="btn-premium-primary py-2 px-4 text-sm"
             th:attr="hx-post=@{/processos/etapa/{eid}/checklist/save(eid=${etapa.id})}" hx-swap="innerHTML"
             hx-target="#checklist-modal-body"
             th:text="${etapa.nome == 'Documentos Solicitados' ? 'Concluir (Lista Enviada)' : 'Confirmar Recebimento'}">
             Confirmar Recebimento
-        </button>
-
-        <!-- Botão Reabrir (Só para Admin se concluído) -->
-        <button sec:authorize="hasRole('ADMIN')" th:if="${etapa.status == 'Concluído'}" type="button"
-            class="btn-premium-secondary !bg-amber-100 !text-amber-700 !border-amber-200 py-2 px-4 text-sm"
-            th:attr="onclick=|confirmReabrirEtapa('${etapa.id}')|">
-            <i class="fas fa-lock-open mr-2"></i>Reabrir Etapa (Admin)
         </button>
     </div>
 

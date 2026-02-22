@@ -389,20 +389,7 @@ public class ProcessoController {
     @PostMapping("/{processoId}/etapa/{etapaId}/toggle")
     public String toggleEtapa(@PathVariable Long processoId, @PathVariable Long etapaId, Model model) {
         EtapaProcesso etapa = etapaProcessoRepository.findById(etapaId).orElseThrow();
-
-        // Se a etapa já estiver concluída, bloqueia o toggle (Segurança/Integridade)
-        if ("Concluído".equalsIgnoreCase(etapa.getStatus())) {
-            Processo processo = processoRepository.findById(processoId).orElseThrow();
-            model.addAttribute("processo", processo);
-            model.addAttribute("processoSelecionado", processo);
-            model.addAttribute("temPendenciaMedica", hasPendenciaMedica(processo.getId()));
-            model.addAttribute("today", LocalDate.now());
-            model.addAttribute("hxOobSwap", true);
-            model.addAttribute("canEnviadoSeg", canEnviadoSeg(processo));
-            return "fragments/htmx-response-wrapper";
-        }
-
-        // Cycle Status
+        // Cycle Status (permitir alternar mesmo se já estiver concluída)
         switch (etapa.getStatus()) {
             case "Pendente":
                 etapa.setStatus("Em Andamento");

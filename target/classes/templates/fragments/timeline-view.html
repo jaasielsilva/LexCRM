@@ -24,14 +24,12 @@
                 th:classappend="${etapa.status == 'Concluído' ? 'status-concluido' : (etapa.status == 'Em Andamento' ? 'status-em-andamento' : 'status-pendente')} + 
                                  (${etapa.status == 'Concluído' || etapa.status == 'Em Andamento' ? ' line-active' : ''})">
 
-                <!-- Indicator Circle (Clickable unless Concluído, then opens Info Modal) -->
+                <!-- Indicator Circle (Sempre clica para alternar status) -->
                 <div class="step-circle"
                     th:if="${!(etapa.nome == 'Documentação' or etapa.nome == 'Documentos Solicitados' or etapa.nome == 'Documentos Recebidos' or etapa.nome == 'Aguardando Assinatura' or etapa.nome == 'Laudo Médico Recebido' or etapa.nome == 'Sinistro Gerado' or etapa.nome == 'Enviado para Seguradora')}"
-                    th:attr="hx-post=${etapa.status != 'Concluído'} ? @{/processos/{pid}/etapa/{eid}/toggle(pid=${processoSelecionado.id}, eid=${etapa.id})} : null, 
-                             hx-get=${etapa.status == 'Concluído'} ? @{/processos/etapa/{eid}/generic-modal(eid=${etapa.id})} : null,
-                             hx-target=${etapa.status == 'Concluído'} ? '#checklist-modal-body' : 'closest .timeline-panel',
-                             hx-swap=${etapa.status == 'Concluído'} ? 'innerHTML' : 'outerHTML'"
-                    th:styleappend="${etapa.status == 'Concluído'} ? ';cursor:pointer;opacity:0.9;' : ''">
+                    th:attr="hx-post=@{/processos/{pid}/etapa/{eid}/toggle(pid=${processoSelecionado.id}, eid=${etapa.id})},
+                             hx-target='closest .timeline-panel',
+                             hx-swap='outerHTML'">
                     <i th:if="${etapa.status == 'Concluído'}" class="fas fa-check"></i>
                     <i th:if="${etapa.status == 'Em Andamento'}" class="fas fa-clock"></i>
                     <i th:if="${etapa.status == 'Pendente'}" class="fas fa-exclamation"></i>
@@ -84,13 +82,12 @@
                     <i th:if="${etapa.status == 'Pendente'}" class="fas fa-exclamation"></i>
                 </div>
 
-                <!-- Card (Also Clickable for better UX, unless Concluído, then opens Info Modal) -->
+                <!-- Card (Sempre clica para alternar status) -->
                 <div class="step-card"
                     th:if="${!(etapa.nome == 'Documentação' or etapa.nome == 'Documentos Solicitados' or etapa.nome == 'Documentos Recebidos' or etapa.nome == 'Aguardando Assinatura' or etapa.nome == 'Laudo Médico Recebido' or etapa.nome == 'Sinistro Gerado' or etapa.nome == 'Enviado para Seguradora')}"
-                    th:attr="hx-post=${etapa.status != 'Concluído'} ? @{/processos/{pid}/etapa/{eid}/toggle(pid=${processoSelecionado.id}, eid=${etapa.id})} : null, 
-                             hx-get=${etapa.status == 'Concluído'} ? @{/processos/etapa/{eid}/generic-modal(eid=${etapa.id})} : null,
-                             hx-target=${etapa.status == 'Concluído'} ? '#checklist-modal-body' : 'closest .timeline-panel',
-                             hx-swap=${etapa.status == 'Concluído'} ? 'innerHTML' : 'outerHTML'"
+                    th:attr="hx-post=@{/processos/{pid}/etapa/{eid}/toggle(pid=${processoSelecionado.id}, eid=${etapa.id})},
+                             hx-target='closest .timeline-panel',
+                             hx-swap='outerHTML'"
                     style="cursor: pointer;">
 
                     <!-- Status Label -->
@@ -117,10 +114,11 @@
 
                     <div class="mt-2 d-flex justify-content-start align-items-center"
                          th:if="${etapa.nome == 'Solicitação' and processoSelecionado.cliente != null and processoSelecionado.cliente.telefone != null}">
-                        <a th:href="'whatsapp://send?phone=55' + ${processoSelecionado.cliente.telefone.replaceAll('\\D', '')}"
-                           target="_blank"
+                        <a href="javascript:void(0)"
+                           th:attr="data-phone=${processoSelecionado.cliente.telefone}, data-nome=${processoSelecionado.cliente.nome}"
+                           onclick="event.stopPropagation(); sendWhatsAppList(this.dataset.phone, this.dataset.nome)"
                            class="text-success hover:text-green-700 transition-colors"
-                           title="Enviar documentos por WhatsApp">
+                           title="Enviar lista de documentos por WhatsApp">
                             <i class="fab fa-whatsapp text-lg"></i>
                         </a>
                     </div>

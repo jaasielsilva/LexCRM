@@ -95,25 +95,8 @@
         </form>
     </div>
 
-    <!-- Visualização de Concluído -->
-    <div th:if="${etapa.status == 'Concluído'}" class="bg-green-50 p-4 rounded-xl border border-green-200 mb-4">
-        <div class="flex items-center text-green-800">
-            <i class="fas fa-check-circle mr-2 text-lg"></i>
-            <span class="font-bold">Esta etapa foi finalizada e os dados estão protegidos.</span>
-        </div>
-        <p class="text-xs text-green-700 mt-1" th:text="${etapa.descricao}"></p>
-    </div>
-
     <div class="mt-4 flex justify-end gap-2">
-        <button th:if="${etapa.status == 'Concluído'}" type="button" class="btn-premium-secondary"
-            onclick="closeChecklistModal()">Fechar</button>
-
-        <!-- Botão Reabrir (Só para Admin se concluído) -->
-        <button sec:authorize="hasRole('ADMIN')" th:if="${etapa.status == 'Concluído'}" type="button"
-            class="btn-premium-secondary !bg-amber-100 !text-amber-700 !border-amber-200 py-2 px-4 text-sm font-semibold"
-            th:attr="onclick=|confirmReabrirEtapa('${etapa.id}')|">
-            <i class="fas fa-lock-open mr-2"></i>Reabrir Etapa (Admin)
-        </button>
+        <button type="button" class="btn-premium-secondary" onclick="closeChecklistModal()">Fechar</button>
     </div>
 
     <!-- Script para feedback e fechamento (Via POST) -->

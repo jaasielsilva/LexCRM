@@ -38,25 +38,8 @@
         </div>
     </div>
 
-    <div th:if="${etapa.status == 'Concluído'}" class="bg-blue-50/50 p-4 rounded-xl border border-blue-100 mb-6">
-        <div class="flex items-start gap-3">
-            <i class="fas fa-shield-alt text-blue-600 mt-1"></i>
-            <p class="text-xs text-blue-800 leading-relaxed">
-                Esta etapa foi finalizada e está <strong>protegida contra alterações acidentais</strong>.
-                Somente um administrador pode reabri-la mediante confirmação de senha.
-            </p>
-        </div>
-    </div>
-
     <div class="flex justify-end gap-3">
         <button type="button" class="btn-premium-secondary !py-2 !px-5" onclick="closeChecklistModal()">Fechar</button>
-
-        <!-- Botão Reabrir (Só para Admin se concluído) -->
-        <button sec:authorize="hasRole('ADMIN')" th:if="${etapa.status == 'Concluído'}" type="button"
-            class="btn-premium-secondary !bg-amber-100 !text-amber-700 !border-amber-200 !py-2 !px-5 font-bold shadow-sm hover:shadow-md transition-all"
-            th:attr="onclick=|confirmReabrirEtapa('${etapa.id}')|">
-            <i class="fas fa-lock-open mr-2"></i>Reabrir Etapa (Admin)
-        </button>
     </div>
 
     <!-- OOB Updates for Timeline -->
