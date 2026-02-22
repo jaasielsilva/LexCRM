@@ -181,6 +181,15 @@
     margin: 0;
 }
 
+@media (max-width: 992px) {
+    #app-sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 16px;
+    }
+}
+
 /* Adjust main content to account for sidebar width */
 /* This part is tricky as it affects global layout, but we can scope it to sibling selector if possible,
    or just assume the main layout handles it. Since we are isolating sidebar, let's just style the sidebar itself.

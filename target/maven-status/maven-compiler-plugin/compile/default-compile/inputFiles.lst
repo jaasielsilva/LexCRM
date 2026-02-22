@@ -1,6 +1,7 @@
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\config\DataSeeder.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\config\SecurityConfig.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\config\ThymeleafConfig.java
+D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\controller\AccessPolicyController.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\controller\AgendaController.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\controller\AuthController.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\controller\ClienteController.java
@@ -14,6 +15,7 @@ D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\controller\ProcessoController.jav
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\controller\UsuariosAdminController.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\exception\GlobalExceptionHandler.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\LexcrmApplication.java
+D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\AccessPolicy.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\AgendaEvento.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\Cliente.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\Documento.java
@@ -26,6 +28,7 @@ D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\Processo.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\Role.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\RolePermission.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\model\Usuario.java
+D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\repository\AccessPolicyRepository.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\repository\AgendaEventoRepository.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\repository\ClienteRepository.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\repository\DocumentoChecklistRepository.java
@@ -40,6 +43,7 @@ D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\security\AppPermissions.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\service\AgendaConflictException.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\service\AgendaLembreteScheduler.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\service\AgendaService.java
+D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\service\ClienteImportService.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\service\CustomUserDetailsService.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\service\FileStorageService.java
 D:\Projetos\lexcrm\src\main\java\br\com\lexcrm\service\NotificacaoService.java

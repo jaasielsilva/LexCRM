@@ -93,6 +93,15 @@ public class UsuariosAdminController {
         if (resp.containsKey("ok") && !(Boolean) resp.get("ok")) {
             return ResponseEntity.badRequest().body(resp);
         }
+        boolean eraAdminAtivo = u.getRole() == Role.ADMIN && u.isAtivo();
+        if (eraAdminAtivo && role != Role.ADMIN) {
+            long adminsAtivos = usuarioRepository.countByRoleAndAtivo(Role.ADMIN, true);
+            if (adminsAtivos <= 1) {
+                resp.put("ok", false);
+                resp.put("message", "É necessário manter pelo menos um ADMIN ativo.");
+                return ResponseEntity.badRequest().body(resp);
+            }
+        }
         u.setUsername(username.trim());
         u.setNomeCompleto(nomeCompleto != null ? nomeCompleto.trim() : null);
         u.setRole(role);
@@ -120,6 +129,14 @@ public class UsuariosAdminController {
             resp.put("message", "Você não pode bloquear a própria conta.");
             return ResponseEntity.badRequest().body(resp);
         }
+        if (u.getRole() == Role.ADMIN && u.isAtivo()) {
+            long adminsAtivos = usuarioRepository.countByRoleAndAtivo(Role.ADMIN, true);
+            if (adminsAtivos <= 1) {
+                resp.put("ok", false);
+                resp.put("message", "É necessário manter pelo menos um ADMIN ativo.");
+                return ResponseEntity.badRequest().body(resp);
+            }
+        }
         boolean novoStatus = !u.isAtivo();
         u.setAtivo(novoStatus);
         usuarioRepository.save(u);
@@ -143,6 +160,14 @@ public class UsuariosAdminController {
             resp.put("ok", false);
             resp.put("message", "Você não pode excluir a própria conta.");
             return ResponseEntity.badRequest().body(resp);
+        }
+        if (u.getRole() == Role.ADMIN && u.isAtivo()) {
+            long adminsAtivos = usuarioRepository.countByRoleAndAtivo(Role.ADMIN, true);
+            if (adminsAtivos <= 1) {
+                resp.put("ok", false);
+                resp.put("message", "É necessário manter pelo menos um ADMIN ativo.");
+                return ResponseEntity.badRequest().body(resp);
+            }
         }
         usuarioRepository.delete(u);
         resp.put("ok", true);

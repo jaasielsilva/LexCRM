@@ -3,6 +3,7 @@ package br.com.lexcrm.controller;
 import br.com.lexcrm.model.*;
 import br.com.lexcrm.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,7 @@ public class ProcessoController {
     private br.com.lexcrm.service.NotificacaoService notificacaoService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('PROCESSOS_VIEW')")
     public String index(@RequestParam(required = false) String filtro,
             @RequestParam(required = false) Long clienteId,
             Model model) {
@@ -188,12 +190,14 @@ public class ProcessoController {
     }
 
     @GetMapping("/pendentes/fragment")
+    @PreAuthorize("hasAuthority('PROCESSOS_VIEW')")
     public String getProcessosPendentesFragment(Model model) {
         model.addAttribute("processos", processoRepository.findByStatus("Em Andamento"));
         return "processos/index :: list";
     }
 
     @GetMapping("/search")
+    @PreAuthorize("hasAuthority('PROCESSOS_VIEW')")
     public String search(@RequestParam(required = false) String query, Model model) {
         if (query != null && !query.isEmpty()) {
             model.addAttribute("processos", processoRepository.buscarPorTermo(query));
@@ -204,6 +208,7 @@ public class ProcessoController {
     }
 
     @PostMapping("/novo")
+    @PreAuthorize("hasAuthority('PROCESSOS_CREATE')")
     public String criarProcesso(Processo processo, Model model) {
         // Set defaults
         processo.setStatus("Em Andamento");

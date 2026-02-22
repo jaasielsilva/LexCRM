@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByUsername(String username);
+
+    long countByRoleAndAtivo(br.com.lexcrm.model.Role role, boolean ativo);
 }

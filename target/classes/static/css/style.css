@@ -47,6 +47,14 @@ body {
     padding: 40px;
     max-width: 1600px;
     margin: 0 auto;
+    margin-left: 280px;
+}
+
+@media (max-width: 992px) {
+    .main-content {
+        margin-left: 0;
+        padding: 24px 16px;
+    }
 }
 
 /* Header Section */

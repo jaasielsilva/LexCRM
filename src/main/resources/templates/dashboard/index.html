@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -57,7 +58,9 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--success" onclick="toggleDetails('novos_contatos', this)">
+                    <div class="dashboard-card dashboard-card--success"
+                         onclick="toggleDetails('novos_contatos', this)"
+                         sec:authorize="hasAuthority('CLIENTES_VIEW')">
                         <div class="dashboard-card-content">
                             <div class="dashboard-card-value" th:text="${novosContatosCount}">0</div>
                             <div class="dashboard-card-label">Novos Contatos (30 dias)</div>
@@ -68,7 +71,8 @@
                     </div>
 
                     <div class="dashboard-card dashboard-card--success"
-                        onclick="toggleDetails('receber_seguradora', this)">
+                        onclick="toggleDetails('receber_seguradora', this)"
+                        sec:authorize="hasAuthority('FINANCEIRO_VIEW')">
                         <div class="dashboard-card-content">
                             <div class="dashboard-card-value" th:text="${seguradoraAReceberTotal}">R$ 0,00</div>
                             <div class="dashboard-card-label">A Receber (Seg)</div>
@@ -78,7 +82,9 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-card dashboard-card--success" onclick="toggleDetails('pagar_medico', this)">
+                    <div class="dashboard-card dashboard-card--success"
+                         onclick="toggleDetails('pagar_medico', this)"
+                         sec:authorize="hasAuthority('FINANCEIRO_VIEW')">
                         <div class="dashboard-card-content">
                             <div class="dashboard-card-value" th:text="${medicosAPagarTotal}">R$ 0,00</div>
                             <div class="dashboard-card-label">A Pagar (Médicos)</div>
@@ -89,7 +95,8 @@
                     </div>
 
                     <div class="dashboard-card dashboard-card--danger"
-                        onclick="toggleDetails('pendencias_criticas', this)">
+                        onclick="toggleDetails('pendencias_criticas', this)"
+                        sec:authorize="hasAuthority('PROCESSOS_VIEW')">
                         <div class="dashboard-card-content">
                             <div class="dashboard-card-value" th:text="${pendenciasCriticasCount}">0</div>
                             <div class="dashboard-card-label">Pendências Críticas</div>
@@ -100,7 +107,8 @@
                     </div>
 
                     <div class="dashboard-card dashboard-card--accent"
-                        onclick="toggleDetails('processos_ativos', this)">
+                        onclick="toggleDetails('processos_ativos', this)"
+                        sec:authorize="hasAuthority('PROCESSOS_VIEW')">
                         <div class="dashboard-card-content">
                             <div class="dashboard-card-value" th:text="${processosAtivosCount}">0</div>
                             <div class="dashboard-card-label">Processos Ativos</div>
@@ -111,7 +119,8 @@
                     </div>
 
                     <div class="dashboard-card dashboard-card--success"
-                        onclick="toggleDetails('processos_arquivados', this)">
+                        onclick="toggleDetails('processos_arquivados', this)"
+                        sec:authorize="hasAuthority('PROCESSOS_VIEW')">
                         <div class="dashboard-card-content">
                             <div class="dashboard-card-value" th:text="${processosArquivadosCount}">0</div>
                             <div class="dashboard-card-label">Arquivados (Deferidos)</div>

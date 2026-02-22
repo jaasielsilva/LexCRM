@@ -2,6 +2,7 @@ package br.com.lexcrm.controller;
 
 import br.com.lexcrm.repository.FinanceiroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ public class FinanceiroController {
     private FinanceiroRepository financeiroRepository;
 
     @GetMapping("/medicos-pendentes/fragment")
+    @PreAuthorize("hasAuthority('FINANCEIRO_VIEW')")
     public String getMedicosPendentesFragment(Model model) {
         model.addAttribute("financeiros", financeiroRepository.findByStatusAndDescricaoContaining("Pendente", "Médico"));
         return "fragments/lista-financeiro :: lista";

@@ -12,7 +12,7 @@
         .perm-table th, .perm-table td { text-align: center; vertical-align: middle; }
         .perm-group { background: #f8fafc; font-weight: 600; text-align: left !important; }
     </style>
-    </head>
+</head>
 <body>
 <div layout:fragment="content" class="container py-4">
     <div class="d-flex align-items-center justify-content-between mb-4">
@@ -42,346 +42,233 @@
                         </tr>
                         </thead>
                         <tbody>
+
+                        <!-- Clientes -->
                         <tr class="perm-group"><td colspan="5">Clientes</td></tr>
                         <tr>
                             <td class="text-start">Clientes - Criar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:CLIENTES_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('CLIENTES_CREATE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:CLIENTES_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('CLIENTES_CREATE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:CLIENTES_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('CLIENTES_CREATE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:CLIENTES_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('CLIENTES_CREATE')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('CLIENTES_CREATE')}" class="form-check-input" name="perm" value="ADMIN:CLIENTES_CREATE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('CLIENTES_CREATE')}" class="form-check-input" name="perm" value="ADVOGADO:CLIENTES_CREATE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('CLIENTES_CREATE')}" class="form-check-input" name="perm" value="FINANCEIRO:CLIENTES_CREATE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('CLIENTES_CREATE')}" class="form-check-input" name="perm" value="ATENDIMENTO:CLIENTES_CREATE"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Clientes - Editar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:CLIENTES_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('CLIENTES_EDIT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:CLIENTES_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('CLIENTES_EDIT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:CLIENTES_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('CLIENTES_EDIT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:CLIENTES_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('CLIENTES_EDIT')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('CLIENTES_EDIT')}" class="form-check-input" name="perm" value="ADMIN:CLIENTES_EDIT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('CLIENTES_EDIT')}" class="form-check-input" name="perm" value="ADVOGADO:CLIENTES_EDIT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('CLIENTES_EDIT')}" class="form-check-input" name="perm" value="FINANCEIRO:CLIENTES_EDIT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('CLIENTES_EDIT')}" class="form-check-input" name="perm" value="ATENDIMENTO:CLIENTES_EDIT"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Clientes - Excluir</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:CLIENTES_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('CLIENTES_DELETE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:CLIENTES_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('CLIENTES_DELETE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:CLIENTES_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('CLIENTES_DELETE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:CLIENTES_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('CLIENTES_DELETE')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('CLIENTES_DELETE')}" class="form-check-input" name="perm" value="ADMIN:CLIENTES_DELETE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('CLIENTES_DELETE')}" class="form-check-input" name="perm" value="ADVOGADO:CLIENTES_DELETE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('CLIENTES_DELETE')}" class="form-check-input" name="perm" value="FINANCEIRO:CLIENTES_DELETE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('CLIENTES_DELETE')}" class="form-check-input" name="perm" value="ATENDIMENTO:CLIENTES_DELETE"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Clientes - Visualizar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:CLIENTES_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('CLIENTES_VIEW')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:CLIENTES_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('CLIENTES_VIEW')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:CLIENTES_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('CLIENTES_VIEW')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:CLIENTES_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('CLIENTES_VIEW')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('CLIENTES_VIEW')}" class="form-check-input" name="perm" value="ADMIN:CLIENTES_VIEW"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('CLIENTES_VIEW')}" class="form-check-input" name="perm" value="ADVOGADO:CLIENTES_VIEW"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('CLIENTES_VIEW')}" class="form-check-input" name="perm" value="FINANCEIRO:CLIENTES_VIEW"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('CLIENTES_VIEW')}" class="form-check-input" name="perm" value="ATENDIMENTO:CLIENTES_VIEW"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Clientes - Exportar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:CLIENTES_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('CLIENTES_EXPORT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:CLIENTES_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('CLIENTES_EXPORT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:CLIENTES_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('CLIENTES_EXPORT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:CLIENTES_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('CLIENTES_EXPORT')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('CLIENTES_EXPORT')}" class="form-check-input" name="perm" value="ADMIN:CLIENTES_EXPORT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('CLIENTES_EXPORT')}" class="form-check-input" name="perm" value="ADVOGADO:CLIENTES_EXPORT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('CLIENTES_EXPORT')}" class="form-check-input" name="perm" value="FINANCEIRO:CLIENTES_EXPORT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('CLIENTES_EXPORT')}" class="form-check-input" name="perm" value="ATENDIMENTO:CLIENTES_EXPORT"></td>
                         </tr>
 
+                        <!-- Processos -->
                         <tr class="perm-group"><td colspan="5">Processos</td></tr>
                         <tr>
                             <td class="text-start">Processos - Criar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:PROCESSOS_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('PROCESSOS_CREATE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:PROCESSOS_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('PROCESSOS_CREATE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:PROCESSOS_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('PROCESSOS_CREATE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:PROCESSOS_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('PROCESSOS_CREATE')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('PROCESSOS_CREATE')}" class="form-check-input" name="perm" value="ADMIN:PROCESSOS_CREATE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('PROCESSOS_CREATE')}" class="form-check-input" name="perm" value="ADVOGADO:PROCESSOS_CREATE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('PROCESSOS_CREATE')}" class="form-check-input" name="perm" value="FINANCEIRO:PROCESSOS_CREATE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('PROCESSOS_CREATE')}" class="form-check-input" name="perm" value="ATENDIMENTO:PROCESSOS_CREATE"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Processos - Editar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:PROCESSOS_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('PROCESSOS_EDIT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:PROCESSOS_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('PROCESSOS_EDIT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:PROCESSOS_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('PROCESSOS_EDIT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:PROCESSOS_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('PROCESSOS_EDIT')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('PROCESSOS_EDIT')}" class="form-check-input" name="perm" value="ADMIN:PROCESSOS_EDIT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('PROCESSOS_EDIT')}" class="form-check-input" name="perm" value="ADVOGADO:PROCESSOS_EDIT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('PROCESSOS_EDIT')}" class="form-check-input" name="perm" value="FINANCEIRO:PROCESSOS_EDIT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('PROCESSOS_EDIT')}" class="form-check-input" name="perm" value="ATENDIMENTO:PROCESSOS_EDIT"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Processos - Excluir</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:PROCESSOS_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('PROCESSOS_DELETE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:PROCESSOS_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('PROCESSOS_DELETE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:PROCESSOS_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('PROCESSOS_DELETE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:PROCESSOS_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('PROCESSOS_DELETE')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('PROCESSOS_DELETE')}" class="form-check-input" name="perm" value="ADMIN:PROCESSOS_DELETE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('PROCESSOS_DELETE')}" class="form-check-input" name="perm" value="ADVOGADO:PROCESSOS_DELETE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('PROCESSOS_DELETE')}" class="form-check-input" name="perm" value="FINANCEIRO:PROCESSOS_DELETE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('PROCESSOS_DELETE')}" class="form-check-input" name="perm" value="ATENDIMENTO:PROCESSOS_DELETE"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Processos - Visualizar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:PROCESSOS_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('PROCESSOS_VIEW')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:PROCESSOS_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('PROCESSOS_VIEW')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:PROCESSOS_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('PROCESSOS_VIEW')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:PROCESSOS_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('PROCESSOS_VIEW')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('PROCESSOS_VIEW')}" class="form-check-input" name="perm" value="ADMIN:PROCESSOS_VIEW"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('PROCESSOS_VIEW')}" class="form-check-input" name="perm" value="ADVOGADO:PROCESSOS_VIEW"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('PROCESSOS_VIEW')}" class="form-check-input" name="perm" value="FINANCEIRO:PROCESSOS_VIEW"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('PROCESSOS_VIEW')}" class="form-check-input" name="perm" value="ATENDIMENTO:PROCESSOS_VIEW"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Processos - Exportar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:PROCESSOS_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('PROCESSOS_EXPORT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:PROCESSOS_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('PROCESSOS_EXPORT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:PROCESSOS_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('PROCESSOS_EXPORT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:PROCESSOS_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('PROCESSOS_EXPORT')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('PROCESSOS_EXPORT')}" class="form-check-input" name="perm" value="ADMIN:PROCESSOS_EXPORT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('PROCESSOS_EXPORT')}" class="form-check-input" name="perm" value="ADVOGADO:PROCESSOS_EXPORT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('PROCESSOS_EXPORT')}" class="form-check-input" name="perm" value="FINANCEIRO:PROCESSOS_EXPORT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('PROCESSOS_EXPORT')}" class="form-check-input" name="perm" value="ATENDIMENTO:PROCESSOS_EXPORT"></td>
                         </tr>
 
+                        <!-- Financeiro -->
                         <tr class="perm-group"><td colspan="5">Financeiro</td></tr>
                         <tr>
                             <td class="text-start">Financeiro - Criar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:FINANCEIRO_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('FINANCEIRO_CREATE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:FINANCEIRO_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('FINANCEIRO_CREATE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:FINANCEIRO_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('FINANCEIRO_CREATE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:FINANCEIRO_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('FINANCEIRO_CREATE')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('FINANCEIRO_CREATE')}" class="form-check-input" name="perm" value="ADMIN:FINANCEIRO_CREATE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('FINANCEIRO_CREATE')}" class="form-check-input" name="perm" value="ADVOGADO:FINANCEIRO_CREATE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('FINANCEIRO_CREATE')}" class="form-check-input" name="perm" value="FINANCEIRO:FINANCEIRO_CREATE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('FINANCEIRO_CREATE')}" class="form-check-input" name="perm" value="ATENDIMENTO:FINANCEIRO_CREATE"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Financeiro - Editar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:FINANCEIRO_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('FINANCEIRO_EDIT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:FINANCEIRO_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('FINANCEIRO_EDIT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:FINANCEIRO_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('FINANCEIRO_EDIT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:FINANCEIRO_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('FINANCEIRO_EDIT')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('FINANCEIRO_EDIT')}" class="form-check-input" name="perm" value="ADMIN:FINANCEIRO_EDIT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('FINANCEIRO_EDIT')}" class="form-check-input" name="perm" value="ADVOGADO:FINANCEIRO_EDIT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('FINANCEIRO_EDIT')}" class="form-check-input" name="perm" value="FINANCEIRO:FINANCEIRO_EDIT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('FINANCEIRO_EDIT')}" class="form-check-input" name="perm" value="ATENDIMENTO:FINANCEIRO_EDIT"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Financeiro - Excluir</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:FINANCEIRO_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('FINANCEIRO_DELETE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:FINANCEIRO_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('FINANCEIRO_DELETE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:FINANCEIRO_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('FINANCEIRO_DELETE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:FINANCEIRO_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('FINANCEIRO_DELETE')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('FINANCEIRO_DELETE')}" class="form-check-input" name="perm" value="ADMIN:FINANCEIRO_DELETE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('FINANCEIRO_DELETE')}" class="form-check-input" name="perm" value="ADVOGADO:FINANCEIRO_DELETE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('FINANCEIRO_DELETE')}" class="form-check-input" name="perm" value="FINANCEIRO:FINANCEIRO_DELETE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('FINANCEIRO_DELETE')}" class="form-check-input" name="perm" value="ATENDIMENTO:FINANCEIRO_DELETE"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Financeiro - Visualizar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:FINANCEIRO_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('FINANCEIRO_VIEW')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:FINANCEIRO_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('FINANCEIRO_VIEW')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:FINANCEIRO_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('FINANCEIRO_VIEW')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:FINANCEIRO_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('FINANCEIRO_VIEW')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('FINANCEIRO_VIEW')}" class="form-check-input" name="perm" value="ADMIN:FINANCEIRO_VIEW"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('FINANCEIRO_VIEW')}" class="form-check-input" name="perm" value="ADVOGADO:FINANCEIRO_VIEW"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('FINANCEIRO_VIEW')}" class="form-check-input" name="perm" value="FINANCEIRO:FINANCEIRO_VIEW"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('FINANCEIRO_VIEW')}" class="form-check-input" name="perm" value="ATENDIMENTO:FINANCEIRO_VIEW"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Financeiro - Exportar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:FINANCEIRO_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('FINANCEIRO_EXPORT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:FINANCEIRO_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('FINANCEIRO_EXPORT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:FINANCEIRO_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('FINANCEIRO_EXPORT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:FINANCEIRO_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('FINANCEIRO_EXPORT')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('FINANCEIRO_EXPORT')}" class="form-check-input" name="perm" value="ADMIN:FINANCEIRO_EXPORT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('FINANCEIRO_EXPORT')}" class="form-check-input" name="perm" value="ADVOGADO:FINANCEIRO_EXPORT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('FINANCEIRO_EXPORT')}" class="form-check-input" name="perm" value="FINANCEIRO:FINANCEIRO_EXPORT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('FINANCEIRO_EXPORT')}" class="form-check-input" name="perm" value="ATENDIMENTO:FINANCEIRO_EXPORT"></td>
                         </tr>
 
+                        <!-- Relatórios -->
                         <tr class="perm-group"><td colspan="5">Relatórios</td></tr>
                         <tr>
                             <td class="text-start">Relatórios - Criar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:RELATORIOS_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('RELATORIOS_CREATE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:RELATORIOS_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('RELATORIOS_CREATE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:RELATORIOS_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('RELATORIOS_CREATE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:RELATORIOS_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('RELATORIOS_CREATE')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('RELATORIOS_CREATE')}" class="form-check-input" name="perm" value="ADMIN:RELATORIOS_CREATE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('RELATORIOS_CREATE')}" class="form-check-input" name="perm" value="ADVOGADO:RELATORIOS_CREATE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('RELATORIOS_CREATE')}" class="form-check-input" name="perm" value="FINANCEIRO:RELATORIOS_CREATE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('RELATORIOS_CREATE')}" class="form-check-input" name="perm" value="ATENDIMENTO:RELATORIOS_CREATE"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Relatórios - Editar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:RELATORIOS_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('RELATORIOS_EDIT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:RELATORIOS_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('RELATORIOS_EDIT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:RELATORIOS_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('RELATORIOS_EDIT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:RELATORIOS_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('RELATORIOS_EDIT')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('RELATORIOS_EDIT')}" class="form-check-input" name="perm" value="ADMIN:RELATORIOS_EDIT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('RELATORIOS_EDIT')}" class="form-check-input" name="perm" value="ADVOGADO:RELATORIOS_EDIT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('RELATORIOS_EDIT')}" class="form-check-input" name="perm" value="FINANCEIRO:RELATORIOS_EDIT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('RELATORIOS_EDIT')}" class="form-check-input" name="perm" value="ATENDIMENTO:RELATORIOS_EDIT"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Relatórios - Excluir</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:RELATORIOS_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('RELATORIOS_DELETE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:RELATORIOS_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('RELATORIOS_DELETE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:RELATORIOS_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('RELATORIOS_DELETE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:RELATORIOS_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('RELATORIOS_DELETE')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('RELATORIOS_DELETE')}" class="form-check-input" name="perm" value="ADMIN:RELATORIOS_DELETE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('RELATORIOS_DELETE')}" class="form-check-input" name="perm" value="ADVOGADO:RELATORIOS_DELETE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('RELATORIOS_DELETE')}" class="form-check-input" name="perm" value="FINANCEIRO:RELATORIOS_DELETE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('RELATORIOS_DELETE')}" class="form-check-input" name="perm" value="ATENDIMENTO:RELATORIOS_DELETE"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Relatórios - Visualizar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:RELATORIOS_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('RELATORIOS_VIEW')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:RELATORIOS_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('RELATORIOS_VIEW')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:RELATORIOS_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('RELATORIOS_VIEW')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:RELATORIOS_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('RELATORIOS_VIEW')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('RELATORIOS_VIEW')}" class="form-check-input" name="perm" value="ADMIN:RELATORIOS_VIEW"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('RELATORIOS_VIEW')}" class="form-check-input" name="perm" value="ADVOGADO:RELATORIOS_VIEW"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('RELATORIOS_VIEW')}" class="form-check-input" name="perm" value="FINANCEIRO:RELATORIOS_VIEW"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('RELATORIOS_VIEW')}" class="form-check-input" name="perm" value="ATENDIMENTO:RELATORIOS_VIEW"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Relatórios - Exportar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:RELATORIOS_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('RELATORIOS_EXPORT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:RELATORIOS_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('RELATORIOS_EXPORT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:RELATORIOS_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('RELATORIOS_EXPORT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:RELATORIOS_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('RELATORIOS_EXPORT')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('RELATORIOS_EXPORT')}" class="form-check-input" name="perm" value="ADMIN:RELATORIOS_EXPORT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('RELATORIOS_EXPORT')}" class="form-check-input" name="perm" value="ADVOGADO:RELATORIOS_EXPORT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('RELATORIOS_EXPORT')}" class="form-check-input" name="perm" value="FINANCEIRO:RELATORIOS_EXPORT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('RELATORIOS_EXPORT')}" class="form-check-input" name="perm" value="ATENDIMENTO:RELATORIOS_EXPORT"></td>
                         </tr>
 
+                        <!-- Agenda -->
                         <tr class="perm-group"><td colspan="5">Agenda</td></tr>
                         <tr>
                             <td class="text-start">Agenda - Criar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:AGENDA_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('AGENDA_CREATE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:AGENDA_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('AGENDA_CREATE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:AGENDA_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('AGENDA_CREATE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:AGENDA_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('AGENDA_CREATE')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('AGENDA_CREATE')}" class="form-check-input" name="perm" value="ADMIN:AGENDA_CREATE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('AGENDA_CREATE')}" class="form-check-input" name="perm" value="ADVOGADO:AGENDA_CREATE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('AGENDA_CREATE')}" class="form-check-input" name="perm" value="FINANCEIRO:AGENDA_CREATE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('AGENDA_CREATE')}" class="form-check-input" name="perm" value="ATENDIMENTO:AGENDA_CREATE"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Agenda - Editar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:AGENDA_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('AGENDA_EDIT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:AGENDA_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('AGENDA_EDIT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:AGENDA_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('AGENDA_EDIT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:AGENDA_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('AGENDA_EDIT')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('AGENDA_EDIT')}" class="form-check-input" name="perm" value="ADMIN:AGENDA_EDIT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('AGENDA_EDIT')}" class="form-check-input" name="perm" value="ADVOGADO:AGENDA_EDIT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('AGENDA_EDIT')}" class="form-check-input" name="perm" value="FINANCEIRO:AGENDA_EDIT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('AGENDA_EDIT')}" class="form-check-input" name="perm" value="ATENDIMENTO:AGENDA_EDIT"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Agenda - Excluir</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:AGENDA_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('AGENDA_DELETE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:AGENDA_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('AGENDA_DELETE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:AGENDA_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('AGENDA_DELETE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:AGENDA_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('AGENDA_DELETE')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('AGENDA_DELETE')}" class="form-check-input" name="perm" value="ADMIN:AGENDA_DELETE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('AGENDA_DELETE')}" class="form-check-input" name="perm" value="ADVOGADO:AGENDA_DELETE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('AGENDA_DELETE')}" class="form-check-input" name="perm" value="FINANCEIRO:AGENDA_DELETE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('AGENDA_DELETE')}" class="form-check-input" name="perm" value="ATENDIMENTO:AGENDA_DELETE"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Agenda - Visualizar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:AGENDA_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('AGENDA_VIEW')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:AGENDA_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('AGENDA_VIEW')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:AGENDA_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('AGENDA_VIEW')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:AGENDA_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('AGENDA_VIEW')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('AGENDA_VIEW')}" class="form-check-input" name="perm" value="ADMIN:AGENDA_VIEW"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('AGENDA_VIEW')}" class="form-check-input" name="perm" value="ADVOGADO:AGENDA_VIEW"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('AGENDA_VIEW')}" class="form-check-input" name="perm" value="FINANCEIRO:AGENDA_VIEW"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('AGENDA_VIEW')}" class="form-check-input" name="perm" value="ATENDIMENTO:AGENDA_VIEW"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Agenda - Exportar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:AGENDA_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('AGENDA_EXPORT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:AGENDA_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('AGENDA_EXPORT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:AGENDA_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('AGENDA_EXPORT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:AGENDA_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('AGENDA_EXPORT')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('AGENDA_EXPORT')}" class="form-check-input" name="perm" value="ADMIN:AGENDA_EXPORT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('AGENDA_EXPORT')}" class="form-check-input" name="perm" value="ADVOGADO:AGENDA_EXPORT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('AGENDA_EXPORT')}" class="form-check-input" name="perm" value="FINANCEIRO:AGENDA_EXPORT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('AGENDA_EXPORT')}" class="form-check-input" name="perm" value="ATENDIMENTO:AGENDA_EXPORT"></td>
                         </tr>
 
+                        <!-- Configurações -->
                         <tr class="perm-group"><td colspan="5">Configurações</td></tr>
                         <tr>
                             <td class="text-start">Configurações - Criar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:CONFIG_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('CONFIG_CREATE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:CONFIG_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('CONFIG_CREATE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:CONFIG_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('CONFIG_CREATE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:CONFIG_CREATE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('CONFIG_CREATE')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('CONFIG_CREATE')}" class="form-check-input" name="perm" value="ADMIN:CONFIG_CREATE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('CONFIG_CREATE')}" class="form-check-input" name="perm" value="ADVOGADO:CONFIG_CREATE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('CONFIG_CREATE')}" class="form-check-input" name="perm" value="FINANCEIRO:CONFIG_CREATE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('CONFIG_CREATE')}" class="form-check-input" name="perm" value="ATENDIMENTO:CONFIG_CREATE"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Configurações - Editar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:CONFIG_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('CONFIG_EDIT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:CONFIG_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('CONFIG_EDIT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:CONFIG_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('CONFIG_EDIT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:CONFIG_EDIT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('CONFIG_EDIT')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('CONFIG_EDIT')}" class="form-check-input" name="perm" value="ADMIN:CONFIG_EDIT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('CONFIG_EDIT')}" class="form-check-input" name="perm" value="ADVOGADO:CONFIG_EDIT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('CONFIG_EDIT')}" class="form-check-input" name="perm" value="FINANCEIRO:CONFIG_EDIT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('CONFIG_EDIT')}" class="form-check-input" name="perm" value="ATENDIMENTO:CONFIG_EDIT"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Configurações - Excluir</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:CONFIG_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('CONFIG_DELETE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:CONFIG_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('CONFIG_DELETE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:CONFIG_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('CONFIG_DELETE')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:CONFIG_DELETE"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('CONFIG_DELETE')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('CONFIG_DELETE')}" class="form-check-input" name="perm" value="ADMIN:CONFIG_DELETE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('CONFIG_DELETE')}" class="form-check-input" name="perm" value="ADVOGADO:CONFIG_DELETE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('CONFIG_DELETE')}" class="form-check-input" name="perm" value="FINANCEIRO:CONFIG_DELETE"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('CONFIG_DELETE')}" class="form-check-input" name="perm" value="ATENDIMENTO:CONFIG_DELETE"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Configurações - Visualizar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:CONFIG_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('CONFIG_VIEW')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:CONFIG_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('CONFIG_VIEW')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:CONFIG_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('CONFIG_VIEW')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:CONFIG_VIEW"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('CONFIG_VIEW')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('CONFIG_VIEW')}" class="form-check-input" name="perm" value="ADMIN:CONFIG_VIEW"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('CONFIG_VIEW')}" class="form-check-input" name="perm" value="ADVOGADO:CONFIG_VIEW"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('CONFIG_VIEW')}" class="form-check-input" name="perm" value="FINANCEIRO:CONFIG_VIEW"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('CONFIG_VIEW')}" class="form-check-input" name="perm" value="ATENDIMENTO:CONFIG_VIEW"></td>
                         </tr>
                         <tr>
                             <td class="text-start">Configurações - Exportar</td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADMIN:CONFIG_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN].contains('CONFIG_EXPORT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ADVOGADO:CONFIG_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO].contains('CONFIG_EXPORT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="FINANCEIRO:CONFIG_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO].contains('CONFIG_EXPORT')}"></td>
-                            <td><input class="form-check-input" type="checkbox" name="perm" value="ATENDIMENTO:CONFIG_EXPORT"
-                                       th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO].contains('CONFIG_EXPORT')}"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADMIN]?.contains('CONFIG_EXPORT')}" class="form-check-input" name="perm" value="ADMIN:CONFIG_EXPORT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ADVOGADO]?.contains('CONFIG_EXPORT')}" class="form-check-input" name="perm" value="ADVOGADO:CONFIG_EXPORT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).FINANCEIRO]?.contains('CONFIG_EXPORT')}" class="form-check-input" name="perm" value="FINANCEIRO:CONFIG_EXPORT"></td>
+                            <td><input type="checkbox" th:checked="${matrix[T(br.com.lexcrm.model.Role).ATENDIMENTO]?.contains('CONFIG_EXPORT')}" class="form-check-input" name="perm" value="ATENDIMENTO:CONFIG_EXPORT"></td>
                         </tr>
 
                         </tbody>

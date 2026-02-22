@@ -115,6 +115,16 @@
                     </div>
                     <div class="step-date-text" th:if="${etapa.data == null}">-</div>
 
+                    <div class="mt-2 d-flex justify-content-start align-items-center"
+                         th:if="${etapa.nome == 'Solicitação' and processoSelecionado.cliente != null and processoSelecionado.cliente.telefone != null}">
+                        <a th:href="'whatsapp://send?phone=55' + ${processoSelecionado.cliente.telefone.replaceAll('\\D', '')}"
+                           target="_blank"
+                           class="text-success hover:text-green-700 transition-colors"
+                           title="Enviar documentos por WhatsApp">
+                            <i class="fab fa-whatsapp text-lg"></i>
+                        </a>
+                    </div>
+
                     <!-- Medical Payment Badge -->
                     <div th:if="${etapa.nome == 'Laudo Médico Recebido' and temPendenciaMedica}" class="mt-2">
                         <span class="badge bg-danger">Pagamento pendente</span>

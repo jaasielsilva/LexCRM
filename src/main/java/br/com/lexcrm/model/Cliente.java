@@ -17,6 +17,13 @@ public class Cliente {
     private String email;
     private String telefone;
     private String indicacao;
+    private String cep;
+    private String logradouro;
+    private String numero;
+    private String complemento;
+    private String bairro;
+    private String cidade;
+    private String uf;
     private LocalDateTime createdAt;
 
     // Multi-tenancy

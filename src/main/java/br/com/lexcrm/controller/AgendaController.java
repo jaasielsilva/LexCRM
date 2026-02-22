@@ -10,6 +10,7 @@ import br.com.lexcrm.service.AgendaService;
 import br.com.lexcrm.service.NotificacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +49,7 @@ public class AgendaController {
     private NotificacaoService notificacaoService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('AGENDA_VIEW')")
     public String index(@RequestParam(required = false) String data,
                         @RequestParam(required = false) Long responsavelId,
                         Model model) {
@@ -70,6 +72,7 @@ public class AgendaController {
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasAuthority('AGENDA_VIEW')")
     public String list(@RequestParam(required = false) String data,
                        @RequestParam(required = false) Long responsavelId,
                        Model model) {
@@ -82,6 +85,7 @@ public class AgendaController {
 
     @GetMapping("/events")
     @ResponseBody
+    @PreAuthorize("hasAuthority('AGENDA_VIEW')")
     public List<Map<String, Object>> events(@RequestParam String start,
                                             @RequestParam String end,
                                             @RequestParam(required = false) Long responsavelId) {
@@ -153,6 +157,7 @@ public class AgendaController {
 
     @PostMapping
     @ResponseBody
+    @PreAuthorize("hasAuthority('AGENDA_CREATE')")
     public ResponseEntity<Map<String, Object>> create(AgendaEvento evento) {
         Map<String, Object> resp = new HashMap<>();
         try {
@@ -179,6 +184,7 @@ public class AgendaController {
 
     @PostMapping("/{id}")
     @ResponseBody
+    @PreAuthorize("hasAuthority('AGENDA_EDIT')")
     public ResponseEntity<Map<String, Object>> update(@PathVariable Long id, AgendaEvento evento) {
         Map<String, Object> resp = new HashMap<>();
         try {
@@ -210,6 +216,7 @@ public class AgendaController {
 
     @PostMapping("/{id}/delete")
     @ResponseBody
+    @PreAuthorize("hasAuthority('AGENDA_DELETE')")
     public ResponseEntity<Map<String, Object>> delete(@PathVariable Long id) {
         Map<String, Object> resp = new HashMap<>();
         try {

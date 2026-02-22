@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <body>
 
@@ -23,38 +24,62 @@
                 <i class="fas fa-th-large"></i>
                 <span>Dashboard</span>
             </a>
-            <a href="/clientes" class="nav-link" th:classappend="${activePage == 'clientes'} ? 'active'">
+            <a href="/clientes"
+               class="nav-link"
+               th:classappend="${activePage == 'clientes'} ? 'active'"
+               sec:authorize="hasAuthority('CLIENTES_VIEW')">
                 <i class="fas fa-users"></i>
                 <span>Clientes</span>
             </a>
-            <a href="/processos" class="nav-link" th:classappend="${activePage == 'processos'} ? 'active'">
+            <a href="/processos"
+               class="nav-link"
+               th:classappend="${activePage == 'processos'} ? 'active'"
+               sec:authorize="hasAuthority('PROCESSOS_VIEW')">
                 <i class="fas fa-balance-scale"></i>
                 <span>Processos</span>
             </a>
-            <a href="/documentacoes" class="nav-link" th:classappend="${activePage == 'documentacoes'} ? 'active'">
+            <a href="/documentacoes"
+               class="nav-link"
+               th:classappend="${activePage == 'documentacoes'} ? 'active'"
+               sec:authorize="hasAuthority('PROCESSOS_VIEW')">
                 <i class="fas fa-folder"></i>
                 <span>Documentações</span>
             </a>
 
-            <div class="menu-category">Gestão</div>
-            <a href="/agenda" class="nav-link" th:classappend="${activePage == 'agenda'} ? 'active'">
-                <i class="fas fa-calendar-alt"></i>
-                <span>Agenda</span>
-            </a>
-            <a href="/financeiro" class="nav-link" th:classappend="${activePage == 'financeiro'} ? 'active'">
-                <i class="fas fa-dollar-sign"></i>
-                <span>Financeiro</span>
-            </a>
-            <a href="/relatorios" class="nav-link" th:classappend="${activePage == 'relatorios'} ? 'active'">
-                <i class="fas fa-file-alt"></i>
-                <span>Relatórios</span>
-            </a>
+            <div sec:authorize="hasAnyAuthority('AGENDA_VIEW','FINANCEIRO_VIEW','RELATORIOS_VIEW')">
+                <div class="menu-category">Gestão</div>
+                <a href="/agenda"
+                   class="nav-link"
+                   th:classappend="${activePage == 'agenda'} ? 'active'"
+                   sec:authorize="hasAuthority('AGENDA_VIEW')">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Agenda</span>
+                </a>
+                <a href="/financeiro"
+                   class="nav-link"
+                   th:classappend="${activePage == 'financeiro'} ? 'active'"
+                   sec:authorize="hasAuthority('FINANCEIRO_VIEW')">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>Financeiro</span>
+                </a>
+                <a href="/relatorios"
+                   class="nav-link"
+                   th:classappend="${activePage == 'relatorios'} ? 'active'"
+                   sec:authorize="hasAuthority('RELATORIOS_VIEW')">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Relatórios</span>
+                </a>
+            </div>
 
-            <div class="menu-category">Sistema</div>
-            <a href="/configuracoes" class="nav-link" th:classappend="${activePage == 'configuracoes'} ? 'active'">
-                <i class="fas fa-cog"></i>
-                <span>Configurações</span>
-            </a>
+            <div sec:authorize="hasAuthority('CONFIG_VIEW')">
+                <div class="menu-category">Sistema</div>
+                <a href="/configuracoes"
+                   class="nav-link"
+                   th:classappend="${activePage == 'configuracoes'} ? 'active'">
+                    <i class="fas fa-cog"></i>
+                    <span>Configurações</span>
+                </a>
+            </div>
         </div>
 
         <div class="sidebar-footer" onclick="openPerfilModal()" style="cursor: pointer;" title="Meu Perfil">

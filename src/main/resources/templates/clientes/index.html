@@ -35,17 +35,26 @@
                 <h1 class="page-title">Clientes</h1>
                 <p class="page-subtitle">Cadastro e gestão de clientes do CRM</p>
             </div>
-            <button type="button" onclick="openClienteModal()" class="btn-new-process" sec:authorize="hasAuthority('CLIENTES_CREATE')">
-                <i class="fas fa-plus"></i>
-                Novo Cliente
-            </button>
+            <div class="d-flex gap-2">
+                <button type="button" onclick="openImportClientesModal()" class="btn btn-outline-secondary btn-sm" sec:authorize="hasAuthority('CLIENTES_CREATE')">
+                    <i class="fas fa-file-upload me-1"></i>
+                    Importar
+                </button>
+                <button type="button" onclick="openClienteModal()" class="btn-new-process" sec:authorize="hasAuthority('CLIENTES_CREATE')">
+                    <i class="fas fa-plus"></i>
+                    Novo Cliente
+                </button>
+            </div>
         </div>
 
         <div class="search-container">
             <i class="fas fa-search search-icon"></i>
             <input type="text" name="query" class="search-input"
-                placeholder="Buscar por nome, CPF/CNPJ, e-mail ou telefone..." hx-get="/clientes/search"
-                hx-trigger="keyup changed delay:400ms" hx-target="#client-list">
+                placeholder="Buscar por nome, CPF/CNPJ, e-mail ou telefone..."
+                hx-get="/clientes/search"
+                hx-trigger="keyup changed delay:400ms"
+                hx-target="#client-list"
+                hx-swap="outerHTML">
         </div>
 
         <div id="client-list" th:fragment="list">
@@ -81,8 +90,8 @@
                                     </div>
                                 </td>
                                 <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-outline-primary" sec:authorize="hasAuthority('CLIENTES_EDIT')"
-                                        th:attr="data-id=${c.id},data-nome=${c.nome},data-cpfcnpj=${c.cpfCnpj},data-email=${c.email},data-telefone=${c.telefone},data-indicacao=${c.indicacao}"
+                    <button type="button" class="btn btn-sm btn-outline-primary" sec:authorize="hasAuthority('CLIENTES_EDIT')"
+                                        th:attr="data-id=${c.id},data-nome=${c.nome},data-cpfcnpj=${c.cpfCnpj},data-email=${c.email},data-telefone=${c.telefone},data-indicacao=${c.indicacao},data-cep=${c.cep},data-logradouro=${c.logradouro},data-numero=${c.numero},data-complemento=${c.complemento},data-bairro=${c.bairro},data-cidade=${c.cidade},data-uf=${c.uf}"
                                         onclick="openClienteModalFromRow(this)">
                                         <i class="fas fa-pen"></i>
                                     </button>
@@ -130,10 +139,137 @@
     </main>
 
     <script>
+        function openImportClientesModal() {
+            var html = '' +
+                '<div class="mb-2 text-start">' +
+                ' <p class="small text-muted mb-1">Arquivos aceitos: CSV, XLSX, XLS (máx. 10MB)</p>' +
+                '</div>' +
+                '<div id="dz" style="border: 2px dashed #ccc; border-radius: 8px; padding: 24px; text-align: center;">' +
+                ' <i class="fas fa-cloud-upload-alt fa-2x text-secondary mb-2"></i>' +
+                ' <div class="mb-2">Arraste e solte aqui</div>' +
+                ' <div class="small text-muted mb-2">ou</div>' +
+                ' <button type="button" id="btn-file" class="btn btn-sm btn-outline-secondary">Escolher arquivo</button>' +
+                ' <input type="file" id="file-input" style="display:none" accept=".csv,.xlsx,.xls" />' +
+                '</div>' +
+                '<div id="dz-status" class="text-start mt-3 small"></div>';
+
+            Swal.fire({
+                title: 'Importar Clientes',
+                html: html,
+                showCancelButton: true,
+                confirmButtonText: 'Enviar',
+                cancelButtonText: 'Fechar',
+                preConfirm: function () {
+                    var container = Swal.getHtmlContainer();
+                    var input = container.querySelector('#file-input');
+                    if (!input || !input.files || input.files.length === 0) {
+                        Swal.showValidationMessage('Selecione um arquivo.');
+                        return false;
+                    }
+                    var f = input.files[0];
+                    if (f.size > 10 * 1024 * 1024) {
+                        Swal.showValidationMessage('Arquivo maior que 10MB.');
+                        return false;
+                    }
+                    var fd = new FormData();
+                    fd.append('file', f);
+                    var csrfTokenMeta = document.querySelector('meta[name=\"_csrf\"]');
+                    var csrfHeaderMeta = document.querySelector('meta[name=\"_csrf_header\"]');
+                    var csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : null;
+                    var csrfHeader = csrfHeaderMeta ? csrfHeaderMeta.getAttribute('content') : null;
+                    var headers = { 'X-Requested-With': 'XMLHttpRequest' };
+                    if (csrfToken && csrfHeader) { headers[csrfHeader] = csrfToken; }
+                    return fetch('/clientes/import', { method: 'POST', body: fd, headers: headers, credentials: 'same-origin' })
+                        .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, body: j }; }); })
+                        .then(function (res) {
+                            if (!res.ok) {
+                                var msg = (res.body && res.body.errors && res.body.errors[0]) ? res.body.errors[0] : 'Falha ao importar.';
+                                Swal.showValidationMessage(msg);
+                                return false;
+                            }
+                            return res.body;
+                        })
+                        .catch(function () {
+                            Swal.showValidationMessage('Falha ao enviar arquivo.');
+                            return false;
+                        });
+                }
+            }).then(function (r) {
+                if (r.isConfirmed && r.value) {
+                    var b = r.value;
+                    var msg = 'Criados: ' + (b.createdCount || 0) + ', Ignorados: ' + (b.skippedCount || 0) + ', Erros: ' + (b.errorCount || 0);
+                    uiToastSuccess('Importação concluída. ' + msg);
+                    if (b.errors && b.errors.length) {
+                        var totalErros = b.errors.length;
+                        var relatorio = 'Erros (limitado ao retorno):\n' + b.errors.join('\n');
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Importação com avisos',
+                            text: 'Foram identificados ' + totalErros + ' avisos de dados. Você pode baixar um relatório para análise.',
+                            showCancelButton: true,
+                            confirmButtonText: 'Baixar relatório',
+                            cancelButtonText: 'Fechar'
+                        }).then(function (res) {
+                            if (res.isConfirmed) {
+                                try {
+                                    var blob = new Blob([relatorio], { type: 'text/plain;charset=utf-8' });
+                                    var url = URL.createObjectURL(blob);
+                                    var a = document.createElement('a');
+                                    a.href = url;
+                                    a.download = 'erros-importacao-clientes.txt';
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    URL.revokeObjectURL(url);
+                                    a.remove();
+                                } catch (e) {
+                                    // fallback: mostrar pequena prévia de 5 linhas
+                                    var preview = b.errors.slice(0, 5).join('\\n');
+                                    Swal.fire({ icon: 'info', title: 'Prévia de avisos', html: '<pre style=\"white-space: pre-wrap; text-align:left;\">' + preview + '</pre>' });
+                                }
+                            }
+                        });
+                    }
+                    refreshClientesList();
+                }
+            });
+
+            setTimeout(function () {
+                var container = Swal.getHtmlContainer();
+                var dz = container.querySelector('#dz');
+                var input = container.querySelector('#file-input');
+                var btnFile = container.querySelector('#btn-file');
+                var status = container.querySelector('#dz-status');
+                function preventDefaults(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                ['dragenter','dragover','dragleave','drop'].forEach(function (ev) { dz.addEventListener(ev, preventDefaults, false); });
+                dz.addEventListener('dragover', function () { dz.style.borderColor = '#0d6efd'; }, false);
+                dz.addEventListener('dragleave', function () { dz.style.borderColor = '#ccc'; }, false);
+                dz.addEventListener('drop', function (e) {
+                    var dt = e.dataTransfer;
+                    var files = dt.files;
+                    if (files && files[0]) {
+                        input.files = files;
+                        dz.style.borderColor = '#198754';
+                        status.textContent = 'Selecionado: ' + files[0].name + ' (' + Math.round(files[0].size/1024) + ' KB)';
+                    }
+                }, false);
+                btnFile.addEventListener('click', function(){ input.click(); });
+                input.addEventListener('change', function(){
+                    var f = input.files && input.files[0];
+                    if (f) {
+                        dz.style.borderColor = '#198754';
+                        status.textContent = 'Selecionado: ' + f.name + ' (' + Math.round(f.size/1024) + ' KB)';
+                    }
+                });
+            }, 50);
+        }
+
         function refreshClientesList() {
             var input = document.querySelector('input[name="query"]');
             var q = input ? (input.value || '') : '';
-            htmx.ajax('GET', '/clientes/search?query=' + encodeURIComponent(q), '#client-list');
+            htmx.ajax('GET', '/clientes/search?query=' + encodeURIComponent(q), { target: '#client-list', swap: 'outerHTML' });
         }
 
         function clienteFormHtml(values) {
@@ -156,6 +292,43 @@
                 '    <label class="form-label">Telefone</label>' +
                 '    <input name="telefone" class="form-control" value="' + (v.telefone || '') + '">' +
                 '  </div>' +
+                '  <div class="row g-2 mb-2">' +
+                '    <div class="col-8">' +
+                '      <label class="form-label">CEP</label>' +
+                '      <input name="cep" class="form-control" placeholder="Somente números" value="' + (v.cep || '') + '">' +
+                '    </div>' +
+                '    <div class="col-4 d-flex align-items-end">' +
+                '      <button type="button" class="btn btn-outline-secondary w-100" id="btn-buscar-cep"><i class="fas fa-search me-1"></i>Buscar CEP</button>' +
+                '    </div>' +
+                '  </div>' +
+                '  <div class="mb-2">' +
+                '    <label class="form-label">Logradouro</label>' +
+                '    <input name="logradouro" class="form-control" value="' + (v.logradouro || '') + '">' +
+                '  </div>' +
+                '  <div class="row g-2 mb-2">' +
+                '    <div class="col-4">' +
+                '      <label class="form-label">Número</label>' +
+                '      <input name="numero" class="form-control" value="' + (v.numero || '') + '">' +
+                '    </div>' +
+                '    <div class="col-8">' +
+                '      <label class="form-label">Complemento</label>' +
+                '      <input name="complemento" class="form-control" value="' + (v.complemento || '') + '">' +
+                '    </div>' +
+                '  </div>' +
+                '  <div class="row g-2 mb-3">' +
+                '    <div class="col-6">' +
+                '      <label class="form-label">Bairro</label>' +
+                '      <input name="bairro" class="form-control" value="' + (v.bairro || '') + '">' +
+                '    </div>' +
+                '    <div class="col-4">' +
+                '      <label class="form-label">Cidade</label>' +
+                '      <input name="cidade" class="form-control" value="' + (v.cidade || '') + '">' +
+                '    </div>' +
+                '    <div class="col-2">' +
+                '      <label class="form-label">UF</label>' +
+                '      <input name="uf" class="form-control" maxlength="2" value="' + (v.uf || '') + '">' +
+                '    </div>' +
+                '  </div>' +
                 '  <div class="mb-0">' +
                 '    <label class="form-label">Indicação</label>' +
                 '    <input name="indicacao" class="form-control" value="' + (v.indicacao || '') + '">' +
@@ -175,7 +348,14 @@
                 cpfCnpj: d.cpfcnpj,
                 email: d.email,
                 telefone: d.telefone,
-                indicacao: d.indicacao
+                indicacao: d.indicacao,
+                cep: d.cep,
+                logradouro: d.logradouro,
+                numero: d.numero,
+                complemento: d.complemento,
+                bairro: d.bairro,
+                cidade: d.cidade,
+                uf: d.uf
             });
         }
 
@@ -203,6 +383,49 @@
                         try { phone.value = window.uiFormatPhoneBR(phone.value); } catch (e) { }
                         window.uiMaskPhoneInput(phone);
                     }
+                    var cepInput = dom.querySelector('input[name="cep"]');
+                    var btnBuscar = dom.querySelector('#btn-buscar-cep');
+                    function cleanDigits(s){ return (s || '').replace(/\D+/g,''); }
+                    function fillAddress(d){
+                        var log = dom.querySelector('input[name="logradouro"]');
+                        var bai = dom.querySelector('input[name="bairro"]');
+                        var cid = dom.querySelector('input[name="cidade"]');
+                        var uf = dom.querySelector('input[name="uf"]');
+                        if (log && d.logradouro) log.value = d.logradouro;
+                        if (bai && d.bairro) bai.value = d.bairro;
+                        if (cid && d.localidade) cid.value = d.localidade;
+                        if (uf && d.uf) uf.value = d.uf;
+                    }
+                    function buscarCEP() {
+                        var raw = cepInput ? cepInput.value : '';
+                        var cep = cleanDigits(raw);
+                        if (!cep || cep.length !== 8) {
+                            if (window.Swal && Swal.showValidationMessage) {
+                                Swal.showValidationMessage('CEP inválido. Informe 8 dígitos.');
+                            }
+                            return;
+                        }
+                        fetch('https://viacep.com.br/ws/' + cep + '/json/')
+                            .then(r => r.json())
+                            .then(j => {
+                                if (j && j.erro) {
+                                    if (window.Swal && Swal.showValidationMessage) {
+                                        Swal.showValidationMessage('CEP não encontrado.');
+                                    }
+                                    return;
+                                }
+                                fillAddress(j || {});
+                            })
+                            .catch(() => {
+                                if (window.Swal && Swal.showValidationMessage) {
+                                    Swal.showValidationMessage('Falha ao consultar CEP.');
+                                }
+                            });
+                    }
+                    if (btnBuscar) btnBuscar.addEventListener('click', buscarCEP);
+                    if (cepInput) {
+                        cepInput.addEventListener('blur', function(){ if (cleanDigits(cepInput.value).length === 8) buscarCEP(); });
+                    }
                 },
                 preConfirm: function () {
                     var container = Swal.getHtmlContainer();
@@ -219,6 +442,12 @@
                     }
                     if (telefone && !isValidPhoneBR(telefone)) {
                         Swal.showValidationMessage('Telefone inválido. Use DDD + número.');
+                        return false;
+                    }
+                    var cep = container.querySelector('input[name="cep"]') ? container.querySelector('input[name="cep"]').value.trim() : '';
+                    var cepDigits = (cep || '').replace(/\D+/g,'');
+                    if (cepDigits && cepDigits.length !== 8) {
+                        Swal.showValidationMessage('CEP inválido. Informe 8 dígitos.');
                         return false;
                     }
                     return uiSubmitFromSwal(url, 'POST', '#cliente-form').then(function (resp) {

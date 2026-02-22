@@ -2,6 +2,9 @@ package br.com.lexcrm.controller;
 
 import br.com.lexcrm.model.Cliente;
 import br.com.lexcrm.repository.ClienteRepository;
+import br.com.lexcrm.service.ClienteImportService;
+import br.com.lexcrm.service.NotificacaoService;
+import br.com.lexcrm.model.NotificacaoTipo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +33,12 @@ public class ClienteController {
 
     @Autowired
     private ClienteRepository clienteRepository;
+
+    @Autowired
+    private ClienteImportService clienteImportService;
+
+    @Autowired
+    private NotificacaoService notificacaoService;
 
     @GetMapping
     @PreAuthorize("hasAuthority('CLIENTES_VIEW')")
@@ -51,18 +61,57 @@ public class ClienteController {
         return "clientes/index";
     }
 
+    @PostMapping("/import")
+    @ResponseBody
+    @PreAuthorize("hasAuthority('CLIENTES_CREATE')")
+    public ResponseEntity<Map<String, Object>> importClientes(@RequestParam("file") MultipartFile file) {
+        Map<String, Object> resp = new HashMap<>();
+        try {
+            ClienteImportService.ClienteImportResult result = clienteImportService.importFile(file, "T001");
+            List<String> errors = result.errors();
+            if (errors != null && errors.size() > 50) {
+                errors = errors.subList(0, 50);
+            }
+            resp.put("createdCount", result.createdCount());
+            resp.put("skippedCount", result.skippedCount());
+            resp.put("errorCount", result.errorCount());
+            resp.put("errors", errors);
+            return ResponseEntity.ok(resp);
+        } catch (Exception e) {
+            resp.put("createdCount", 0);
+            resp.put("skippedCount", 0);
+            resp.put("errorCount", 1);
+            resp.put("errors", java.util.List.of(e.getMessage() != null ? e.getMessage() : "Falha ao processar arquivo."));
+            return ResponseEntity.badRequest().body(resp);
+        }
+    }
+
     @GetMapping("/search")
     @PreAuthorize("hasAuthority('CLIENTES_VIEW')")
-    public String search(@RequestParam(required = false) String query, Model model) {
-        model.addAttribute("activePage", "clientes");
+    public String search(@RequestParam(required = false) String query,
+                         @RequestParam(defaultValue = "0") int page,
+                         @RequestParam(defaultValue = "10") int size,
+                         Model model) {
+        Pageable pageable = PageRequest.of(Math.max(page, 0), Math.max(size, 1), Sort.by(Sort.Direction.ASC, "nome"));
+        Page<Cliente> clientesPage;
         if (query == null || query.trim().isEmpty()) {
-            model.addAttribute("clientes", clienteRepository.findAll(Sort.by(Sort.Direction.ASC, "nome")));
+            clientesPage = clienteRepository.findAll(pageable);
         } else {
             String q = query.trim();
-            List<Cliente> clientes = clienteRepository
-                    .findTop50ByNomeContainingIgnoreCaseOrCpfCnpjContainingIgnoreCaseOrEmailContainingIgnoreCaseOrTelefoneContainingIgnoreCase(q, q, q, q);
-            model.addAttribute("clientes", clientes);
+            clientesPage = clienteRepository
+                    .findByNomeContainingIgnoreCaseOrCpfCnpjContainingIgnoreCaseOrEmailContainingIgnoreCaseOrTelefoneContainingIgnoreCase(
+                            q, q, q, q, pageable);
         }
+        model.addAttribute("clientes", clientesPage.getContent());
+        model.addAttribute("clientesPage", clientesPage);
+        model.addAttribute("currentPage", clientesPage.getNumber());
+        model.addAttribute("totalPages", clientesPage.getTotalPages());
+        model.addAttribute("pageSize", clientesPage.getSize());
+        model.addAttribute("totalElements", clientesPage.getTotalElements());
+        long from = clientesPage.getTotalElements() == 0 ? 0 : (long) clientesPage.getNumber() * clientesPage.getSize() + 1;
+        long to = (long) clientesPage.getNumber() * clientesPage.getSize() + clientesPage.getNumberOfElements();
+        model.addAttribute("fromItem", from);
+        model.addAttribute("toItem", to);
         return "clientes/index :: list";
     }
 
@@ -112,6 +161,44 @@ public class ClienteController {
         if (cliente.getIndicacao() != null) {
             String indicacao = cliente.getIndicacao().trim();
             cliente.setIndicacao(indicacao.isEmpty() ? null : indicacao);
+        }
+        if (cliente.getCep() != null) {
+            String cepDigits = somenteDigitos(cliente.getCep());
+            if (!cepDigits.isEmpty() && cepDigits.length() != 8) {
+                resp.put("ok", false);
+                resp.put("message", "CEP inválido. Informe 8 dígitos.");
+                return ResponseEntity.badRequest().body(resp);
+            }
+            cliente.setCep(cepDigits.isEmpty() ? null : cepDigits);
+        }
+        if (cliente.getLogradouro() != null) {
+            String v = cliente.getLogradouro().trim();
+            cliente.setLogradouro(v.isEmpty() ? null : v);
+        }
+        if (cliente.getNumero() != null) {
+            String v = cliente.getNumero().trim();
+            cliente.setNumero(v.isEmpty() ? null : v);
+        }
+        if (cliente.getComplemento() != null) {
+            String v = cliente.getComplemento().trim();
+            cliente.setComplemento(v.isEmpty() ? null : v);
+        }
+        if (cliente.getBairro() != null) {
+            String v = cliente.getBairro().trim();
+            cliente.setBairro(v.isEmpty() ? null : v);
+        }
+        if (cliente.getCidade() != null) {
+            String v = cliente.getCidade().trim();
+            cliente.setCidade(v.isEmpty() ? null : v);
+        }
+        if (cliente.getUf() != null) {
+            String v = cliente.getUf().trim().toUpperCase();
+            if (!v.isEmpty() && v.length() != 2) {
+                resp.put("ok", false);
+                resp.put("message", "UF inválida. Informe a sigla com 2 letras.");
+                return ResponseEntity.badRequest().body(resp);
+            }
+            cliente.setUf(v.isEmpty() ? null : v);
         }
         cliente.setTenantId("T001");
         cliente.setCreatedAt(LocalDateTime.now());
@@ -181,6 +268,33 @@ public class ClienteController {
             cliente.setIndicacao(indicacao.isEmpty() ? null : indicacao);
         } else {
             cliente.setIndicacao(null);
+        }
+        if (payload.getCep() != null) {
+            String cepDigits = somenteDigitos(payload.getCep());
+            if (!cepDigits.isEmpty() && cepDigits.length() != 8) {
+                resp.put("ok", false);
+                resp.put("message", "CEP inválido. Informe 8 dígitos.");
+                return ResponseEntity.badRequest().body(resp);
+            }
+            cliente.setCep(cepDigits.isEmpty() ? null : cepDigits);
+        } else {
+            cliente.setCep(null);
+        }
+        cliente.setLogradouro(payload.getLogradouro() != null && !payload.getLogradouro().trim().isEmpty() ? payload.getLogradouro().trim() : null);
+        cliente.setNumero(payload.getNumero() != null && !payload.getNumero().trim().isEmpty() ? payload.getNumero().trim() : null);
+        cliente.setComplemento(payload.getComplemento() != null && !payload.getComplemento().trim().isEmpty() ? payload.getComplemento().trim() : null);
+        cliente.setBairro(payload.getBairro() != null && !payload.getBairro().trim().isEmpty() ? payload.getBairro().trim() : null);
+        cliente.setCidade(payload.getCidade() != null && !payload.getCidade().trim().isEmpty() ? payload.getCidade().trim() : null);
+        if (payload.getUf() != null && !payload.getUf().trim().isEmpty()) {
+            String v = payload.getUf().trim().toUpperCase();
+            if (v.length() != 2) {
+                resp.put("ok", false);
+                resp.put("message", "UF inválida. Informe a sigla com 2 letras.");
+                return ResponseEntity.badRequest().body(resp);
+            }
+            cliente.setUf(v);
+        } else {
+            cliente.setUf(null);
         }
 
         clienteRepository.save(cliente);

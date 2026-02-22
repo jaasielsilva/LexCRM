@@ -384,12 +384,11 @@
     border: 1px solid #e2e8f0;
     border-radius: 6px;
     padding: 10px;
-    /* Reduced padding */
     width: 100%;
     text-align: left;
     transition: all 0.2s;
-    min-height: 80px;
-    /* Very compact */
+    height: 150px;
+    min-height: 150px;
     display: flex;
     flex-direction: column;
     cursor: pointer;
